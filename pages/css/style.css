@@ -1,0 +1,461 @@
+@font-face {
+	font-family: "Gotham Medium";
+	src: url("fonts/Gotham/Gotham-Medium.otf")format("opentype");
+}
+
+/* preloading screen */
+
+@-webkit-keyframes sk-chasingDotsRotate {
+100% {
+	-webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+				}
+			}
+
+@keyframes sk-chasingDotsRotate {
+100% {
+	-webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+				}
+			}
+
+@-webkit-keyframes sk-chasingDotsBounce {
+0%, 100% {
+	-webkit-transform: scale(0);
+          transform: scale(0);
+				}
+50% {
+	-webkit-transform: scale(1);
+          transform: scale(1);
+				}
+			}
+
+@keyframes sk-chasingDotsBounce {
+0%, 100% {
+	-webkit-transform: scale(0);
+          transform: scale(0);
+				}
+50% {
+  -webkit-transform: scale(1);
+          transform: scale(1);
+				}
+			}
+
+#loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.sk-chasing-dots {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  text-align: center;
+  -webkit-animation: sk-chasingDotsRotate 2s infinite linear;
+  animation: sk-chasingDotsRotate 2s infinite linear;
+}
+.sk-chasing-dots .sk-child {
+	width: 60%;
+	height: 60%;
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	background-color: #333;
+	border-radius: 100%;
+	-webkit-animation: sk-chasingDotsBounce 2s infinite ease-in-out;
+	animation: sk-chasingDotsBounce 2s infinite ease-in-out;
+}
+.sk-chasing-dots .sk-dot2 {
+	top: auto;
+	bottom: 0;
+	-webkit-animation-delay: -1s;
+	animation-delay: -1s;
+}
+
+/* end preloading screen */
+
+/* css for computer */
+
+@media only screen and (min-width: 1125px)  {
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    font-family: "Gotham Medium";
+    font-size: 2.7vh;
+    position:absolute;
+    top:9%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index: 70;
+  }
+
+  .list li {
+    display: inline-block;
+  }
+
+  .list_me, .list_photos, .list_videos {
+    color: #121117;
+    text-decoration: none;
+    margin: 1.2vh;
+    padding: 1vh;
+    padding-top: 1vh;
+    padding-bottom: 1.2vh;
+  }
+
+	#selected {
+    border: 0.2vh solid #121117;
+    border-radius: 2vh;
+  }
+
+  .socials {
+		position: absolute;
+		top: 89%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: block;
+		z-index: 70;
+	}
+
+  .socials li {
+		display: inline-block;
+		padding: 2vh;
+	}
+
+  .instagram {
+    position: absolute;
+    top: 89%;
+    left: 50%;
+    transform: translate(calc(-50% - 6vw),-50%);
+    max-width: 4vh;
+    height: auto;
+  }
+
+  .behance {
+		position: absolute;
+		top: 89%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		max-width: 4.3vh;
+		height: auto;
+	}
+
+  .vimeo {
+    position: absolute;
+    top: 89%;
+    left: 50%;
+    transform: translate(calc(-50% + 6vw),-50%);
+    max-width: 4vh;
+    height: auto;
+  }
+
+  #credit_screen {
+    margin: 0;
+    text-align: center;
+    font-family: "Gotham Medium";
+		color: #121117;
+		font-size: 1.75vh;
+    position:absolute;
+    top:50%;
+    left:20%;
+    transform: translate(-50%,-50%);
+    z-index: 70;
+  }
+
+  #credit_mobile {
+    display: none;
+  }
+
+  #read_me {
+    margin: 0;
+    font-family: "Gotham Medium";
+		color: #ffffbf;
+		font-size: 1.75vh;
+		padding: 1.2vh;
+    border: 0.2vh solid #121117;
+		border-radius: 2vh;
+    position:absolute;
+    top:50%;
+    left:80%;
+    transform: translate(-50%,-50%);
+    z-index: 70;
+  }
+
+  #read_me:hover {
+    color: #121117;
+  }
+
+	#read_me_mobile {
+		display: none;
+	}
+
+	#pic_me img{
+		max-width: 20vw;
+		height: auto;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+  }
+
+  .section img{
+		max-width: 20vw;
+		height: auto;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+  }
+
+  #location {
+		text-align: center;
+		font-family: "Gotham Medium";
+		color: #ffffbf;
+		font-size: 2.7vh;
+		text-decoration: none;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+  }
+
+  #location:hover {
+		animation: lampeggio 1s infinite alternate;
+  }
+
+	#swipe_up {
+		display: none;
+	}
+}
+
+/* end css for computer */
+
+/* css for mobile */
+
+@media only screen and (max-width: 1125px)  {
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    font-family: "Gotham Medium";
+    font-size: 2.5vh;
+    position:absolute;
+    top:13.5%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index: 70;
+  }
+
+  .list li {
+    display: inline-block;
+  }
+
+  .list_me, .list_photos, .list_videos {
+    color: #121117;
+    text-decoration: none;
+    padding: 1vh;
+    padding-top: 1.2vh;
+    padding-bottom: 1.2vh;
+  }
+
+  .list_me {
+    position:absolute;
+    top:13.5%;
+    left:50%;
+    transform: translate(calc(-50% - 20vw),-50%);
+  }
+
+  .list_photos {
+    position:absolute;
+    top:13.5%;
+    left:50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .list_videos {
+    position:absolute;
+    top:13.5%;
+    left:50%;
+    transform: translate(calc(-50% + 20vw),-50%);
+  }
+
+	#selected {
+    border: 0.2vh solid #121117;
+    border-radius: 2.5vh;
+  }
+
+  .socials {
+		position: absolute;
+		top: 89%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		margin: 0;
+		padding: 0;
+		display: block;
+		z-index: 70;
+  }
+
+  .socials li {
+		display: inline-block;
+		padding: 2vh;
+  }
+
+  .instagram {
+    position: absolute;
+    top: 89%;
+    left: 50%;
+    transform: translate(calc(-50% - 25vw),-50%);
+    max-width: 4vh;
+    height: auto;
+  }
+
+  .behance {
+		position: absolute;
+		top: 89%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		max-width: 4.3vh;
+		height: auto;
+  }
+
+  .vimeo {
+    position: absolute;
+    top: 89%;
+    left: 50%;
+    transform: translate(calc(-50% + 25vw),-50%);
+    max-width: 4vh;
+    height: auto;
+  }
+
+  #credit_screen {
+    display: none;
+  }
+
+  #credit_mobile {
+    margin: 0;
+    text-align: center;
+    font-family: "Gotham Medium";
+		color: #121117;
+		font-size: 1.75vh;
+    position:absolute;
+    top:50%;
+    left:10%;
+    transform: translate(-50%,-50%) rotate(-90deg);
+    z-index: 70;
+  }
+
+  #read_me {
+    display: none;
+  }
+
+	#read_me_mobile {
+		margin: 0;
+		padding: 0;
+		text-align: center;
+    font-family: "Gotham Medium";
+		color: #121117;
+		font-size: 1.75vh;
+    position:absolute;
+    top:160%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index: 70;
+	}
+
+	.box_me {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		background-color: #ffffbf;
+		transform: translate(-50%,-50%);
+		top: 160%;
+		left: 50%;
+	}
+
+	#pic_me img{
+		max-width: 62vw;
+		height: auto;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+  }
+
+  .section img{
+		max-width: 62vw;
+		height: auto;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+  }
+
+  #location {
+		text-align: center;
+		font-family: "Gotham Medium";
+		color: #ffffbf;
+		font-size: 2.5vh;
+		text-decoration: none;
+		position:absolute;
+		top:50%;
+		left:50%;
+		transform: translate(-50%,-50%);
+		animation: lampeggio 1s infinite alternate;
+  }
+
+	#swipe_up img{
+		width: 5vw;
+		height: auto;
+		position: absolute;
+		top: 96%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+	}
+}
+
+/* end css for mobile */
+
+@keyframes lampeggio {
+  0%   { opacity: 1; }
+  20%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+body{
+  background-color: #ffffbf;
+  margin: 0;
+  padding: 0;
+}
+
+.hovered {
+  max-width: 4.5vh;
+  transition: 0.25s;
+}
+
+.unhovered {
+  max-width: 4vh;
+  transition: 0.25s;
+}
+
+.hovered01 {
+  max-width: 4.8vh;
+  transition: 0.25s;
+}
+
+.unhovered01 {
+  max-width: 4.3vh;
+  transition: 0.25s;
+}
+
+.hidden {
+  visibility: hidden;
+}

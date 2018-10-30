@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<title> it's me </title>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<link rel="shortcut icon" href="yellow.png">
+		<script>document.documentElement.className = 'js';</script>
+	</head>
+	<body class="demo-5">
+		<main class="site-wrapper">
+			<div class="content">
+				<div class="slide-wrapper">
+					<div class="slide-item">
+						<img src="img/pic1.jpg" class="slide-item__image">
+					</div>
+				</div>
+			</div>
+		</main>
+		<script src="js/jquery-3.3.1.js"></script>
+		<script src="js/demo.js"></script>
+		<script src="js/pixi.min.js"></script>
+		<script src="js/TweenMax.min.js"></script>
+		<script src="js/main5.js"></script>
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script>
+
+			var spriteImages = document.querySelectorAll( '.slide-item__image' );
+			var spriteImagesSrc = [];
+			var texts = [];
+
+			for ( var i = 0; i < spriteImages.length; i++ ) {
+				var img = spriteImages[i];
+				// Set the texts you want to display to each slide
+				// in a sibling element of your image and edit accordingly
+				if ( img.nextElementSibling ) {
+					texts.push(img.nextElementSibling.innerHTML);
+				} else {
+					texts.push('');
+				}
+				spriteImagesSrc.push( img.getAttribute('src' ) );
+			}
+
+			var initCanvasSlideshow = new CanvasSlideshow({
+				sprites: spriteImagesSrc,
+				displacementImage: 'img/dmaps/2048x2048/clouds.jpg',
+				autoPlay: true,
+				autoPlaySpeed: [4, 3],
+				displaceScale: [5000, 10000],
+				interactive: true,
+				interactionEvent: 'click', // 'click', 'hover', 'both'
+				displaceAutoFit: false,
+				dispatchPointerOver: true // restarts pointerover event after click
+			});
+		</script>
+
+		<a id="welcome" href="pages/me.html">
+		  welcome
+		</a>
+
+		<p id="my_story">
+			i'm Matteo, 20, the third of four brothers <br>
+			yeah, i know what you are thinking <br>
+			i grew fighting for the love of my mommy <br>
+			these kind of things strengthen your character
+		</p>
+
+		<div class="box_me"></div>
+
+		<div id="swipe_up">
+			<img src="img/swipe_up.gif" alt="Mia Immagine">
+		</div>
+		
+	</body>
+</html>
