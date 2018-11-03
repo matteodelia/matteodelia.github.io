@@ -197,7 +197,7 @@
 	}
 
 	#pic_me img{
-		max-width: 25vw;
+		width: 25vw;
 		height: auto;
 		position:absolute;
 		top:50%;
@@ -206,7 +206,7 @@
   }
 
   .section img{
-		max-width: 25vw;
+		width: 25vw;
 		height: auto;
 		position:absolute;
 		top:50%;
