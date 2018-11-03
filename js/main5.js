@@ -83,7 +83,7 @@
         // Fit renderer to the screen
         if (screen.width > 1125) {
           renderer.view.style.objectFit = 'cover';
-          renderer.view.style.height  = '20vw';
+          renderer.view.style.height  = '25vw';
           renderer.view.style.top       = '50%';
           renderer.view.style.left      = '50%';
           renderer.view.style.webkitTransform = 'translate( -50%, -50% ) rotate(90deg)';
