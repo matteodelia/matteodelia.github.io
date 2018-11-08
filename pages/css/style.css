@@ -88,7 +88,7 @@
     font-family: "Gotham Medium";
     font-size: 2.7vh;
     position:absolute;
-    top:9%;
+    top:7.5%;
     left:50%;
     transform: translate(-50%,-50%);
     z-index: 70;
@@ -114,7 +114,7 @@
 
   .socials {
 		position: absolute;
-		top: 89%;
+		top: 91.5%;
 		left: 50%;
 		transform: translate(-50%,-50%);
 		list-style: none;
@@ -131,7 +131,7 @@
 
   .instagram {
     position: absolute;
-    top: 89%;
+    top: 91.5%;
     left: 50%;
     transform: translate(calc(-50% - 6vw),-50%);
     max-width: 4vh;
@@ -140,7 +140,7 @@
 
   .behance {
 		position: absolute;
-		top: 89%;
+		top: 91.5%;
 		left: 50%;
 		transform: translate(-50%,-50%);
 		max-width: 4.3vh;
@@ -149,7 +149,7 @@
 
   .vimeo {
     position: absolute;
-    top: 89%;
+    top: 91.5%;
     left: 50%;
     transform: translate(calc(-50% + 6vw),-50%);
     max-width: 4vh;
@@ -197,7 +197,7 @@
 	}
 
 	#pic_me img{
-		width: 25vw;
+		width: 22vw;
 		height: auto;
 		position:absolute;
 		top:50%;
@@ -206,7 +206,7 @@
   }
 
   .section img{
-		width: 25vw;
+		width: 22vw;
 		height: auto;
 		position:absolute;
 		top:50%;
