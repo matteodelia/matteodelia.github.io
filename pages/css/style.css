@@ -434,6 +434,11 @@ body{
   background-color: #ffffbf;
   margin: 0;
   padding: 0;
+	-ms-user-select: none; /* IE 10+ */
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .hovered {
