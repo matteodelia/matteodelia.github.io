@@ -262,6 +262,7 @@
   .list_me, .list_photos, .list_videos {
     color: #121117;
     text-decoration: none;
+    margin: 1.2vh;
     padding: 1vh;
     padding-top: 1.2vh;
     padding-bottom: 1.2vh;
