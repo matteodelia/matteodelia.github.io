@@ -259,6 +259,8 @@
   }
 
   .list_me, .list_photos, .list_videos {
+    position:absolute;
+    top:13%;
     color: #121117;
     text-decoration: none;
     padding: 1vh;
