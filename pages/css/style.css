@@ -266,11 +266,6 @@
     padding-bottom: 1.2vh;
   }
 
-  .list_photos {
-    margin-left: 0.1vw;
-    margin-right: 0.1vw;
-  }
-
 	#selected {
     border: 0.2vh solid #121117;
     border-radius: 2.5vh;
