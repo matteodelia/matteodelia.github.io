@@ -245,7 +245,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    display: block;
+    display: inline-block;
     font-family: "Gotham Medium";
     font-size: 2.5vh;
     position:absolute;
