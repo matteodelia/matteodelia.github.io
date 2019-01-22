@@ -267,25 +267,9 @@
     padding-bottom: 1.2vh;
   }
 
-  .list_me {
-    position:absolute;
-    top:13%;
-    left:50%;
-    transform: translate(calc(-50% - 20vw),-50%);
-  }
-
   .list_photos {
-    position:absolute;
-    top:13%;
-    left:50%;
-    transform: translate(-50%,-50%);
-  }
-
-  .list_videos {
-    position:absolute;
-    top:13%;
-    left:50%;
-    transform: translate(calc(-50% + 20vw),-50%);
+    margin-left: 5vw;
+    margin-right: 5vw;
   }
 
 	#selected {
