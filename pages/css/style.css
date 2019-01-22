@@ -259,8 +259,6 @@
   }
 
   .list_me, .list_photos, .list_videos {
-    position:absolute;
-    top:13%;
     color: #121117;
     text-decoration: none;
     padding: 1vh;
@@ -268,6 +266,27 @@
     padding-bottom: 1.2vh;
   }
 
+	.list_me {
+    position:absolute;
+    top:13%;
+    left:50%;
+    transform: translate(calc(-50% - 20vw),-50%);
+  }
+
+  .list_photos {
+    position:absolute;
+    top:13%;
+    left:50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .list_videos {
+    position:absolute;
+    top:13%;
+    left:50%;
+    transform: translate(calc(-50% + 20vw),-50%);
+  }
+	
 	#selected {
     border: 0.2vh solid #121117;
     border-radius: 2.5vh;
