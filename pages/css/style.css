@@ -277,7 +277,7 @@
     position:absolute;
     top:13%;
     left:50%;
-    transform: translate(calc(-50% - 7vw),-50%);
+    transform: translate(calc(-50% - 3vw),-50%);
   }
 
   .list_videos {
