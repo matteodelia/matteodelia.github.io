@@ -258,7 +258,7 @@
     display: inline-block;
   }
 
-  .list_me, .list_photos, .list_videos {
+  .list_photos, .list_me, .list_videos {
     color: #121117;
     text-decoration: none;
     padding: 1vh;
@@ -266,18 +266,18 @@
     padding-bottom: 1.2vh;
   }
 
-	.list_me {
+  .list_photos {
     position:absolute;
     top:13%;
     left:50%;
     transform: translate(calc(-50% - 20vw),-50%);
   }
 
-  .list_photos {
+	.list_me {
     position:absolute;
     top:13%;
     left:50%;
-    transform: translate(calc(-50% - 2vw),-50%);
+    transform: translate(-50%,-50%);
   }
 
   .list_videos {
