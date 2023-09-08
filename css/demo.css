@@ -1,0 +1,861 @@
+@font-face {
+  font-family: "CoFoPeshka 0 Thin";
+  src: url("fonts/CoFoPeshkaV0.3-0-Thin.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "CoFoPeshka 160 Medium";
+  src: url("fonts/CoFoPeshkaV0.3-160-Medium.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "CoFoPeshka 380 Regular";
+  src: url("fonts/CoFoPeshkaV0.3-380-Regular.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "SuisseIntlMono Regular";
+  src: url("fonts/SuisseIntlMono-Regular.otf")format("opentype");
+}
+
+/* CSS FOR COMPUTER */
+@media only screen and (min-width: 1125px) {
+  body {
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    cursor: none;
+    background-color: black;
+  }
+
+  .player {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-top: 3.5px solid transparent;
+    border-left: 7px solid #fff;
+    border-bottom: 3.5px solid transparent;
+    z-index: 1000;
+  }
+
+  .circle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: solid 1px #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: all 100ms ease-out;
+    z-index: 1000;
+  }
+
+  /* BUFFER */
+  .buffering {
+    height: 120vh;
+    width: 120vw;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    z-index: 1000;
+  }
+
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "SuisseIntlMono Regular";
+    font-size: 1.5vh;
+    text-align: center;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  dt {
+    font-weight: 700
+  }
+
+  dd {
+    margin: 0
+  }
+
+  .splitting .words .word {
+    white-space: nowrap
+  }
+
+  .splitting .word, .splitting .char {
+    display: inline-block
+  }
+
+  .splitting .char {
+    position: relative
+  }
+
+  .splitting .char:before, .splitting .char:after {
+    content: attr(data-char);
+    visibility: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: inherit;
+    position: absolute;
+    top: 0;
+    left: 0
+  }
+
+  .splitting {
+    --word-center: calc((var(--word-total) - 1)/2);
+    --char-center: calc((var(--char-total) - 1)/2);
+    --line-center: calc((var(--line-total) - 1)/2)
+  }
+
+  .splitting .word {
+    --word-percent: calc(var(--word-index)/var(--word-total));
+    --line-percent: calc(var(--line-index)/var(--line-total))
+  }
+
+  .splitting .char {
+    --char-percent: calc(var(--char-index)/var(--char-total));
+    --char-offset: calc(var(--char-index) - var(--char-center));
+    --distance: calc((var(--char-offset)*var(--char-offset))/var(--char-center));
+    --distance-sine: calc(var(--char-offset)/var(--char-center));
+    --distance-percent: calc((var(--distance)/var(--char-center)))
+  }
+
+  .splitting.cells img {
+    width: 100%;
+    display: block
+  }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    transform: translate(-50%, 0%);
+    width: 100vw;
+    height: 9vh;
+    top: 0%;
+    left: 50%;
+    z-index: 99;
+    background-color: transparent;
+  }
+
+  .header_title {
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 4.5vh;
+    left: 2.5vw;
+    margin: 0;
+    padding: 0;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 5vh;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .selection_line_base {
+    position: absolute;
+    top: 9vh;
+    left: 2.5vw;
+    border: 0.5px solid white;
+    z-index: 101;
+    width: 95vw;
+    opacity: 0.15;
+    overflow: hidden;
+  }
+
+  .selection_line {
+    width: 5vw;
+    height: 1px;
+    background-color: white;
+    position: absolute;
+    top: 100%;
+    left: 41.5vw;
+    transition: all 350ms ease-out;
+    z-index: 101;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header ul {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 4.5vh;
+    left: 50vw;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header li {
+    float: left;
+  }
+
+  .music {
+    display: block;
+    width: 5vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-right: 0.5vw;
+    opacity: 1;
+  }
+
+  .adv {
+    display: block;
+    width: 5vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+    opacity: 0.3;
+  }
+
+  .personal {
+    display: block;
+    width: 5vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 0.5vw;
+    opacity: 0.3;
+  }
+
+  .header li a p {
+    position: relative;
+    top: 50%;
+    transform: translate(0%, -50%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* CONTACTS */
+  .instagram_container {
+    width: 6vw;
+    height: 2.2vh;
+    position: absolute;
+    top: 4.5vh;
+    right: 2.5vw;
+    margin: 0;
+    padding: 0;
+    transform: translate(0, -50%);
+  }
+
+  .mail_hover {
+    height: 100%;
+    width: 2.5vh;
+    position: absolute;
+    left: 0;
+    display: none;
+  }
+
+  .vimeo_hover {
+    height: 100%;
+    width: 2.2vh;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: none;
+  }
+
+  .instagram {
+    height: 100%;
+    position: absolute;
+    right: 0%;
+    -webkit-filter: invert(1);
+    filter: invert(1);
+    opacity: 0.5;
+    transition: all 250ms ease-out;
+  }
+
+  .contacts_container {
+    width: 6vw;
+    height: 2.4vh;
+    position: absolute;
+    top: 4.5vh;
+    right: 2.5vw;
+    margin: 0;
+    padding: 0;
+    transform: rotateY(90deg)translate(0, -50%);
+    transform-origin: right;
+    transition: all 500ms ease-out;
+  }
+
+  .vimeo {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    -webkit-filter: invert(1);
+    filter: invert(1);
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .mail {
+    height: 100%;
+    position: absolute;
+    left: 0%;
+    -webkit-filter: invert(1);
+    filter: invert(1);
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  /* PAGE */
+  #page {
+    position: fixed;
+    top: 50vh;
+    right: 2.5vw;
+    transform: translate(-100%, -50%);
+    width: 1.5vh;
+    height: 7vh;
+    z-index: 100;
+  }
+
+  #current_page {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #fraction_page {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 1vw;
+    height: 0;
+    border: 0.5px solid #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #total_page {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  /* VIDEO */
+  #video_container {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    width: 110vw;
+    height: 110vh;
+    overflow: hidden;
+  }
+
+  .video {
+    position: absolute;
+    width: 100vw;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transition: opacity 500ms ease-out;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* SECTIONS */
+  .section {
+    opacity: 0;
+    transition: all 100ms ease-out;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  div[data-section-name="section1"] .text {
+    position: absolute;
+    top: 0;
+  }
+
+  .text {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
+  .title {
+    position: absolute;
+    transform: translate(0%, -100%);
+    top: 49%;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subtitle {
+    position: absolute;
+    top: 51%;
+    left: 2vw;
+    font-family: "CoFoPeshka 0 Thin";
+    font-size: 25vh;
+    line-height: 20vh;
+    color: #fff;
+    opacity: 0.25;
+    margin: 0;
+    padding: 0;
+  }
+
+  .description {
+    position: absolute;
+    bottom: 7vh;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .role {
+    position: absolute;
+    bottom: 5vh;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0.5;
+  }
+
+  .vimeo_link {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0;
+  }
+
+}
+
+/* CSS FOR PHONE */
+@media only screen and (max-width: 1125px) {
+  body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  /* BUFFER */
+  .buffering {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 1000;
+  }
+
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "SuisseIntlMono Regular";
+    font-size: 1.5vh;
+    text-align: center;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+
+  dt {
+    font-weight: 700
+  }
+
+  dd {
+    margin: 0
+  }
+
+  .splitting .words .word {
+    white-space: nowrap
+  }
+
+  .splitting .word, .splitting .char {
+    display: inline-block
+  }
+
+  .splitting .char {
+    position: relative
+  }
+
+  .splitting .char:before, .splitting .char:after {
+    content: attr(data-char);
+    visibility: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: inherit;
+    position: absolute;
+    top: 0;
+    left: 0
+  }
+
+  .splitting {
+    --word-center: calc((var(--word-total) - 1)/2);
+    --char-center: calc((var(--char-total) - 1)/2);
+    --line-center: calc((var(--line-total) - 1)/2)
+  }
+
+  .splitting .word {
+    --word-percent: calc(var(--word-index)/var(--word-total));
+    --line-percent: calc(var(--line-index)/var(--line-total))
+  }
+
+  .splitting .char {
+    --char-percent: calc(var(--char-index)/var(--char-total));
+    --char-offset: calc(var(--char-index) - var(--char-center));
+    --distance: calc((var(--char-offset)*var(--char-offset))/var(--char-center));
+    --distance-sine: calc(var(--char-offset)/var(--char-center));
+    --distance-percent: calc((var(--distance)/var(--char-center)))
+  }
+
+  .splitting.cells img {
+    width: 100%;
+    display: block
+  }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    transform: translate(-50%, 0%);
+    top: 0;
+    left: 50%;
+    width: 90vw;
+    height: 11vh;
+    z-index: 99;
+    background-color: transparent;
+  }
+
+  .header_title {
+    position: absolute;
+    transform: translate(0, -50%);
+    top: 5.5vh;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 5vh;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .header_line {
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 9vh;
+    left: 0;
+    width: 90vw;
+    height: 1px;
+    background-color: #fff;
+  }
+
+  .header ul {
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 12vh;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .header ul li a {
+    text-decoration: none;
+  }
+
+  .music {
+    opacity: 1;
+  }
+
+  .adv {
+    opacity: 0.5;
+  }
+
+  .personal {
+    opacity: 0.5;
+  }
+
+  .contacts {
+    opacity: 0.5;
+  }
+
+  .header ul li a p {
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.6vh;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* CONTACTS */
+  .instagram_container {
+    width: 12vh;
+    height: 2.2vh;
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 5.5vh;
+    right: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mail_hover {
+    height: 100%;
+    width: 2.3vh;
+    position: absolute;
+    left: 0;
+  }
+
+  .vimeo_hover {
+    height: 100%;
+    width: 2.2vh;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .instagram {
+    height: 100%;
+    position: absolute;
+    right: 0%;
+    -webkit-filter: invert(1);
+    filter: invert(1);
+  }
+
+  .contacts_container {
+    width: 12vh;
+    height: 2.2vh;
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 5.5vh;
+    right: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .vimeo {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    -webkit-filter: invert(1);
+    filter: invert(1);
+  }
+
+  .mail {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    -webkit-filter: invert(1);
+    filter: invert(1);
+  }
+
+  /* PAGE */
+  #page {
+    position: fixed;
+    transform: translate(0, -100%);
+    top: 95vh;
+    right: 5vw;
+    width: 1.5vh;
+    height: 5vh;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  #current_page {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #fraction_page {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 0;
+    border: 1px solid #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #total_page {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  /* VIDEO */
+  #video_container {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .video {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    height: 100vh;
+    width: auto;
+    transition: opacity 500ms ease-out;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* SECTIONS */
+  .section {
+    opacity: 0;
+    transition: all 100ms ease-out;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  div[data-section-name="section1"] .text {
+    position: absolute;
+    top: 0;
+  }
+
+  .text {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .title {
+    position: absolute;
+    transform: translate(0%, -100%);
+    top: 50vh;
+    left: 5vw;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 4vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subtitle {
+    width: 85vw;
+    position: absolute;
+    top: 52vh;
+    left: 4.8vw;
+    font-family: "CoFoPeshka 0 Thin";
+    font-size: 13vh;
+    line-height: 10vh;
+    color: #fff;
+    opacity: 0.25;
+    margin: 0;
+    padding: 0;
+  }
+
+  .description {
+    position: absolute;
+    transform: translate(0, -100%);
+    top: 93vh;
+    left: 5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .role {
+    position: absolute;
+    transform: translate(0, -100%);
+    top: 95vh;
+    left: 5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0.5;
+  }
+
+  .vimeo_link {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+}
