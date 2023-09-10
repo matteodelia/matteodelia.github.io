@@ -705,7 +705,7 @@
   #page {
     position: fixed;
     transform: translate(0, -100%);
-    top: 95vh;
+    top: 95dvh;
     right: 5vw;
     width: 1.5vh;
     height: 5vh;
@@ -801,7 +801,7 @@
   .title {
     position: absolute;
     transform: translate(0%, -100%);
-    top: 50vh;
+    top: 50dvh;
     left: 5vw;
     font-family: "CoFoPeshka 160 Medium";
     font-size: 4vh;
@@ -813,7 +813,7 @@
   .subtitle {
     width: 85vw;
     position: absolute;
-    top: 52vh;
+    top: 52dvh;
     left: 4.8vw;
     font-family: "CoFoPeshka 0 Thin";
     font-size: 13vh;
@@ -827,7 +827,7 @@
   .description {
     position: absolute;
     transform: translate(0, -100%);
-    top: 93vh;
+    top: 93dvh;
     left: 5vw;
     font-family: "CoFoPeshka 380 Regular";
     font-size: 1.5vh;
@@ -840,7 +840,7 @@
   .role {
     position: absolute;
     transform: translate(0, -100%);
-    top: 95vh;
+    top: 95dvh;
     left: 5vw;
     font-family: "CoFoPeshka 380 Regular";
     font-size: 1.5vh;
