@@ -10,9 +10,11 @@ function load() {
   setTimeout(function() {
 	$(".buffering").animate({
         top: "-100vh"
-      }, 2000);
+      }, 800);
+  }, 8000);
+  setTimeout(function() {
     $.scrollify.enable();
-  }, 4500);
+  }, 8500);
 }
 
 function cursor() {
