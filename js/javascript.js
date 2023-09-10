@@ -8,11 +8,9 @@ $(document).ready(function() {
 
 function load() {
   setTimeout(function() {
-    setTimeout(function() {
-      $(".buffering").animate({
+	$(".buffering").animate({
         top: "-100vh"
       }, 800);
-    }, 1000);
     $.scrollify.enable();
   }, 4500);
 }
