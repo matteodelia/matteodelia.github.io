@@ -13,37 +13,6 @@ function load() {
         top: "-100vh"
       }, 800);
     }, 1000);
-    document.getElementById("V1").pause();
-    document.getElementById("V2").pause();
-    document.getElementById("V3").pause();
-    document.getElementById("V4").pause();
-    document.getElementById("V5").pause();
-    document.getElementById("V6").pause();
-    document.getElementById("V7").pause();
-    document.getElementById("V8").pause();
-    document.getElementById("V9").pause();
-    document.getElementById("V10").pause();
-    document.getElementById("V11").pause();
-    document.getElementById("V12").pause();
-    document.getElementById("V13").pause();
-    document.getElementById("V14").pause();
-    document.getElementById("V15").pause();
-    document.getElementById("V1").currentTime = 0;
-    document.getElementById("V2").currentTime = 0;
-    document.getElementById("V3").currentTime = 0;
-    document.getElementById("V4").currentTime = 0;
-    document.getElementById("V5").currentTime = 0;
-    document.getElementById("V6").currentTime = 0;
-    document.getElementById("V7").currentTime = 0;
-    document.getElementById("V8").currentTime = 0;
-    document.getElementById("V9").currentTime = 0;
-    document.getElementById("V10").currentTime = 0;
-    document.getElementById("V11").currentTime = 0;
-    document.getElementById("V12").currentTime = 0;
-    document.getElementById("V13").currentTime = 0;
-    document.getElementById("V14").currentTime = 0;
-    document.getElementById("V15").currentTime = 0;
-    document.getElementById("V1").play();
     $.scrollify.enable();
   }, 4500);
 }
