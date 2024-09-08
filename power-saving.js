@@ -64,3 +64,17 @@ export function detectFrameRate() {
     });
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  let span = document.querySelector('#powerSavingMode');
+  span.textContent = '';
+  if(self !== top && window.safari){
+    alert('The detection may not work as expected in <iframe> for Safari');
+  }
+  let requestIdleCallback = window.requestIdleCallback || queueMicrotask;
+  requestIdleCallback(()=>{
+    detectPowerSavingMode().then((result) => {
+      span.textContent = '' + result;
+    });
+  });
+});
