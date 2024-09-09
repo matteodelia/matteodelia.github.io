@@ -62,16 +62,14 @@ function detectPowerSavingMode() {
 function mobile_src() {
   var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
   if (width < 1125) {
-    document.addEventListener('DOMContentLoaded', () => {
     let requestIdleCallback = window.requestIdleCallback || queueMicrotask;
-      requestIdleCallback(()=>{
-        detectPowerSavingMode().then((result) => {
-          if (result == true) {
-            $(".box").css("background-color", "green");
-          } else {
-            $(".box").css("background-color", "red");
-          }
-        });
+    requestIdleCallback(() => {
+      detectPowerSavingMode().then((result) => {
+        if (result == true) {
+          $(".box").css("background-color", "green");
+        } else {
+          $(".box").css("background-color", "red");
+        }
       });
     });
   } else {
