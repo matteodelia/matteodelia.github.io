@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>it's me</title>
+	<meta name="description" content="Matteo Delia is a young director based in Milan">
+	<meta property="og:locale" content="it_IT">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="it's me">
+	<meta property="og:description" content="Matteo Delia is a young director based in Milan">
+	<meta property="og:image" content="https://matteodelia.com/yellow.png">
+	<link rel="shortcut icon" href="yellow.png">
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.scrollify.min.js"></script>
+	<script type="text/javascript" src="js/javascript.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$.scrollify({
+				section: ".section",
+				scrollbars: false,
+				updateHash: false,
+				before: function(index) {
+					var video = document.getElementById('video');
+					items = $('.section');
+					item = $($('.section').get(index));
+
+					items.removeClass('selected');
+					item.addClass('selected');
+
+					if (index === 0) {
+						document.getElementById("current_page").innerHTML =
+							"1";
+						document.getElementById("V1").style.opacity = "1";
+						if (document.getElementById("V1").tagName == "VIDEO") {
+							document.getElementById("V1").play();
+						} else {};
+						player.loadVideo(1065696659).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+					if (index === 1) {
+						document.getElementById("current_page").innerHTML =
+							"2";
+						document.getElementById("V1").style.opacity = "0";
+						document.getElementById("V2").style.opacity = "1";
+						if (document.getElementById("V2").tagName == "VIDEO") {
+							document.getElementById("V2").play();
+						} else {};
+						player.loadVideo(841863277).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+					if (index === 2) {
+						document.getElementById("current_page").innerHTML =
+							"3";
+						document.getElementById("V2").style.opacity = "0";
+						document.getElementById("V3").style.opacity = "1";
+						if (document.getElementById("V3").tagName == "VIDEO") {
+							document.getElementById("V3").play();
+						} else {};
+						player.loadVideo(918010384).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+					if (index === 3) {
+						document.getElementById("current_page").innerHTML =
+							"4";
+						document.getElementById("V3").style.opacity = "0";
+						document.getElementById("V4").style.opacity = "1";
+						if (document.getElementById("V4").tagName == "VIDEO") {
+							document.getElementById("V4").play();
+						} else {};
+						player.loadVideo(813644789).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+					if (index === 4) {
+						document.getElementById("current_page").innerHTML =
+							"5";
+						document.getElementById("V4").style.opacity = "0";
+						document.getElementById("V5").style.opacity = "1";
+						if (document.getElementById("V5").tagName == "VIDEO") {
+							document.getElementById("V5").play();
+						} else {};
+						player.loadVideo(873459501).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+					if (index === 5) {
+						document.getElementById("current_page").innerHTML =
+							"6";
+						document.getElementById("V5").style.opacity = "0";
+						if (document.getElementById("V6").tagName == "VIDEO") {
+							document.getElementById("V6").play();
+						} else {};
+						player.loadVideo(916233885).then(function(id) {
+							// the video successfully loaded
+						}).catch(function(error) {
+							switch (error.name) {
+								case 'TypeError':
+									// the id was not a number
+									break;
+
+								case 'PasswordError':
+									// the video is password-protected and the viewer needs to enter the
+									// password first
+									break;
+
+								case 'PrivacyError':
+									// the video is password-protected or private
+									break;
+
+								default:
+									// some other error occurred
+									break;
+							}
+						});
+						var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+            if (width < 1125) {
+              $(".exit_credits").css("display", "none");
+              $(".credits_background").css("display", "none");
+              $(".description").css("opacity", "1");
+              $(".role").css("opacity", "0");
+              $(".credits_background").css("opacity", "0");
+              $("#expand").css("display", "initial");
+              $(".credits_line").css("width", "1.5dvh");
+            }
+					}
+				},
+				after: function(index) {
+					if (index === 0) {
+						document.getElementById("V2").style.opacity = "1";
+						document.getElementById("V3").style.opacity = "1";
+						document.getElementById("V4").style.opacity = "1";
+						document.getElementById("V5").style.opacity = "1";
+						document.getElementById("V6").style.opacity = "1";
+						if (document.getElementById("V2").tagName == "VIDEO") {
+							document.getElementById("V2").pause();
+							document.getElementById("V2").currentTime = 0;
+						} else {};
+					}
+					if (document.getElementById("V1").tagName == "VIDEO") {
+						if (index === 1) {
+							document.getElementById("V1").pause();
+							document.getElementById("V1").currentTime = 0;
+							document.getElementById("V3").pause();
+							document.getElementById("V3").currentTime = 0;
+						}
+						if (index === 2) {
+							document.getElementById("V2").pause();
+							document.getElementById("V2").currentTime = 0;
+							document.getElementById("V4").pause();
+							document.getElementById("V4").currentTime = 0;
+						}
+						if (index === 3) {
+							document.getElementById("V3").pause();
+							document.getElementById("V3").currentTime = 0;
+							document.getElementById("V5").pause();
+							document.getElementById("V5").currentTime = 0;
+						}
+						if (index === 4) {
+							document.getElementById("V4").pause();
+							document.getElementById("V4").currentTime = 0;
+							document.getElementById("V6").pause();
+							document.getElementById("V6").currentTime = 0;
+						}
+						if (index === 5) {
+							document.getElementById("V5").pause();
+							document.getElementById("V5").currentTime = 0;
+						}
+					} else {};
+				},
+			});
+		});
+		$.scrollify.disable();
+	</script>
+</head>
+
+<body>
+	<div class="cursor">
+		<div class="player"></div>
+		<div class="circle"></div>
+	</div>
+
+	<div class="loader">
+		<video src="img/loader.webm" autoplay muted playsinline></video>
+	</div>
+
+	<div class="header">
+		<a class="header_title"> MATTEO DELIA </a>
+		<div class="selection_line_base"></div>
+		<div class="selection_line"></div>
+		<ul>
+			<li> <a class="music">
+					<p> MUSIC </p>
+				</a> </li>
+			<li> <a class="documentary">
+					<p> DOCUMENTARY </p>
+				</a> </li>
+			<li> <a class="adv">
+					<p> BRAND </p>
+				</a> </li>
+			<li> <a class="personal">
+					<p> PERSONAL </p>
+				</a> </li>
+		</ul>
+
+		<div class="contacts_container_image">
+			<img src="img/contacts/instagram.png" alt="Instagram" class="instagram">
+			<img src="img/contacts/vimeo.png" alt="Vimeo" class="vimeo">
+		</div>
+		<div class="contacts_container">
+			<a href="https://www.instagram.com/98matteodelia/" target="_blank" class="instagram_hover"></a>
+			<a href="https://vimeo.com/matteodelia" target="_blank" class="vimeo_hover"></a>
+			<a href="mailto:matteodelia1998@gmail.com" target="_blank">
+				<img src="img/contacts/mail.png" alt="Mail" class="mail">
+			</a>
+		</div>
+
+	</div>
+
+	<iframe src="https://player.vimeo.com/video/1065696659" width="50" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="vimeo_link"></iframe>
+
+	<script src="https://player.vimeo.com/api/player.js"></script>
+	<script>
+		const iframe = document.querySelector('iframe');
+		const player = new Vimeo.Player(iframe);
+
+		player.on('play', function() {
+			console.log('played the video!');
+		});
+
+		player.getVideoTitle().then(function(title) {
+			console.log('title:', title);
+		});
+	</script>
+
+	<div id="page">
+		<p id="current_page">1</p>
+		<div id="fraction_page"></div>
+		<p id="total_page">6</p>
+	</div>
+
+	<p id="expand">CLICK TO EXPAND</p>
+
+	<div id="video_container"></div>
+
+	<div id="scrollify_section">
+		<div class="section selected" data-section-name="section1">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Angelo Balaclava</p>
+				<p class="subtitle">Silent Bob</p>
+				<p class="description">Album Trailer</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop @jacopo_ambroggio<br>
+					executive producer @andreayu__<br>
+					producer @irenezaccarini<br>
+					assistant director @riccardosabbattini<br>
+					1ac @_emmamariano_<br>
+					gaffer @jacopolamperti<br>
+					bestboy @amna_shida<br>
+					elettrico @raffaelloparodi.mp4<br>
+					operatore steady @martinoilacqua<br>
+					stylist @emmabrusco<br>
+					mua @mariannamuaa<br>
+					addestratore cane @movie.dog<br>
+					editor @98matteodelia<br>
+					post production + vfx @marco_pericoo<br>
+					color grading @mattia.saggiomo<br>
+					sound design @agit.utlu<br>
+					starring @loganmonterobaez + @matildeconsoli + @martin_francisco_montero + @tommaso.vecce + @berlinerinmilan + @justemaa_ + @mattiacanepazzo + @gabbro_2002 + @federicocavallari_ + @alee.flv + @giacomofeher + @avoltebrillo + @liam_devecchi
+				</p>
+			</div>
+		</div>
+		<div class="section" data-section-name="section2">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Gara 7: Ultimo tiro</p>
+				<p class="subtitle">Johnny Marsiglia</p>
+				<p class="description">Music Film</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop @mirkosalcia<br>
+					executive producer @endrikalthi<br>
+					producer @francescareadiamond<br>
+					1ac @reliativo.mp4 + @giulio__rossi<br>
+					elettrico @davide__castagno<br>
+					camera car gaffer @jacopolamperti<br>
+					montaggio @98matteodelia<br>
+					color @sorbinilorenzo<br>
+					vfx @omtode<br>
+					starring @yu.humm + @de_la_cruz_kevin_prince_ + Norah De Leo
+				</p>
+			</div>
+		</div>
+		<div class="section" data-section-name="section3">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Chilometri</p>
+				<p class="subtitle">Q40</p>
+				<p class="description">Videoclip</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop @ale_luisi<br>
+					executive producer @endrikalthi<br>
+					producer @francescareadiamond<br>
+					1ac @zambo.mov<br>
+					elettrico @chri.manzio<br>
+					vfx @marco_pericoo<br>
+					fotografo @mattia_saba_<br>
+					grafiche @lorenzo_crippa_
+				</p>
+			</div>
+		</div>
+		<div class="section" data-section-name="section4">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Habitat Cielo</p>
+				<p class="subtitle">Silent Bob</p>
+				<p class="description">Album Teaser</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop + color @sorbinilorenzo<br>
+					fotografo @ynzloz<br>
+					direzione artistica @98matteodelia + @marco_pericoo
+				</p>
+				<div class="credits_line"></div>
+				<p class="credits">Credits</p>
+			</div>
+		</div>
+		<div class="section" data-section-name="section5">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Prime</p>
+				<p class="subtitle">Johnny Marsiglia</p>
+				<p class="description">Videoclip</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop @federico.lomba<br>
+					executive producer @endrikalthi<br>
+					producer @francescareadiamond<br>
+					1ac @davide__castagno<br>
+					montaggio @fede.summo<br>
+					colorist @federico.lomba<br>
+					attori - @antodiecidue + @byisasoz + @_wes_____ + @prince_obeng_ghanaboy + Liam Marley Obeng + @lattemiele_ + @andre_tafel
+				</p>
+			</div>
+		</div>
+		<div class="section" data-section-name="section6">
+			<div class="credits_background"></div>
+			<div class="text">
+				<p class="title">Giorno e Notte</p>
+				<p class="subtitle">Q40</p>
+				<p class="description">Videoclip</p>
+				<p class="role">
+					regia @98matteodelia<br>
+					dop @ale_luisi<br>
+					executive producer @endrikalthi<br>
+					producer @francescareadiamond<br>
+					1ac @doziomatt + @zambo.mov<br>
+					operatore mini dv @_dis.astrid<br>
+					montaggio @fede.summo<br>
+					fotografo @andre_tafel<br>
+					grafiche @lorenzo_crippa_
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="credits_line"></div>
+	<p class="credits">Credits</p>
+
+	<div class="hover_credits"></div>
+
+	<div class="exit_credits"></div>
+
+</body>
+
+</html>

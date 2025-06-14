@@ -1,0 +1,1021 @@
+@font-face {
+  font-family: "CoFoPeshka 0 Thin";
+  src: url("fonts/CoFoPeshkaV0.3-0-Thin.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "CoFoPeshka 160 Medium";
+  src: url("fonts/CoFoPeshkaV0.3-160-Medium.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "CoFoPeshka 380 Regular";
+  src: url("fonts/CoFoPeshkaV0.3-380-Regular.otf")format("opentype");
+}
+
+@font-face {
+  font-family: "SuisseIntlMono Regular";
+  src: url("fonts/SuisseIntlMono-Regular.otf")format("opentype");
+}
+
+@-moz-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+/* CSS FOR COMPUTER */
+@media only screen and (min-width: 1200px) {
+  body {
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    cursor: none;
+    background-color: black;
+  }
+
+  .player {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-top: 4px solid transparent;
+    border-left: 8px solid #fff;
+    border-bottom: 4px solid transparent;
+    z-index: 1000;
+  }
+
+  .circle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: solid 1px #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: all 100ms ease-out;
+    z-index: 1000;
+  }
+
+  /* BUFFER */
+  .loader {
+    height: 120vh;
+    width: 120vw;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    z-index: 1000;
+  }
+
+  .loader video {
+    height: 3vh;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+    z-index: 1001;
+  }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    transform: translate(-50%, 0%);
+    width: 100vw;
+    height: 9vh;
+    top: 0%;
+    left: 50%;
+    z-index: 99;
+    background-color: transparent;
+  }
+
+  .header_title {
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 4.5vh;
+    left: 2.5vw;
+    margin: 0;
+    padding: 0;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 5vh;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .selection_line_base {
+    position: absolute;
+    top: 9vh;
+    left: 2.5vw;
+    border: 0.5px solid white;
+    z-index: 101;
+    width: 95vw;
+    opacity: 0.15;
+    overflow: hidden;
+  }
+
+  .selection_line {
+    width: 6vw;
+    height: 1px;
+    background-color: white;
+    position: absolute;
+    top: 100%;
+    left: 36.5vw;
+    transition: all 350ms ease-out;
+    z-index: 101;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header ul {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 4.5vh;
+    left: 50vw;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header li {
+    float: left;
+  }
+
+  .music {
+    display: block;
+    width: 6vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-right: 0.5vw;
+    opacity: 1;
+  }
+
+  .documentary {
+    display: block;
+    width: 6vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+    opacity: 0.3;
+  }
+
+  .adv {
+    display: block;
+    width: 6vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+    opacity: 0.3;
+  }
+
+  .personal {
+    display: block;
+    width: 6vw;
+    height: 9vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 0.5vw;
+    opacity: 0.3;
+  }
+
+  .header li a p {
+    position: relative;
+    top: 50%;
+    transform: translate(0%, -50%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* CONTACTS */
+  .contacts_container {
+    width: 6vw;
+    height: 2.4vh;
+    position: absolute;
+    top: 4.5vh;
+    right: 2.5vw;
+    margin: 0;
+    padding: 0;
+    transform: translate(0, -50%);
+  }
+
+  .instagram_hover {
+    height: 100%;
+    width: 2.5vh;
+    position: absolute;
+    left: 0;
+    display: none;
+  }
+
+  .vimeo_hover {
+    height: 100%;
+    width: 2.2vh;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: none;
+  }
+
+  .mail {
+    height: 100%;
+    position: absolute;
+    right: 0%;
+    opacity: 0.5;
+    transition: all 250ms ease-out;
+  }
+
+  .contacts_container_image {
+    width: 6vw;
+    height: 2.2vh;
+    position: absolute;
+    top: 4.5vh;
+    right: 2.5vw;
+    margin: 0;
+    padding: 0;
+    transform: rotateY(90deg)translate(0, -50%);
+    transform-origin: right;
+    transition: all 650ms ease-out;
+  }
+
+  .vimeo {
+    height: 120%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -10%);
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .instagram {
+    height: 95%;
+    position: absolute;
+    left: 0%;
+    transform: translate(0, 2.5%);
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  /* VIMEO PLAYER */
+  .vimeo_link {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+
+  /* PAGE */
+  #page {
+    position: fixed;
+    top: 50vh;
+    right: 2.5vw;
+    transform: translate(0%, -50%);
+    width: 1.5vh;
+    height: 7vh;
+    z-index: 100;
+  }
+
+  #current_page {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #fraction_page {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 1vw;
+    height: 0;
+    border: 0.5px solid #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #total_page {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #expand {
+    position: fixed;
+    bottom: 5vh;
+    right: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 2s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  /* VIDEO */
+  #video_container {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #video_container video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transition: opacity 500ms ease-out;
+  }
+
+  #video_container img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transition: opacity 500ms ease-out;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* CREDITS */
+  .credits_background {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    width: 110vw;
+    height: 110vh;
+    overflow: hidden;
+    background-color: #000;
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .hover_credits {
+    position: fixed;
+    bottom: 5vh;
+    left: 2vw;
+    width: 6vw;
+    height: 8vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* SECTIONS */
+  .section {
+    opacity: 0;
+    transition: all 100ms ease-out;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  div[data-section-name="section1"] .text {
+    position: absolute;
+    top: 0;
+  }
+
+  .text {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
+  .title {
+    position: absolute;
+    transform: translate(0%, -100%);
+    top: 40%;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 5vh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subtitle {
+    position: absolute;
+    top: 42%;
+    left: 2vw;
+    font-family: "CoFoPeshka 0 Thin";
+    font-size: 25vh;
+    line-height: 20vh;
+    color: #fff;
+    opacity: 0.25;
+    margin: 0;
+    padding: 0;
+  }
+
+  .description {
+    position: fixed;
+    bottom: 7vh;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .role {
+    position: fixed;
+    bottom: 7vh;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .credits {
+    position: fixed;
+    bottom: 5vh;
+    left: 2.5vw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5vh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0.5;
+    transition: all 250ms ease-out;
+  }
+}
+
+/* CSS FOR PHONE */
+@media only screen and (max-width: 1200px) {
+  body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+  }
+
+  /* BUFFER */
+  .loader {
+    height: 100dvh;
+    width: 100dvw;
+    position: absolute;
+    top: 50dvh;
+    left: 50dvw;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    z-index: 1000;
+  }
+
+  .loader video {
+    height: 3dvh;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+    z-index: 1001;
+  }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    transform: translate(-50%, 0%);
+    top: 0;
+    left: 50dvw;
+    width: 90dvw;
+    height: 14dvh;
+    z-index: 99;
+    background-color: transparent;
+  }
+
+  .header_title {
+    position: absolute;
+    transform: translate(0, -50%);
+    top: 5.5dvh;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 4.8dvh;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .selection_line_base {
+    position: absolute;
+    top: 9.5dvh;
+    border: 0.5px solid white;
+    z-index: 101;
+    width: 100%;
+    opacity: 0.15;
+    overflow: hidden;
+  }
+
+  .header ul {
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 9.5dvh;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .header ul li a {
+    text-decoration: none;
+  }
+
+  .music {
+    opacity: 1;
+  }
+
+  .music p {
+    border-top: 1px solid white;
+    margin-right: 2.5dvh;
+  }
+
+  .documentary {
+    opacity: 0.5;
+  }
+
+  .documentary p {
+    padding-left: 1dvh;
+    padding-right: 1dvh;
+    margin-left: 2.5dvh;
+    margin-right: 2.5dvh;
+    border-top: 1px solid rgba(250,250,250,0);
+  }
+
+  .adv {
+    opacity: 0.5;
+  }
+
+  .adv p {
+    padding-left: 1dvh;
+    padding-right: 1dvh;
+    margin-left: 2.5dvh;
+    margin-right: 2.5dvh;
+    border-top: 1px solid rgba(250,250,250,0);
+  }
+
+  .personal {
+    opacity: 0.5;
+  }
+
+  .personal p {
+    margin-left: 2.5dvh;
+    border-top: 1px solid rgba(250,250,250,0);
+  }
+
+  .header ul li a p {
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.6dvh;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 2.5dvh;
+    padding-bottom: 2.5dvh;
+  }
+
+  /* CONTACTS */
+  .contacts_container {
+    width: 14dvh;
+    height: 2.4dvh;
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 5.5dvh;
+    right: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .instagram_hover {
+    height: 100%;
+    width: 2.3dvh;
+    position: absolute;
+    left: 0;
+  }
+
+  .vimeo_hover {
+    height: 100%;
+    width: 2.2dvh;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .mail {
+    height: 100%;
+    position: absolute;
+    right: 0%;
+  }
+
+  .contacts_container_image {
+    width: 14dvh;
+    height: 2.2dvh;
+    position: absolute;
+    transform: translate(0%, -50%);
+    top: 5.5dvh;
+    right: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .vimeo {
+    height: 120%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -10%);
+  }
+
+  .instagram {
+    height: 95%;
+    position: absolute;
+    left: 0;
+    transform: translate(0, 2.5%);
+  }
+
+  /* VIMEO PLAYER */
+  .vimeo_link {
+    position: absolute;
+    top: 50dvh;
+    left: 50dvw;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+
+  /* PAGE */
+  #page {
+    position: fixed;
+    transform: translate(0, -100%);
+    top: 95dvh;
+    right: 5dvw;
+    width: 1.5dvh;
+    height: 5dvh;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  #current_page {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #fraction_page {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translate(0, -100%);
+    height: 0;
+    border: 0.5px solid #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #total_page {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0%);
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  #expand {
+    position: fixed;
+    transform: translate(-50%, -100%);
+    top: 95dvh;
+    left: 50dvw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 2s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  /* VIDEO */
+  #video_container {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50dvh;
+    left: 50dvw;
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .video {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transition: opacity 500ms ease-out;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* CREDITS */
+  .credits_background {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50dvh;
+    left: 50dvw;
+    width: 110dvw;
+    height: 110dvh;
+    overflow: hidden;
+    background-color: #000;
+    opacity: 0;
+    transition: all 250ms ease-out;
+    display: none;
+  }
+
+  .exit_credits {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50dvh;
+    left: 50dvw;
+    width: 110dvw;
+    height: 110dvh;
+    overflow: hidden;
+    display: none;
+  }
+
+  .hover_credits {
+    position: fixed;
+    bottom: 4dvh;
+    left: 5dvw;
+    width: 13dvw;
+    height: 4dvh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* SECTIONS */
+  .section {
+    opacity: 0;
+    transition: all 100ms ease-out;
+  }
+
+  .selected {
+    opacity: 1;
+  }
+
+  div[data-section-name="section1"] .text {
+    position: absolute;
+    top: 0;
+  }
+
+  .text {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .title {
+    position: absolute;
+    transform: translate(0%, -100%);
+    top: 40dvh;
+    left: 5dvw;
+    font-family: "CoFoPeshka 160 Medium";
+    font-size: 4dvh;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .subtitle {
+    width: 85dvw;
+    position: absolute;
+    top: 42dvh;
+    left: 4.8dvw;
+    font-family: "CoFoPeshka 0 Thin";
+    font-size: 13dvh;
+    line-height: 10dvh;
+    color: #fff;
+    opacity: 0.25;
+    margin: 0;
+    padding: 0;
+  }
+
+  .description {
+    position: fixed;
+    bottom: 8.5dvh;
+    left: 5dvw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    transition: all 250ms ease-out;
+  }
+
+  .role {
+    position: fixed;
+    bottom: 8.5dvh;
+    left: 5dvw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    width: 80dvw;
+    transition: all 250ms ease-out;
+  }
+
+  .credits_line {
+    position: fixed;
+    transform: translate(0, -100%);
+    top: 92.5dvh;
+    left: 5dvw;
+    height: 0;
+    width: 1.5dvh;
+    border: 0.5px solid #fff;
+    margin: 0;
+    padding: 0;
+    transition: all 500ms ease-out;
+  }
+
+  .credits {
+    position: fixed;
+    transform: translate(0, -100%);
+    top: 95dvh;
+    left: 5dvw;
+    font-family: "CoFoPeshka 380 Regular";
+    font-size: 1.5dvh;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    opacity: 0.5;
+    transition: all 250ms cubic-bezier(.35,.71,.61,.23);
+  }
+}
+
+@media only screen and (max-width: 1200px) and (orientation: portrait) {
+  #video_container img {
+    height: 100dvh;
+    width: auto;
+  }
+
+  #V1 {
+    position: absolute;
+    left: 50%;
+  }
+
+  #V2 {
+    position: absolute;
+    left: 80%;
+  }
+
+  #V3 {
+    position: absolute;
+    left: 70%;
+  }
+
+  #V5 {
+    position: absolute;
+    left: 10%;
+  }
+
+  #V9 {
+    transform: translate(0%, -50%);
+    left: 0%;
+  }
+
+  #V14 {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  #V15 {
+    transform: translate(-100%, -50%);
+    left: 165%;
+  }
+}
+
+@media only screen and (max-width: 1200px) and (orientation: landscape) {
+  #video_container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
