@@ -1061,13 +1061,13 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @davide__castagno<br>
+		  direzione artistica @studiomare.co<br>
           1ac @zambo.mov<br>
           styling @ericjmcneal<br>
           starring Abdoulaye Ka and @takashiyamada0926<br>
           location @anticamera_location<br>
           casting @riccardomln<br>
-          grooming @medusa____makeup<br>
-          direzione artistica @studiomare.co
+          grooming @medusa____makeup
         </p>
       </div>
     </div>
@@ -1103,13 +1103,13 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @_ncl_dgn_<br>
-          producer @olgaborr<br>
+		  direzione artistica @studiomare.co<br>
           styling @carmenmeridag<br>
           grooming @danielamagginetti<br>
           starring @leo.cremer<br>
           sound design @paolotocci<br>
           color grading @ikohchung<br>
-          direzione artistica @studiomare.co
+		  produzione @squaloproduzioni @sevensix.co
         </p>
 			</div>
 		</div>
@@ -1135,12 +1135,12 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @jacopo_ambroggio<br>
+		  direzione artistica @studiomare.co<br>
           set design @danidevito_studio<br>
           styling @mmariammorato<br>
           color grading @lucamoro_<br>
-          production @teruteru_prod<br>
-          location @anticamera_location<br>
-          direzione artistica @studiomare.co
+          produzione @teruteru_prod<br>
+          location @anticamera_location
         </p>
 			</div>
 		</div>
