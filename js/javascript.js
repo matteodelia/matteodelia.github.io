@@ -1061,7 +1061,7 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @davide__castagno<br>
-		  direzione artistica @studiomare.co<br>
+		  creative direction @studiomare.co<br>
           1ac @zambo.mov<br>
           styling @ericjmcneal<br>
           starring Abdoulaye Ka and @takashiyamada0926<br>
@@ -1080,7 +1080,7 @@ function select_section() {
         <p class="role">
           regia @davide_vicari<br>
           dop @jon.charles<br>
-          direzione artistica @vincenzo__schioppa<br>
+          creative direction @vincenzo__schioppa<br>
           producer nss @_giadatinelli_ + @benedetta.urbini<br>
           producer NYC @alexeyg + @ryancfahey<br>
           1 ac @godfredceasarsedano + Connor Keep<br>
@@ -1103,13 +1103,13 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @_ncl_dgn_<br>
-		  direzione artistica @studiomare.co<br>
+		  creative direction @studiomare.co<br>
           styling @carmenmeridag<br>
           grooming @danielamagginetti<br>
           starring @leo.cremer<br>
           sound design @paolotocci<br>
           color grading @ikohchung<br>
-		  produzione @squaloproduzioni @sevensix.co
+		  production @squaloproduzioni @sevensix.co
         </p>
 			</div>
 		</div>
@@ -1122,7 +1122,7 @@ function select_section() {
         <p class="role">
           regia @davide_vicari<br>
           montaggio @98matteodelia<br>
-          direzione artistica @vincenzo__schioppa
+          creative direction @vincenzo__schioppa
         </p>
 			</div>
 		</div>
@@ -1135,11 +1135,11 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           dop @jacopo_ambroggio<br>
-		  direzione artistica @studiomare.co<br>
+		  creative direction @studiomare.co<br>
           set design @danidevito_studio<br>
           styling @mmariammorato<br>
           color grading @lucamoro_<br>
-          produzione @teruteru_prod<br>
+          production @teruteru_prod<br>
           location @anticamera_location
         </p>
 			</div>
@@ -1153,7 +1153,7 @@ function select_section() {
         <p class="role">
           regia @98matteodelia<br>
           sound design @simone_giud<br>
-          direzione artistica @studiomare.co
+          creative direction @studiomare.co
         </p>
 			</div>
 		</div>
