@@ -227,6 +227,33 @@
   ],
   "brand": [
     {
+      "title": "Tales In Glass",
+      "subtitle": "Gallotti&Radice",
+      "description": "DC",
+      "role": [
+        "Client: Gallotti&Radice",
+        "Production House: @k448_studio",
+        "Director: Matteo Delia",
+        "DOP: @davide__castagno",
+        "Executive Producer: @alessandromanzi.xyz",
+        "Line Producer: Elisa Anastasino",
+        "Assistant Producer: @michelle_bennati",
+        "Art Director: @jacksca",
+        "1AC: @giulio__rossi",
+        "Stylist: @lucreziacuccagna",
+        "Set Designer: @vito_salamone",
+        "MUA: @ariannafabbro",
+        "Editor: @davidevitola",
+        "Colorist: @co.loverist",
+        "Cast: @byjessjess @xinyue_1045"
+      ],
+      "img": {
+        "video": "img/brand/gallottiradice.mp4",
+        "foto": "img/brand/gallottiradice.jpg"
+      },
+      "vimeo": 1230647295
+    },
+    {
       "title": "Lookbook '24",
       "subtitle": "Stòffa",
       "description": "Lookbook",
