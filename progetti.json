@@ -368,7 +368,8 @@
       "img": {
         "video": "img/brand/francia.mp4",
         "foto": "img/brand/francia.jpg",
-        "foto_ruota": 90
+        "foto_ruota": 90,
+        "foto_x": 65.6
       },
       "vimeo": 848419838
     }
