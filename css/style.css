@@ -89,7 +89,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity 500ms ease-in;
+    transition: opacity 0.2s ease;
     z-index: 1001;
   }
 
@@ -1014,4 +1014,3 @@
     object-fit: cover;
   }
 }
-
