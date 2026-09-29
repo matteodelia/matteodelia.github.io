@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Contenuti</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="Contenuti">
+	<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="apple-touch-icon" href="icona-180.png">
+	<link rel="icon" href="icona-180.png">
+	<link rel="stylesheet" href="editor.css">
+</head>
+
+<body>
+	<!-- ACCESSO: la chiave GitHub resta solo su questo dispositivo -->
+	<section id="accesso" hidden>
+		<div class="accesso-scheda">
+			<img src="icona-180.png" alt="" class="accesso-icona">
+			<h1>Contenuti di matteodelia.com</h1>
+			<p class="secondario">Per modificare il sito serve una chiave GitHub valida solo per il repository del sito. Si inserisce una volta per dispositivo.</p>
+			<form id="accesso-form">
+				<input id="accesso-chiave" type="password" placeholder="Incolla la chiave (github_pat_…)" autocomplete="off" spellcheck="false">
+				<button class="bottone primario" type="submit">Accedi</button>
+			</form>
+			<p id="accesso-errore" class="errore" hidden></p>
+			<details class="accesso-aiuto">
+				<summary>Come creo la chiave?</summary>
+				<ol>
+					<li>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → Fine-grained token</a>.</li>
+					<li>Nome: <em>Contenuti sito</em>. Scadenza: quella che preferisci.</li>
+					<li>Repository access: <em>Only select repositories</em> → <em>matteodelia/matteodelia.github.io</em>.</li>
+					<li>Permissions → Repository permissions → <em>Contents</em>: <em>Read and write</em>.</li>
+					<li>Genera la chiave, copiala e incollala qui sopra.</li>
+				</ol>
+			</details>
+		</div>
+	</section>
+
+	<!-- EDITOR -->
+	<div id="editor" hidden>
+		<header class="barra">
+			<div class="barra-titolo">
+				<h1>Contenuti</h1>
+				<span id="stato" class="stato"></span>
+			</div>
+			<div class="barra-azioni">
+				<button id="bottone-anteprima" class="bottone">Anteprima</button>
+				<button id="bottone-pubblica" class="bottone primario" disabled>Pubblica</button>
+				<button id="bottone-menu" class="bottone icona" aria-label="Altro">
+					<svg viewBox="0 0 20 20" width="18" height="18"><circle cx="4" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="16" cy="10" r="1.6"/></svg>
+				</button>
+				<div id="menu" class="menu" hidden>
+					<button data-azione="annulla-bozza">Annulla le modifiche non pubblicate</button>
+					<button data-azione="ricarica">Ricarica da GitHub</button>
+					<a href="https://matteodelia.com" target="_blank" rel="noopener">Apri matteodelia.com</a>
+					<hr>
+					<button data-azione="esci" class="pericolo">Scollega questo dispositivo</button>
+				</div>
+			</div>
+		</header>
+
+		<main class="contenuto">
+			<nav id="indice" class="indice"></nav>
+			<div id="categorie" class="categorie"></div>
+		</main>
+
+		<!-- PANNELLO DEL PROGETTO -->
+		<aside id="pannello" class="pannello" hidden>
+			<div class="pannello-testa">
+				<div>
+					<div id="pannello-categoria" class="secondario piccolo"></div>
+					<h2 id="pannello-titolo"></h2>
+				</div>
+				<button id="pannello-chiudi" class="bottone icona" aria-label="Chiudi">
+					<svg viewBox="0 0 20 20" width="16" height="16"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+				</button>
+			</div>
+			<div class="pannello-corpo">
+				<div class="media-grande">
+					<video id="campo-video-anteprima" muted loop playsinline autoplay></video>
+					<div id="campo-video-vuoto" class="media-vuoto">Nessun video</div>
+					<div class="media-azioni">
+						<label class="bottone vetro">Sostituisci video<input id="campo-video-file" type="file" accept="video/mp4" hidden></label>
+					</div>
+					<div id="campo-video-nome" class="media-nome"></div>
+				</div>
+
+				<div class="gruppo">
+					<label class="campo"><span>Title</span><input id="campo-title" type="text"></label>
+					<label class="campo"><span>Subtitle</span><input id="campo-subtitle" type="text"></label>
+					<label class="campo"><span>Description</span><input id="campo-description" type="text"></label>
+				</div>
+
+				<div class="gruppo">
+					<label class="campo verticale"><span>Role <em class="secondario">una riga per credito</em></span><textarea id="campo-role" rows="8" spellcheck="false"></textarea></label>
+				</div>
+
+				<div class="gruppo">
+					<label class="campo"><span>Film su Vimeo</span><input id="campo-vimeo" type="text" inputmode="url" placeholder="id o link del video" spellcheck="false"></label>
+					<div id="campo-vimeo-info" class="vimeo-info"></div>
+				</div>
+
+				<div class="gruppo foto">
+					<div class="foto-anteprima"><img id="campo-foto-anteprima" alt=""><div id="campo-foto-vuoto" class="media-vuoto">Nessuna foto</div></div>
+					<div class="foto-testo">
+						<div class="foto-titolo">Foto per telefono</div>
+						<div id="campo-foto-nome" class="secondario piccolo"></div>
+						<div class="foto-azioni">
+							<label class="bottone">Scegli foto…<input id="campo-foto-file" type="file" accept="image/jpeg,image/png,image/webp" hidden></label>
+							<button id="campo-foto-fotogramma" class="bottone">Usa il fotogramma del video</button>
+						</div>
+					</div>
+				</div>
+
+				<details class="gruppo avanzate">
+					<summary>Avanzate</summary>
+					<label class="campo verticale"><span>Centratura della foto su telefono <em class="secondario">css, facoltativo</em></span><input id="campo-foto-css" type="text" placeholder="es. position: absolute; left: 11%;" spellcheck="false"></label>
+				</details>
+
+				<button id="bottone-elimina" class="bottone pericolo largo">Elimina progetto</button>
+			</div>
+		</aside>
+	</div>
+
+	<!-- ANTEPRIMA -->
+	<div id="anteprima" class="anteprima" hidden>
+		<div class="anteprima-barra">
+			<div class="segmenti" role="tablist">
+				<button data-schermo="computer" class="attivo">Computer</button>
+				<button data-schermo="iphone">iPhone</button>
+			</div>
+			<div class="anteprima-azioni">
+				<button id="anteprima-ricarica" class="bottone">Ricarica</button>
+				<button id="anteprima-chiudi" class="bottone primario">Fine</button>
+			</div>
+		</div>
+		<div id="anteprima-scena" class="anteprima-scena">
+			<div id="anteprima-cornice" class="cornice computer"><iframe id="anteprima-frame" title="Anteprima del sito"></iframe></div>
+		</div>
+		<p class="anteprima-nota secondario piccolo">Anteprima della bozza. Video e foto appena caricati si vedono dopo la pubblicazione.</p>
+	</div>
+
+	<!-- DIALOGO -->
+	<div id="dialogo" class="dialogo-sfondo" hidden>
+		<div class="dialogo">
+			<h3 id="dialogo-titolo"></h3>
+			<div id="dialogo-testo" class="secondario"></div>
+			<div class="dialogo-azioni">
+				<button id="dialogo-annulla" class="bottone">Annulla</button>
+				<button id="dialogo-ok" class="bottone primario">OK</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="avviso" class="avviso" hidden></div>
+
+	<script src="editor.js"></script>
+</body>
+
+</html>

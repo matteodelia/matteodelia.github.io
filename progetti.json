@@ -1,0 +1,402 @@
+{
+  "music": [
+    {
+      "title": "Angelo Balaclava",
+      "subtitle": "Silent Bob",
+      "description": "Album Trailer",
+      "role": [
+        "regia @98matteodelia",
+        "dop @jacopo_ambroggio",
+        "executive producer @andreayu__",
+        "producer @irenezaccarini",
+        "assistant director @riccardosabbattini",
+        "1ac @_emmamariano_",
+        "gaffer @jacopolamperti",
+        "bestboy @amna_shida",
+        "elettrico @raffaelloparodi.mp4",
+        "operatore steady @martinoilacqua",
+        "stylist @emmabrusco",
+        "mua @mariannamuaa",
+        "addestratore cane @movie.dog",
+        "editor @98matteodelia",
+        "post production + vfx @marco_pericoo",
+        "color grading @mattia.saggiomo",
+        "sound design @agit.utlu",
+        "starring @loganmonterobaez + @matildeconsoli + @martin_francisco_montero + @tommaso.vecce + @berlinerinmilan + @justemaa_ + @mattiacanepazzo + @gabbro_2002 + @federicocavallari_ + @alee.flv + @giacomofeher + @avoltebrillo + @liam_devecchi"
+      ],
+      "img": {
+        "video": "img/music/balaclava.mp4",
+        "foto": "img/music/balaclava.jpg"
+      },
+      "vimeo": 1065696659
+    },
+    {
+      "title": "Come te lo spiego",
+      "subtitle": "Gotti",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia",
+        "dop @jacopo_ambroggio",
+        "1ac @zambo.mov",
+        "dronista @teodibiase_photography",
+        "color grading @mattia.saggiomo",
+        "graphic design @omtode"
+      ],
+      "img": {
+        "video": "img/music/cometelospiego.mp4",
+        "foto": "img/music/cometelospiego.jpg",
+        "foto_css": "position: absolute; left: 11%;"
+      },
+      "vimeo": 1170111154
+    },
+    {
+      "title": "Toda la noche",
+      "subtitle": "Lorenzza",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia @davide_vicari",
+        "dop @jacopo_ambroggio",
+        "porto seguro fixer @esdrasagnes",
+        "1ac @zambo.mov",
+        "color grading @davide.pini.color",
+        "graphic design @bianco.svg"
+      ],
+      "img": {
+        "video": "img/music/todalanoche.mp4",
+        "foto": "img/music/todalanoche.jpg"
+      },
+      "vimeo": 1168451560
+    },
+    {
+      "title": "Gara 7: Ultimo tiro",
+      "subtitle": "Johnny Marsiglia",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia",
+        "dop @mirkosalcia",
+        "executive producer @endrikalthi",
+        "producer @francescareadiamond",
+        "1ac @reliativo.mp4 + @giulio__rossi",
+        "elettrico @davide__castagno",
+        "camera car gaffer @jacopolamperti",
+        "montaggio @98matteodelia",
+        "color @sorbinilorenzo",
+        "vfx @omtode",
+        "starring @yu.humm + @de_la_cruz_kevin_prince_ + Norah De Leo"
+      ],
+      "img": {
+        "video": "img/music/gara7.mp4",
+        "foto": "img/music/gara7.jpg",
+        "foto_css": "position: absolute; left: 80%;"
+      },
+      "vimeo": 841863277
+    },
+    {
+      "title": "Crescere",
+      "subtitle": "Lorenzza",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia @davide_vicari",
+        "dop @jacopo_ambroggio",
+        "porto seguro fixer @esdrasagnes",
+        "1ac @zambo.mov",
+        "color grading @davide.pini.color",
+        "graphic design @bianco.svg"
+      ],
+      "img": {
+        "video": "img/music/crescere.mp4",
+        "foto": "img/music/crescere.jpg",
+        "foto_css": "position: absolute; left: 65%;"
+      },
+      "vimeo": 1168449099
+    },
+    {
+      "title": "Chilometri",
+      "subtitle": "Q40",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia",
+        "dop @ale_luisi",
+        "executive producer @endrikalthi",
+        "producer @francescareadiamond",
+        "1ac @zambo.mov",
+        "elettrico @chri.manzio",
+        "vfx @marco_pericoo",
+        "fotografo @mattia_saba_",
+        "grafiche @lorenzo_crippa_"
+      ],
+      "img": {
+        "video": "img/music/chilometri.mp4",
+        "foto": "img/music/chilometri.jpg"
+      },
+      "vimeo": 918010384
+    },
+    {
+      "title": "Habitat Cielo",
+      "subtitle": "Silent Bob",
+      "description": "Album Teaser",
+      "role": [
+        "regia @98matteodelia",
+        "dop + color @sorbinilorenzo",
+        "fotografo @ynzloz",
+        "direzione artistica @98matteodelia + @marco_pericoo"
+      ],
+      "img": {
+        "video": "img/music/habitatcielo.mp4",
+        "foto": "img/music/habitatcielo.jpg"
+      },
+      "vimeo": 813644789
+    },
+    {
+      "title": "Giorno e Notte",
+      "subtitle": "Q40",
+      "description": "Music Video",
+      "role": [
+        "regia @98matteodelia",
+        "dop @ale_luisi",
+        "executive producer @endrikalthi",
+        "producer @francescareadiamond",
+        "1ac @doziomatt + @zambo.mov",
+        "operatore mini dv @_dis.astrid",
+        "montaggio @fede.summo",
+        "fotografo @andre_tafel",
+        "grafiche @lorenzo_crippa_"
+      ],
+      "img": {
+        "video": "img/music/giornoenotte.mp4",
+        "foto": "img/music/giornoenotte.jpg"
+      },
+      "vimeo": 916233885
+    }
+  ],
+  "documentary": [
+    {
+      "title": "La Furia",
+      "subtitle": "Jake la Furia",
+      "description": "Documentary",
+      "role": [
+        "regia @98matteodelia",
+        "scritto da @_quagli + gabrielebaldassarre_",
+        "dop @federico.lomba",
+        "executive producer @endrikalthi",
+        "line producer @crecker_",
+        "elettrico @amna_shida",
+        "fonico @michele_negro_",
+        "fotografo @andrea_bianchera",
+        "mua @carlottacantonig",
+        "mua - emis killa @mariacarlini.mua",
+        "assistenza editoriale @gianlucamuto14",
+        "intervistatori @joshuaelie22 + @_quagli",
+        "grafiche @_lucarigon",
+        "mixer audio @michele_negro_",
+        "animazioni @marco_pericoo",
+        "starring @thereallafuria + @bigfish12 + @emiskilla + @therealdonjoe + @teoberlin"
+      ],
+      "img": {
+        "video": "img/documentary/lafuria.mp4",
+        "foto": "img/documentary/lafuria.jpg"
+      },
+      "vimeo": 843876751
+    },
+    {
+      "title": "Io Non Ho Paura",
+      "subtitle": "Ernia",
+      "description": "Documentary",
+      "role": [
+        "regia @young_kuda",
+        "scritto da @_quagli + gabrielebaldassarre_",
+        "aiuto regia @98matteodelia",
+        "operatori @young_kuda + @samuelmersi + @_marc_lucas + @98matteodelia",
+        "mua @silviamancuso.mua + Giulia Fortunato",
+        "assistenza editoriale @gianlucamuto14 + @alessandroboila + @enricobrandoli",
+        "montaggio @98matteodelia + @samuelmersi + @young_kuda",
+        "montaggio intro @nikolajcorradinov",
+        "grafiche @_lucarigon + @gianfrancosposato",
+        "artwork @_lucarigon",
+        "fotografo @young_kuda",
+        "color @enry.v",
+        "starring @holyernia + @cirobuccolieri + @fed.cirillo + @prodbysixpm + @juniork + @rosariodross +",
+        "@startuffo + @josiahandthe + @therealgue + @mengonimarcoofficial + @rkomi + @gaiaofficial"
+      ],
+      "img": {
+        "video": "img/documentary/iononhopaura.mp4",
+        "foto": "img/documentary/iononhopaura.jpg"
+      },
+      "vimeo": 861264157
+    }
+  ],
+  "brand": [
+    {
+      "title": "Lookbook '24",
+      "subtitle": "Stòffa",
+      "description": "Lookbook",
+      "role": [
+        "regia @98matteodelia",
+        "dop @davide__castagno",
+        "1ac @zambo.mov",
+        "styling @ericjmcneal",
+        "starring Abdoulaye Ka and @takashiyamada0926",
+        "location @anticamera_location",
+        "casting @riccardomln",
+        "grooming @medusa____makeup",
+        "direzione artistica @studiomare.co"
+      ],
+      "img": {
+        "video": "img/brand/stoffa_lookbook.mp4",
+        "foto": "img/brand/stoffa_lookbook.jpg",
+        "foto_css": "transform: translate(0%, -50%); left: 0%;"
+      },
+      "vimeo": 1054679176
+    },
+    {
+      "title": "Venture Out Together",
+      "subtitle": "Timberland",
+      "description": "Commercial",
+      "role": [
+        "regia @davide_vicari",
+        "dop @jon.charles",
+        "direzione artistica @vincenzo__schioppa",
+        "producer nss @_giadatinelli_ + @benedetta.urbini",
+        "producer NYC @alexeyg + @ryancfahey",
+        "1 ac @godfredceasarsedano + Connor Keep",
+        "gaffer @joncois + @davidxdjaco",
+        "stylist @fabipoppy",
+        "mua @mariotti_marta",
+        "montaggio @98matteodelia",
+        "color grading @lorenzoameri",
+        "sound design @agit.utlu",
+        "laboratory @metpostny"
+      ],
+      "img": {
+        "video": "img/brand/timberland.mp4",
+        "foto": "img/brand/timberland.jpg"
+      },
+      "vimeo": 862051371
+    },
+    {
+      "title": "NN Renaissance FW25",
+      "subtitle": "Mango",
+      "description": "Lookbook",
+      "role": [
+        "regia @98matteodelia",
+        "dop @_ncl_dgn_",
+        "producer @olgaborr",
+        "styling @carmenmeridag",
+        "grooming @danielamagginetti",
+        "starring @leo.cremer",
+        "sound design @paolotocci",
+        "color grading @ikohchung",
+        "direzione artistica @studiomare.co"
+      ],
+      "img": {
+        "video": "img/brand/mango_man.mp4",
+        "foto": "img/brand/mango_man.jpg"
+      },
+      "vimeo": 1066381405
+    },
+    {
+      "title": "Italy Home Kit 22/23",
+      "subtitle": "Puma",
+      "description": "Commercial",
+      "role": [
+        "regia @davide_vicari",
+        "montaggio @98matteodelia",
+        "direzione artistica @vincenzo__schioppa"
+      ],
+      "img": {
+        "video": "img/brand/puma.mp4",
+        "foto": "img/brand/puma.jpg"
+      },
+      "vimeo": 862052892
+    },
+    {
+      "title": "Home Collection FW25",
+      "subtitle": "Mango",
+      "description": "Lookbook",
+      "role": [
+        "regia @98matteodelia",
+        "dop @jacopo_ambroggio",
+        "set design @danidevito_studio",
+        "styling @mmariammorato",
+        "color grading @lucamoro_",
+        "production @teruteru_prod",
+        "location @anticamera_location",
+        "direzione artistica @studiomare.co"
+      ],
+      "img": {
+        "video": "img/brand/mango_home.mp4",
+        "foto": "img/brand/mango_home.jpg"
+      },
+      "vimeo": 1067101075
+    },
+    {
+      "title": "In Process: The Sole",
+      "subtitle": "Stòffa",
+      "description": "Web Stories",
+      "role": [
+        "regia @98matteodelia",
+        "sound design @simone_giud",
+        "direzione artistica @studiomare.co"
+      ],
+      "img": {
+        "video": "img/brand/francia.mp4",
+        "foto": "img/brand/francia.jpg",
+        "foto_css": "transform: translate(-50%, -50%) rotate(90deg);"
+      },
+      "vimeo": 848419838
+    }
+  ],
+  "narrative": [
+    {
+      "title": "confessioni a una madre",
+      "subtitle": "2022",
+      "description": "Short Film",
+      "role": [
+        "regia @98matteodelia",
+        "dop @ale_luis",
+        "fonico @nicola_bussei",
+        "starring @asiajayel",
+        "color @leonardo_mareso_colorist"
+      ],
+      "img": {
+        "video": "img/narrative/confessioni.mp4",
+        "foto": "img/narrative/confessioni.jpg",
+        "foto_css": "transform: translate(-100%, -50%); left: 165%;"
+      },
+      "vimeo": 737283841
+    },
+    {
+      "title": "Einfall",
+      "subtitle": "2021",
+      "description": "Short Film",
+      "role": [
+        "regia @98matteodelia",
+        "dop @gabriele_broggini",
+        "production assistant @_letiziagallo",
+        "starring @nuriwey + @gabriele_broggini + @elettralastra",
+        "music composer @woody_arden",
+        "sound designer @brogginisimone"
+      ],
+      "img": {
+        "video": "img/narrative/einfall.mp4",
+        "foto": "img/narrative/einfall.jpg"
+      },
+      "vimeo": 514613840
+    },
+    {
+      "title": "To be, or not to be.",
+      "subtitle": "2019",
+      "description": "Spec Commercial",
+      "role": [
+        "regia @98matteodelia",
+        "starring @ene_rampa",
+        "voiceover @federicacasieri"
+      ],
+      "img": {
+        "video": "img/narrative/tobeornottobe.mp4",
+        "foto": "img/narrative/tobeornottobe.jpg"
+      },
+      "vimeo": 380613411
+    }
+  ]
+}

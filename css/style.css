@@ -13,11 +13,6 @@
   src: url("fonts/CoFoPeshkaV0.3-380-Regular.otf")format("opentype");
 }
 
-@font-face {
-  font-family: "SuisseIntlMono Regular";
-  src: url("fonts/SuisseIntlMono-Regular.otf")format("opentype");
-}
-
 @-moz-keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
@@ -977,34 +972,7 @@
     width: auto;
   }
 
-  #V2 {
-    position: absolute;
-    left: 11%;
-  }
-
-  #V4 {
-    position: absolute;
-    left: 80%;
-  }
-
-  #V5 {
-    position: absolute;
-    left: 65%;
-  }
-
-  #V11 {
-    transform: translate(0%, -50%);
-    left: 0%;
-  }
-
-  #V16 {
-    transform: translate(-50%, -50%) rotate(90deg);
-  }
-
-  #V17 {
-    transform: translate(-100%, -50%);
-    left: 165%;
-  }
+  /* la centratura delle singole foto sta in progetti.json (img.foto_css) */
 }
 
 @media only screen and (max-width: 1200px) and (orientation: landscape) {
