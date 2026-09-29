@@ -1,7 +1,5 @@
 $(document).ready(function() {
-  setTimeout(function() {
-    $(".loader video").css("opacity", "1");
-  }, 800);
+  loader_reveal();
   mobile_src();
   load();
   cursor();
@@ -10,6 +8,22 @@ $(document).ready(function() {
   select_section();
   credits();
 });
+
+function loader_reveal() {
+  const loaderVideo = document.querySelector(".loader video");
+
+  function showLoaderVideo() {
+    loaderVideo.style.opacity = "1";
+  }
+
+  if (loaderVideo.readyState >= 2) {
+    showLoaderVideo();
+  } else {
+    loaderVideo.addEventListener("loadeddata", showLoaderVideo, {
+      once: true
+    });
+  }
+}
 
 function mobile_src() {
   var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
