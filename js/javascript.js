@@ -253,7 +253,7 @@ function load(primoBloccoPronto) {
   Promise.race([Promise.all([minimo, animazioneFinita, primoBloccoPronto]), massimo]).then(chiudiLoader);
 }
 
-var ULTIMO_FOTOGRAMMA_LOADER = "img/loader1.png";
+var ULTIMO_FOTOGRAMMA_LOADER = "img/loader-fine.webp";
 
 // al posto del video resta l'immagine dell'ultimo fotogramma: alcuni browser (Safari)
 // fanno ripartire da capo i video muti in autoplay quando si muovono, e così mentre
