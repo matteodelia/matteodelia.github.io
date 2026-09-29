@@ -1975,6 +1975,9 @@ function select_section() {
     if (sezione == 1) {
       $(".selection_line").css("left", "36.5vw");
     }
+    if (sezione == 2) {
+      $(".selection_line").css("left", "43.5vw");
+    }
     if (sezione == 3) {
       $(".selection_line").css("left", "50.5vw");
     }
