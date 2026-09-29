@@ -377,7 +377,7 @@
   "narrative": [
     {
       "title": "confessioni a una madre",
-      "subtitle": "2022",
+      "subtitle": "Asia",
       "description": "Short Film",
       "role": [
         "regia @98matteodelia",
@@ -394,8 +394,30 @@
       "vimeo": 737283841
     },
     {
+      "title": "The Wire VOL. II",
+      "subtitle": "Abby 6ix",
+      "description": "Album Trailer",
+      "role": [
+        "@abby6ix | The Wire VOL. II",
+        "regia @98matteodelia",
+        "dop @jacopo_ambroggio",
+        "producer @francescareadiamond",
+        "1ac @zambo.mov",
+        "gaffer @mirkomi_",
+        "fonico @stljth",
+        "stylist @chiaradvp",
+        "editor @98matteodelia",
+        "color grading @mattia.saggiomo"
+      ],
+      "img": {
+        "video": "img/narrative/thewire.mp4",
+        "foto": "img/narrative/thewire.jpg"
+      },
+      "vimeo": 1117204656
+    },
+    {
       "title": "Einfall",
-      "subtitle": "2021",
+      "subtitle": "Nuria",
       "description": "Short Film",
       "role": [
         "regia @98matteodelia",
@@ -413,7 +435,7 @@
     },
     {
       "title": "To be, or not to be.",
-      "subtitle": "2019",
+      "subtitle": "Enea",
       "description": "Spec Commercial",
       "role": [
         "regia @98matteodelia",
