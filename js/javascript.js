@@ -12,8 +12,7 @@ $(document).ready(function() {
     return risposta.json();
   })).then(function(progetti) {
     var categorie = prepara_categorie(progetti);
-    mobile_src(categorie);
-    load();
+    load(mobile_src(categorie));
     cursor();
     change_mouse();
     open_vimeo();
@@ -107,6 +106,20 @@ function mobile_src(categorie) {
     return m.id;
   });
 
+  // i primi due di ogni categoria: sul computer si caricano per primi,
+  // e quando sono pronti il loader può chiudersi (vedi load)
+  var primoBlocco = media.filter(function(m) {
+    return m.posizione < 2;
+  }).map(function(m) {
+    return m.id;
+  });
+  var mancanoAlBlocco = primoBlocco.length;
+  var segnaPronto;
+  var primoBloccoPronto = new Promise(function(risolvi) {
+    segnaPronto = risolvi;
+  });
+  if (!mancanoAlBlocco) segnaPronto();
+
   // carica un elemento e chiama done() quando e' pronto (o se va in errore)
   function loadOne(id, done) {
     var el = document.getElementById(id);
@@ -114,6 +127,7 @@ function mobile_src(categorie) {
     function end() {
       if (finished) return;
       finished = true;
+      if (primoBlocco.indexOf(id) >= 0 && --mancanoAlBlocco == 0) segnaPronto();
       if (done) done();
     }
     if (el.tagName == "VIDEO") {
@@ -186,11 +200,6 @@ function mobile_src(categorie) {
   } else {
     // desktop: prima i primi due video di ogni categoria tutti insieme,
     // poi i rimanenti di music, documentary, brand, narrative in ordine
-    var primoBlocco = media.filter(function(m) {
-      return m.posizione < 2;
-    }).map(function(m) {
-      return m.id;
-    });
     var resto = tutti.filter(function(id) {
       return primoBlocco.indexOf(id) < 0;
     });
@@ -198,29 +207,41 @@ function mobile_src(categorie) {
       loadSequence(resto);
     });
   }
+  return primoBloccoPronto;
 }
 
-function load() {
+// il loader resta almeno 3,5 secondi (l'animazione dura 3 e poi resta ferma
+// sull'ultimo fotogramma), poi si chiude appena sono pronti i primi due video
+// di ogni categoria, e comunque non oltre 7 secondi
+function load(primoBloccoPronto) {
   // niente scroll finché c'è il loader
   scroll_sezioni.blocca();
-  setTimeout(function() {
-    if (document.getElementById("V1").tagName == "VIDEO") {
-      document.getElementById("V1").play();
-    };
-    var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
-    if (width < 1200) {
-      $(".loader").animate({
-        top: "-100dvh"
-      }, 800);
-    } else {
-      $(".loader").animate({
-        top: "-100vh"
-      }, 800);
-    }
-  }, 7000);
+  var minimo = new Promise(function(risolvi) {
+    setTimeout(risolvi, 3500);
+  });
+  var massimo = new Promise(function(risolvi) {
+    setTimeout(risolvi, 7000);
+  });
+  Promise.race([Promise.all([minimo, primoBloccoPronto]), massimo]).then(chiudiLoader);
+}
+
+function chiudiLoader() {
+  if (document.getElementById("V1").tagName == "VIDEO") {
+    document.getElementById("V1").play();
+  };
+  var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+  if (width < 1200) {
+    $(".loader").animate({
+      top: "-100dvh"
+    }, 800);
+  } else {
+    $(".loader").animate({
+      top: "-100vh"
+    }, 800);
+  }
   setTimeout(function() {
     scroll_sezioni.sblocca();
-  }, 7500);
+  }, 500);
 }
 
 function cursor() {
