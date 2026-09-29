@@ -45,7 +45,7 @@
       "img": {
         "video": "img/music/cometelospiego.mp4",
         "foto": "img/music/cometelospiego.jpg",
-        "foto_x": 63.7
+        "foto_x": 73.6
       },
       "vimeo": 1170111154
     },
@@ -87,7 +87,7 @@
       "img": {
         "video": "img/music/gara7.mp4",
         "foto": "img/music/gara7.jpg",
-        "foto_x": 39.5
+        "foto_x": 34.4
       },
       "vimeo": 841863277
     },
@@ -106,7 +106,7 @@
       "img": {
         "video": "img/music/crescere.mp4",
         "foto": "img/music/crescere.jpg",
-        "foto_x": 45.2
+        "foto_x": 45.7
       },
       "vimeo": 1168449099
     },
@@ -127,7 +127,8 @@
       ],
       "img": {
         "video": "img/music/chilometri.mp4",
-        "foto": "img/music/chilometri.jpg"
+        "foto": "img/music/chilometri.jpg",
+        "foto_x": 44.4
       },
       "vimeo": 918010384
     },
@@ -164,7 +165,8 @@
       ],
       "img": {
         "video": "img/music/giornoenotte.mp4",
-        "foto": "img/music/giornoenotte.jpg"
+        "foto": "img/music/giornoenotte.jpg",
+        "foto_x": 48.9
       },
       "vimeo": 916233885
     }
@@ -249,7 +251,8 @@
       ],
       "img": {
         "video": "img/brand/gallottiradice.mp4",
-        "foto": "img/brand/gallottiradice.jpg"
+        "foto": "img/brand/gallottiradice.jpg",
+        "foto_x": 66.9
       },
       "vimeo": 1230647295
     },
