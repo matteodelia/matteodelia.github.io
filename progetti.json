@@ -45,7 +45,7 @@
       "img": {
         "video": "img/music/cometelospiego.mp4",
         "foto": "img/music/cometelospiego.jpg",
-        "foto_css": "position: absolute; left: 11%;"
+        "foto_x": 63.7
       },
       "vimeo": 1170111154
     },
@@ -87,7 +87,7 @@
       "img": {
         "video": "img/music/gara7.mp4",
         "foto": "img/music/gara7.jpg",
-        "foto_css": "position: absolute; left: 80%;"
+        "foto_x": 39.5
       },
       "vimeo": 841863277
     },
@@ -106,7 +106,7 @@
       "img": {
         "video": "img/music/crescere.mp4",
         "foto": "img/music/crescere.jpg",
-        "foto_css": "position: absolute; left: 65%;"
+        "foto_x": 45.2
       },
       "vimeo": 1168449099
     },
@@ -271,7 +271,7 @@
       "img": {
         "video": "img/brand/stoffa_lookbook.mp4",
         "foto": "img/brand/stoffa_lookbook.jpg",
-        "foto_css": "transform: translate(0%, -50%); left: 0%;"
+        "foto_x": 0
       },
       "vimeo": 1054679176
     },
@@ -368,7 +368,7 @@
       "img": {
         "video": "img/brand/francia.mp4",
         "foto": "img/brand/francia.jpg",
-        "foto_css": "transform: translate(-50%, -50%) rotate(90deg);"
+        "foto_ruota": 90
       },
       "vimeo": 848419838
     }
@@ -388,7 +388,7 @@
       "img": {
         "video": "img/narrative/confessioni.mp4",
         "foto": "img/narrative/confessioni.jpg",
-        "foto_css": "transform: translate(-100%, -50%); left: 165%;"
+        "foto_x": 77.2
       },
       "vimeo": 737283841
     },

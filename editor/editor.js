@@ -547,7 +547,6 @@
     $("campo-description").value = p.description || "";
     $("campo-role").value = (p.role || []).join("\n");
     $("campo-vimeo").value = p.vimeo || "";
-    $("campo-foto-css").value = p.img.foto_css || "";
     mostraVideo(p);
     mostraFoto(p);
     controllaVimeo(p.vimeo);
@@ -570,11 +569,129 @@
 
   function mostraFoto(p) {
     var url = urlFile(p.img.foto);
+    var img = $("campo-foto-anteprima");
     $("campo-foto-vuoto").hidden = !!url;
-    $("campo-foto-anteprima").hidden = !url;
-    if (url) $("campo-foto-anteprima").src = url;
+    img.hidden = !url;
+    $("telefono").classList.toggle("vuoto", !url);
+    $("campo-foto-ruota").disabled = $("campo-foto-centra").disabled = !url;
     $("campo-foto-nome").textContent = p.img.foto ? p.img.foto.split("/").pop() : "Si vede al posto del video su telefono.";
+    if (url && img.getAttribute("src") !== url) {
+      img.onload = function() {
+        posizionaFoto();
+      };
+      img.src = url;
+    }
+    posizionaFoto();
   }
+
+  // ---------- POSIZIONE E ROTAZIONE DELLA FOTO SU TELEFONO ----------
+  // foto_x = parte della foto che si vede (0 sinistra, 50 centro, 100 destra),
+  // foto_ruota = 0, 90, 180 o 270. l'anteprima usa le stesse regole del sito
+
+  function posizioneFoto(p) {
+    return {
+      x: p.img.foto_x == null ? 50 : p.img.foto_x,
+      ruota: p.img.foto_ruota || 0
+    };
+  }
+
+  // di quanti pixel si può spostare la foto dentro il telefono, da un bordo all'altro
+  function corsaFoto(p) {
+    var telefono = $("telefono");
+    var img = $("campo-foto-anteprima");
+    var w = telefono.clientWidth;
+    var h = telefono.clientHeight;
+    if (!img.naturalWidth) return 0;
+    var ruota = posizioneFoto(p).ruota;
+    if (ruota == 90 || ruota == 270) return h - w;
+    return Math.max(0, h * img.naturalWidth / img.naturalHeight - w);
+  }
+
+  function posizionaFoto() {
+    var p = progettoAperto();
+    if (!p) return;
+    var img = $("campo-foto-anteprima");
+    var w = $("telefono").clientWidth;
+    var h = $("telefono").clientHeight;
+    var pos = posizioneFoto(p);
+    var s = img.style;
+    if (pos.ruota == 90 || pos.ruota == 270) {
+      s.width = "auto";
+      s.height = h + "px";
+      s.objectFit = "fill";
+      s.objectPosition = "";
+      s.left = "calc(50% + " + ((h - w) * (50 - pos.x) / 100) + "px)";
+    } else {
+      s.width = "100%";
+      s.height = "100%";
+      s.objectFit = "cover";
+      s.objectPosition = (pos.ruota == 180 ? 100 - pos.x : pos.x) + "% 50%";
+      s.left = "50%";
+    }
+    s.transform = "translate(-50%, -50%)" + (pos.ruota ? " rotate(" + pos.ruota + "deg)" : "");
+    $("campo-foto-stato").textContent = p.img.foto ? (pos.x == 50 ? "Al centro" : "Posizione " + Math.round(pos.x) + " su 100") + (pos.ruota ? " · ruotata di " + pos.ruota + "°" : "") : "";
+  }
+
+  function impostaPosizione(p, x, ruota) {
+    x = Math.round(Math.max(0, Math.min(100, x)) * 10) / 10;
+    if (x == 50) delete p.img.foto_x;
+    else p.img.foto_x = x;
+    if (ruota) p.img.foto_ruota = ruota;
+    else delete p.img.foto_ruota;
+    posizionaFoto();
+  }
+
+  // trascinamento della foto dentro il telefono (mouse, trackpad e dito)
+  $("telefono").addEventListener("pointerdown", function(e) {
+    var p = progettoAperto();
+    if (!p || !p.img.foto || e.button > 0) return;
+    e.preventDefault();
+    var telefono = this;
+    var inizioX = e.clientX;
+    var partenza = posizioneFoto(p);
+    var corsa = corsaFoto(p);
+    if (!corsa) return;
+    try {
+      telefono.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    telefono.classList.add("trascina");
+
+    function muovi(ev) {
+      // trascinando verso destra si scopre la parte sinistra della foto
+      impostaPosizione(p, partenza.x - (ev.clientX - inizioX) / corsa * 100, partenza.ruota);
+    }
+
+    function fine() {
+      telefono.removeEventListener("pointermove", muovi);
+      telefono.removeEventListener("pointerup", fine);
+      telefono.removeEventListener("pointercancel", fine);
+      telefono.classList.remove("trascina");
+      salvaBozza();
+    }
+    telefono.addEventListener("pointermove", muovi);
+    telefono.addEventListener("pointerup", fine);
+    telefono.addEventListener("pointercancel", fine);
+  });
+
+  function centraFoto() {
+    var p = progettoAperto();
+    if (!p || !p.img.foto) return;
+    impostaPosizione(p, 50, posizioneFoto(p).ruota);
+    salvaBozza();
+  }
+
+  $("telefono").addEventListener("dblclick", centraFoto);
+  $("campo-foto-centra").addEventListener("click", centraFoto);
+
+  $("campo-foto-ruota").addEventListener("click", function() {
+    var p = progettoAperto();
+    if (!p || !p.img.foto) return;
+    var pos = posizioneFoto(p);
+    impostaPosizione(p, pos.x, (pos.ruota + 90) % 360);
+    salvaBozza();
+  });
+
+  window.addEventListener("resize", posizionaFoto);
 
   function modificaTesto(campo, chiaveDato) {
     $(campo).addEventListener("input", function() {
@@ -611,15 +728,6 @@
     attesaVimeo = setTimeout(function() {
       controllaVimeo(p.vimeo);
     }, 500);
-  });
-
-  $("campo-foto-css").addEventListener("input", function() {
-    var p = progettoAperto();
-    if (!p) return;
-    var v = this.value.trim();
-    if (v) p.img.foto_css = v;
-    else delete p.img.foto_css;
-    salvaBozza();
   });
 
   // mostra titolo e copertina del film su vimeo, per controllare che l'id sia giusto
@@ -695,6 +803,8 @@
     if (!file || !p) return;
     if (!/\.(jpe?g|png|webp)$/i.test(file.name)) return avviso("La foto deve essere jpg, png o webp", true);
     p.img.foto = aggiungiFile(selezione.cat, file.name, file);
+    delete p.img.foto_x;
+    delete p.img.foto_ruota;
     salvaBozza();
     aggiornaRiga();
     mostraFoto(p);
@@ -716,6 +826,8 @@
     tela.toBlob(function(blob) {
       if (!blob) return avviso("Non riesco a prendere il fotogramma", true);
       p.img.foto = aggiungiFile(cat, nome, blob);
+      delete p.img.foto_x;
+      delete p.img.foto_ruota;
       salvaBozza();
       aggiornaRiga();
       mostraFoto(p);

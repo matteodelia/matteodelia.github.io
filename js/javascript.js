@@ -96,7 +96,8 @@ function mobile_src(categorie) {
         id: "V" + (cat.primo + i),
         video: p.img.video,
         foto: p.img.foto,
-        foto_css: p.img.foto_css,
+        foto_x: p.img.foto_x == null ? 50 : p.img.foto_x,
+        foto_ruota: p.img.foto_ruota || 0,
         classe: cat.classe ? "video " + cat.classe : "video",
         posizione: i
       });
@@ -183,10 +184,21 @@ function mobile_src(categorie) {
   });
   container.innerHTML = html;
 
-  // centratura delle foto su telefono in verticale (foto_css in progetti.json)
+  // posizione e rotazione delle foto su telefono in verticale (progetti.json).
+  // foto_x è la parte della foto che si vede: 0 = sinistra, 50 = centro, 100 = destra,
+  // sempre come la si vede sullo schermo, anche se la foto è ruotata
   var css = "";
   media.forEach(function(m) {
-    if (m.foto_css) css += "#" + m.id + " { " + m.foto_css + " }\n";
+    var x = m.foto_x;
+    var selettore = "#video_container #" + m.id;
+    if (m.foto_ruota == 90 || m.foto_ruota == 270) {
+      // ruotata di lato: il lato corto della foto diventa la larghezza sullo schermo
+      css += selettore + " { width: auto; height: 100dvh; left: calc(50% + (100dvh - 100dvw) * " + (50 - x) / 100 + "); transform: translate(-50%, -50%) rotate(" + m.foto_ruota + "deg); }\n";
+    } else if (m.foto_ruota == 180) {
+      css += selettore + " { object-position: " + (100 - x) + "% 50%; transform: translate(-50%, -50%) rotate(180deg); }\n";
+    } else if (x != 50) {
+      css += selettore + " { object-position: " + x + "% 50%; }\n";
+    }
   });
   if (css) {
     var stile = document.createElement("style");

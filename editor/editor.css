@@ -778,20 +778,55 @@ body.con-pannello .contenuto {
   align-items: center;
 }
 
-.foto-anteprima {
+/* il telefono: stesse proporzioni di un iPhone (390 x 844), la foto si trascina dentro */
+.telefono {
   position: relative;
-  width: 76px;
-  height: 135px;
-  border-radius: 10px;
+  width: 116px;
+  height: 251px;
+  box-sizing: content-box;
+  border: 4px solid #1c1c1e;
+  border-radius: 22px;
   overflow: hidden;
   background: #111;
   flex-shrink: 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 0 0 1px var(--separatore);
 }
 
-.foto-anteprima img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.telefono.trascina {
+  cursor: grabbing;
+}
+
+.telefono.vuoto {
+  cursor: default;
+}
+
+.telefono img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.foto-aiuto {
+  margin-top: 6px;
+  line-height: 1.35;
+}
+
+.foto-stato {
+  margin-top: 6px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--secondario);
+}
+
+.foto-riga {
+  display: flex;
+  gap: 8px;
 }
 
 .foto-titolo {
@@ -805,12 +840,6 @@ body.con-pannello .contenuto {
   align-items: flex-start;
   gap: 8px;
   margin-top: 10px;
-}
-
-.avanzate summary {
-  padding: 11px 12px;
-  cursor: pointer;
-  color: var(--secondario);
 }
 
 /* CARICAMENTO */
