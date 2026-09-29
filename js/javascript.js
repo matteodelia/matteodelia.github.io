@@ -210,22 +210,75 @@ function mobile_src(categorie) {
   return primoBloccoPronto;
 }
 
-// il loader resta almeno 3,5 secondi (l'animazione dura 3 e poi resta ferma
-// sull'ultimo fotogramma), poi si chiude appena sono pronti i primi due video
-// di ogni categoria, e comunque non oltre 7 secondi
+// il loader si chiude quando sono passati almeno 3,5 secondi, l'animazione è finita
+// (dura 3 secondi) e sono pronti i primi due video di ogni categoria.
+// in ogni caso non oltre 7 secondi
 function load(primoBloccoPronto) {
   // niente scroll finché c'è il loader
   scroll_sezioni.blocca();
+  var videoLoader = document.querySelector(".loader video");
+  // l'ultimo fotogramma si carica subito, così è pronto quando serve
+  new Image().src = ULTIMO_FOTOGRAMMA_LOADER;
   var minimo = new Promise(function(risolvi) {
     setTimeout(risolvi, 3500);
+  });
+  // l'animazione parte quando il video è pronto, quindi può finire dopo i 3,5 secondi
+  var animazioneFinita = new Promise(function(risolvi) {
+    if (videoLoader.ended) return risolvi();
+    videoLoader.addEventListener("ended", function() {
+      fermaLoader();
+      risolvi();
+    }, {
+      once: true
+    });
+    // autoplay bloccato (es. risparmio energetico su iPhone): si vede subito l'ultimo fotogramma
+    var avvio = videoLoader.play();
+    if (avvio) avvio.catch(function(errore) {
+      if (errore.name == "NotAllowedError") {
+        fermaLoader();
+        risolvi();
+      }
+    });
+    // stessa cosa se dopo 1,5 secondi il video è fermo pur avendo già i dati
+    setTimeout(function() {
+      if (videoLoader.paused && !videoLoader.ended && videoLoader.readyState >= 2) {
+        fermaLoader();
+        risolvi();
+      }
+    }, 1500);
   });
   var massimo = new Promise(function(risolvi) {
     setTimeout(risolvi, 7000);
   });
-  Promise.race([Promise.all([minimo, primoBloccoPronto]), massimo]).then(chiudiLoader);
+  Promise.race([Promise.all([minimo, animazioneFinita, primoBloccoPronto]), massimo]).then(chiudiLoader);
+}
+
+var ULTIMO_FOTOGRAMMA_LOADER = "img/loader1.png";
+
+// al posto del video resta l'immagine dell'ultimo fotogramma: alcuni browser (Safari)
+// fanno ripartire da capo i video muti in autoplay quando si muovono, e così mentre
+// il loader sale non c'è niente che possa ripartire
+function fermaLoader() {
+  var videoLoader = document.querySelector(".loader video");
+  videoLoader.removeAttribute("autoplay");
+  videoLoader.pause();
+  if (videoLoader.dataset.fermo) return;
+  videoLoader.dataset.fermo = "1";
+  var img = document.createElement("img");
+  img.alt = "";
+  img.style.opacity = "1";
+  img.onload = function() {
+    videoLoader.parentNode.insertBefore(img, videoLoader);
+    videoLoader.style.display = "none";
+  };
+  img.src = ULTIMO_FOTOGRAMMA_LOADER;
 }
 
 function chiudiLoader() {
+  // se l'animazione è ancora in corso (connessione lenta) si passa all'ultimo fotogramma
+  // prima della salita; se non è mai partita resta com'è, senza cambi durante la salita
+  var videoLoader = document.querySelector(".loader video");
+  if (!videoLoader.ended && videoLoader.currentTime > 0) fermaLoader();
   if (document.getElementById("V1").tagName == "VIDEO") {
     document.getElementById("V1").play();
   };
