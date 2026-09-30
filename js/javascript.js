@@ -230,15 +230,21 @@ function load(primoBloccoPronto) {
   scroll_sezioni.blocca();
   var videoLoader = document.querySelector(".loader video");
   // l'ultimo fotogramma si carica subito, così è pronto quando serve
-  new Image().src = ULTIMO_FOTOGRAMMA_LOADER;
+  ultimoFotogramma = new Image();
+  ultimoFotogramma.alt = "";
+  ultimoFotogramma.style.opacity = "1";
+  ultimoFotogramma.src = ULTIMO_FOTOGRAMMA_LOADER;
   var minimo = new Promise(function(risolvi) {
     setTimeout(risolvi, 3500);
   });
   // l'animazione parte quando il video è pronto, quindi può finire dopo i 3,5 secondi
   var animazioneFinita = new Promise(function(risolvi) {
-    if (videoLoader.ended) return risolvi();
+    if (videoLoader.ended) {
+      congelaLoader();
+      return risolvi();
+    }
     videoLoader.addEventListener("ended", function() {
-      fermaLoader();
+      congelaLoader();
       risolvi();
     }, {
       once: true
@@ -266,24 +272,33 @@ function load(primoBloccoPronto) {
 }
 
 var ULTIMO_FOTOGRAMMA_LOADER = "img/loader-fine.webp";
+var ultimoFotogramma;
 
-// al posto del video resta l'immagine dell'ultimo fotogramma: alcuni browser (Safari)
-// fanno ripartire da capo i video muti in autoplay quando si muovono, e così mentre
-// il loader sale non c'è niente che possa ripartire
+// a fine animazione il video resta fermo sul suo ultimo fotogramma: alcuni browser (Safari)
+// fanno ripartire da capo i video muti in autoplay quando si muovono, ma senza autoplay
+// e messo in pausa non ripartono. Se ripartisse lo stesso si passa subito all'immagine
+function congelaLoader() {
+  var videoLoader = document.querySelector(".loader video");
+  videoLoader.removeAttribute("autoplay");
+  videoLoader.pause();
+  videoLoader.addEventListener("play", fermaLoader);
+  videoLoader.addEventListener("seeking", fermaLoader);
+}
+
+// al posto del video l'immagine dell'ultimo fotogramma: serve quando il video non è
+// partito (risparmio energetico), non ha finito in tempo o ha provato a ripartire
 function fermaLoader() {
   var videoLoader = document.querySelector(".loader video");
   videoLoader.removeAttribute("autoplay");
   videoLoader.pause();
   if (videoLoader.dataset.fermo) return;
   videoLoader.dataset.fermo = "1";
-  var img = document.createElement("img");
-  img.alt = "";
-  img.style.opacity = "1";
-  img.onload = function() {
-    videoLoader.parentNode.insertBefore(img, videoLoader);
+  function scambia() {
+    videoLoader.parentNode.insertBefore(ultimoFotogramma, videoLoader);
     videoLoader.style.display = "none";
-  };
-  img.src = ULTIMO_FOTOGRAMMA_LOADER;
+  }
+  if (ultimoFotogramma.complete && ultimoFotogramma.naturalWidth) scambia();
+  else ultimoFotogramma.onload = scambia;
 }
 
 function chiudiLoader() {
