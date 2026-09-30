@@ -396,14 +396,11 @@ function open_vimeo() {
   }
 
   // IL FILM
-  // su computer si apre dentro la finestra, sopra al sito, con una dissolvenza (e si chiude uguale:
-  // X in alto a destra o Esc). niente schermo intero del sistema, che ha le sue animazioni;
-  // chi lo vuole ha il pulsante nel player di vimeo.
-  // su telefono va nel player del telefono (schermo intero di vimeo). prima di aprire, il riquadro
-  // nella pagina diventa grande quanto lo schermo (così l'animazione non parte da un quadratino);
-  // durante il film diventa un sipario nero sopra al sito: uscendo, il telefono ci riappoggia il
-  // film e il sipario sfuma lasciando il sito, invece di un fotogramma che resta lì e sparisce di
-  // colpo (vedi .vimeo_link.grande, .sipario e .sparito nel css)
+  // su computer e su telefono si apre dentro la pagina, a tutto schermo su fondo nero, con una
+  // dissolvenza, e si chiude uguale: X in alto a destra (al posto della mail) o Esc.
+  // niente schermo intero del sistema o player del telefono, che hanno animazioni loro che la
+  // pagina non può cambiare (sul telefono il fotogramma restava sopra al sito uscendo).
+  // chi vuole lo schermo intero vero ha il pulsante nel player di vimeo
   var iframe = document.querySelector(".vimeo_link");
   // la X la crea il codice (così non dipende da un index.html magari ancora vecchio in memoria)
   var chiudi = document.querySelector(".chiudi_film");
@@ -414,132 +411,53 @@ function open_vimeo() {
     chiudi.innerHTML = '<svg viewBox="0 0 102 102"><path d="M4 4 98 98M98 4 4 98" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" /></svg>';
     iframe.parentNode.insertBefore(chiudi, iframe.nextSibling);
   }
-  var nelRiquadro = false;
+  var aperto = false;
   var attesa = null;
 
-  // computer = schermo largo e mouse o trackpad (l'iPad, anche largo, usa lo schermo intero)
-  function computer() {
-    return window.innerWidth > 1200 && !!window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  }
+  function nulla() {}
 
-  function senzaTransizione(cambia) {
-    iframe.style.transition = "none";
-    cambia();
-    iframe.offsetWidth;
-    iframe.style.transition = "";
-  }
-
-  function apriNelRiquadro() {
-    if (nelRiquadro) return;
-    nelRiquadro = true;
+  function apri() {
+    if (aperto) return;
+    aperto = true;
     clearTimeout(attesa);
     scroll_sezioni.blocca();
-    senzaTransizione(function() {
-      iframe.classList.remove("grande", "sparito", "visibile");
-      iframe.classList.add("riquadro");
-    });
+    // parte trasparente, poi sfuma fino a vedersi
+    iframe.style.transition = "none";
+    iframe.classList.remove("visibile");
+    iframe.classList.add("riquadro");
+    iframe.offsetWidth;
+    iframe.style.transition = "";
     iframe.classList.add("visibile");
     document.body.classList.add("film_aperto");
     statistiche.filmAperto();
-    player.setCurrentTime(0).catch(function() {});
-    player.play().then(qualitaMassima).catch(function() {});
+    player.setCurrentTime(0).catch(nulla);
+    player.play().then(qualitaMassima).catch(nulla);
     qualitaMassima();
   }
 
-  function chiudiRiquadro() {
-    if (!nelRiquadro) return;
-    nelRiquadro = false;
+  function chiudiFilm() {
+    if (!aperto) return;
+    aperto = false;
     iframe.classList.remove("visibile");
     document.body.classList.remove("film_aperto");
-    player.pause().catch(function() {});
+    player.pause().catch(nulla);
     statistiche.filmChiuso();
+    // sotto al film che sfuma il sito è già sulla sezione da cui lo si è aperto
     riprendiSezione();
     scroll_sezioni.sblocca();
     attesa = setTimeout(function() {
       iframe.classList.remove("riquadro");
+      riprendiSezione();
     }, 600);
   }
 
-  chiudi.addEventListener("click", chiudiRiquadro);
+  $("#scrollify_section").on("click", apri);
+  chiudi.addEventListener("click", chiudiFilm);
   document.addEventListener("keydown", function(e) {
-    if (nelRiquadro && e.key == "Escape") chiudiRiquadro();
-  });
-
-  var sipario = false;
-
-  function nulla() {}
-
-  function alzaSipario() {
-    clearTimeout(attesa);
-    sipario = true;
-    senzaTransizione(function() {
-      iframe.classList.remove("sparito");
-      iframe.classList.add("grande", "sipario");
-    });
-  }
-
-  // il film finisce la sua corsa sul sipario, che sfuma; muto fino alla fine della dissolvenza,
-  // poi in pausa (così non compaiono i comandi di vimeo mentre sfuma)
-  function chiudiSipario() {
-    if (!sipario) return;
-    sipario = false;
-    player.setMuted(true).catch(nulla);
-    iframe.classList.add("sparito");
-    clearTimeout(attesa);
-    attesa = setTimeout(function() {
-      iframe.classList.remove("sipario", "grande");
-      player.pause().catch(nulla).then(function() {
-        return player.setMuted(false);
-      }).catch(nulla);
-    }, 700);
-  }
-
-  function schermoInteroDelBrowser() {
-    return document.fullscreenElement || document.webkitFullscreenElement;
-  }
-  // android e iPad: il browser dice subito che lo schermo intero è finito
-  ["fullscreenchange", "webkitfullscreenchange"].forEach(function(evento) {
-    document.addEventListener(evento, function() {
-      if (!nelRiquadro && !schermoInteroDelBrowser()) chiudiSipario();
-    });
-  });
-
-  $("#scrollify_section").on("click", function() {
-    if (computer()) return apriNelRiquadro();
-    clearTimeout(attesa);
-    sipario = false;
-    senzaTransizione(function() {
-      iframe.classList.remove("sparito", "sipario");
-      iframe.classList.add("grande");
-    });
-    player.setMuted(false).catch(nulla);
-    player.requestFullscreen().catch(function() {
-      iframe.classList.remove("grande");
-    });
-    qualitaMassima();
-    player.setCurrentTime(0).catch(function() {});
+    if (aperto && e.key == "Escape") chiudiFilm();
   });
   player.on('timeupdate', function(data) {
     statistiche.filmTempo(data.seconds, data.duration);
-  });
-  player.on('fullscreenchange', function(data) {
-    // col film nel riquadro lo schermo intero è quello scelto dal pulsante di vimeo: ci pensa vimeo
-    if (nelRiquadro) return;
-    player.getFullscreen().then(function(fullscreen) {
-      if (fullscreen) statistiche.filmAperto();
-      else statistiche.filmChiuso();
-      if (fullscreen) {
-        alzaSipario();
-        // di nuovo dopo il play, nel caso vimeo l'avesse ignorata a video fermo
-        player.play().then(qualitaMassima).catch(function() {});
-      } else {
-        // sotto al sipario il sito torna sulla sezione da cui si è aperto il film; mezzo secondo
-        // dopo si ricontrolla, per i telefoni che cambiano misura in ritardo
-        riprendiSezione();
-        setTimeout(riprendiSezione, 500);
-        chiudiSipario();
-      }
-    });
   });
 }
 
