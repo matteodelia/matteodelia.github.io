@@ -395,8 +395,17 @@ function open_vimeo() {
     }).catch(function() {});
   }
 
+  // il player diventa grande quanto la finestra prima dello schermo intero e torna piccolo
+  // dopo l'uscita, quando Safari ha finito la sua animazione (vedi .vimeo_link.grande nel css)
+  var iframe = document.querySelector(".vimeo_link");
+  var rimpicciolisci = null;
   $("#scrollify_section").on("click", function() {
-    player.requestFullscreen().catch(function() {});
+    clearTimeout(rimpicciolisci);
+    iframe.classList.add("grande");
+    iframe.offsetWidth;
+    player.requestFullscreen().catch(function() {
+      iframe.classList.remove("grande");
+    });
     qualitaMassima();
     player.setCurrentTime(0).catch(function() {});
   });
@@ -416,6 +425,9 @@ function open_vimeo() {
         player.pause();
         riprendiSezione();
         setTimeout(riprendiSezione, 500);
+        rimpicciolisci = setTimeout(function() {
+          iframe.classList.remove("grande");
+        }, 900);
       }
     });
   });

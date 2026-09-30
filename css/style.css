@@ -568,6 +568,7 @@
   }
 
   .privacy_testa ul {
+    position: absolute;
     top: 4.5vh;
     left: 50vw;
     transform: translate(-50%, -50%);
@@ -1138,9 +1139,12 @@
     transition: all 250ms cubic-bezier(.35,.71,.61,.23);
   }
 
-  /* PRIVACY: header come quello del sito (90dvw al centro), le due lingue centrate */
+  /* PRIVACY: header come quello del sito (90dvw al centro), le due lingue centrate.
+     le lingue stanno nel flusso: la fascia grigia finisce sotto di loro con lo stesso
+     spazio che c'è sopra, fra la linea e le scritte */
   .privacy_testa {
-    height: 14dvh;
+    height: auto;
+    padding-top: 9.5dvh;
   }
 
   .privacy_titolo {
@@ -1161,10 +1165,9 @@
   }
 
   .privacy_testa ul {
+    position: relative;
     display: flex;
-    top: 9.5dvh;
-    left: 50%;
-    transform: translate(-50%, 0%);
+    justify-content: center;
   }
 
   .privacy_testa ul a {
@@ -1326,7 +1329,6 @@ body.privacy_aperta .circle {
 }
 
 .privacy_testa ul {
-  position: absolute;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -1420,4 +1422,22 @@ body.privacy_aperta .circle {
   font-family: "CoFoPeshka 380 Regular";
   letter-spacing: 1.5px;
   color: rgba(0, 0, 0, 0.5);
+}
+
+/* VIMEO A SCHERMO INTERO: il player sta nascosto dietro al sito, piccolo. Appena prima dello
+   schermo intero diventa grande quanto la finestra (classe "grande", vedi open_vimeo in
+   js/javascript.js): Safari anima entrata e uscita partendo dalla misura del player, e così
+   non si vede un riquadro piccolo che si ingrandisce e poi si rimpicciolisce.
+   Lo sfondo nero dei video fa sì che il player nascosto non traspaia mai */
+.vimeo_link.grande {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
+#video_container {
+  background-color: #000;
 }
