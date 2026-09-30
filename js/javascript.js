@@ -399,9 +399,11 @@ function open_vimeo() {
   // su computer si apre dentro la finestra, sopra al sito, con una dissolvenza (e si chiude uguale:
   // X in alto a destra o Esc). niente schermo intero del sistema, che ha le sue animazioni;
   // chi lo vuole ha il pulsante nel player di vimeo.
-  // su telefono va nel player del telefono (schermo intero di vimeo): il riquadro nella pagina
-  // diventa grande quanto lo schermo e invisibile, così l'animazione del telefono non parte da
-  // un quadratino (vedi .vimeo_link.grande e .sparito nel css)
+  // su telefono va nel player del telefono (schermo intero di vimeo). prima di aprire, il riquadro
+  // nella pagina diventa grande quanto lo schermo (così l'animazione non parte da un quadratino);
+  // durante il film diventa un sipario nero sopra al sito: uscendo, il telefono ci riappoggia il
+  // film e il sipario sfuma lasciando il sito, invece di un fotogramma che resta lì e sparisce di
+  // colpo (vedi .vimeo_link.grande, .sipario e .sparito nel css)
   var iframe = document.querySelector(".vimeo_link");
   // la X la crea il codice (così non dipende da un index.html magari ancora vecchio in memoria)
   var chiudi = document.querySelector(".chiudi_film");
@@ -463,30 +465,54 @@ function open_vimeo() {
     if (nelRiquadro && e.key == "Escape") chiudiRiquadro();
   });
 
-  function uscitoDalFilm() {
+  var sipario = false;
+
+  function nulla() {}
+
+  function alzaSipario() {
+    clearTimeout(attesa);
+    sipario = true;
+    senzaTransizione(function() {
+      iframe.classList.remove("sparito");
+      iframe.classList.add("grande", "sipario");
+    });
+  }
+
+  // il film finisce la sua corsa sul sipario, che sfuma; muto fino alla fine della dissolvenza,
+  // poi in pausa (così non compaiono i comandi di vimeo mentre sfuma)
+  function chiudiSipario() {
+    if (!sipario) return;
+    sipario = false;
+    player.setMuted(true).catch(nulla);
     iframe.classList.add("sparito");
     clearTimeout(attesa);
     attesa = setTimeout(function() {
-      iframe.classList.remove("grande");
-    }, 900);
+      iframe.classList.remove("sipario", "grande");
+      player.pause().catch(nulla).then(function() {
+        return player.setMuted(false);
+      }).catch(nulla);
+    }, 700);
   }
 
   function schermoInteroDelBrowser() {
     return document.fullscreenElement || document.webkitFullscreenElement;
   }
+  // android e iPad: il browser dice subito che lo schermo intero è finito
   ["fullscreenchange", "webkitfullscreenchange"].forEach(function(evento) {
     document.addEventListener(evento, function() {
-      if (!nelRiquadro && !schermoInteroDelBrowser() && iframe.classList.contains("grande")) uscitoDalFilm();
+      if (!nelRiquadro && !schermoInteroDelBrowser()) chiudiSipario();
     });
   });
 
   $("#scrollify_section").on("click", function() {
     if (computer()) return apriNelRiquadro();
     clearTimeout(attesa);
+    sipario = false;
     senzaTransizione(function() {
-      iframe.classList.remove("sparito");
+      iframe.classList.remove("sparito", "sipario");
       iframe.classList.add("grande");
     });
+    player.setMuted(false).catch(nulla);
     player.requestFullscreen().catch(function() {
       iframe.classList.remove("grande");
     });
@@ -503,19 +529,15 @@ function open_vimeo() {
       if (fullscreen) statistiche.filmAperto();
       else statistiche.filmChiuso();
       if (fullscreen) {
-        // su iPhone lo schermo intero è del player del telefono, non della pagina
-        if (!schermoInteroDelBrowser()) senzaTransizione(function() {
-          iframe.classList.add("sparito");
-        });
+        alzaSipario();
         // di nuovo dopo il play, nel caso vimeo l'avesse ignorata a video fermo
         player.play().then(qualitaMassima).catch(function() {});
       } else {
-        // si resta sulla sezione da cui si è aperto il film; mezzo secondo dopo si ricontrolla,
-        // per i telefoni che cambiano misura in ritardo
-        player.pause();
+        // sotto al sipario il sito torna sulla sezione da cui si è aperto il film; mezzo secondo
+        // dopo si ricontrolla, per i telefoni che cambiano misura in ritardo
         riprendiSezione();
         setTimeout(riprendiSezione, 500);
-        uscitoDalFilm();
+        chiudiSipario();
       }
     });
   });
