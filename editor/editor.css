@@ -1171,7 +1171,7 @@ body.vista-insight .pannello {
 /* i quattro numeri principali */
 .numeri {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   margin-top: 10px;
 }
@@ -1591,6 +1591,11 @@ body.vista-insight .pannello {
     gap: 10px;
   }
 
+  /* il quinto numero (film aperti) prende tutta la riga */
+  .numero-grande:last-child {
+    grid-column: 1 / -1;
+  }
+
   .numero-grande .valore {
     font-size: 24px;
   }
@@ -1731,36 +1736,7 @@ body.vista-insight .pannello {
   }
 }
 
-/* INSIGHT: esempio, primi giorni, aggiornamento */
-.insight-esempio,
-.insight-pochi {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 12px;
-  padding: 10px 10px 10px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.insight-esempio {
-  background: rgba(255, 159, 10, 0.16);
-  font-weight: 500;
-}
-
-.insight-pochi {
-  background: var(--superficie);
-  box-shadow: var(--ombra);
-  color: var(--secondario);
-}
-
-.insight-messaggio > .bottone + .bottone,
-.insight-messaggio .bottone {
-  margin-right: 8px;
-}
-
+/* INSIGHT: il giorno in corso e l'aggiornamento */
 .grafico-pieno.in-corso {
   opacity: 0.4;
 }
