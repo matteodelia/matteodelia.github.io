@@ -1,7 +1,7 @@
 // INSIGHT: le statistiche di matteodelia.com dentro l'editor.
-// Umami conta le visite sul sito (senza cookie), ogni notte GitHub le copia nel repository
-// privato matteodelia/insight (archivio/AAAA-MM.json e archivio/ultimo.json) e qui si leggono
-// da lì, con la stessa chiave GitHub dell'editor. Umami tiene i dati solo 6 mesi, l'archivio per sempre.
+// il sito manda le visite (senza cookie) alla raccolta su Cloudflare, ogni notte GitHub ne copia
+// i numeri nel repository privato matteodelia/insight (archivio/AAAA-MM.json e archivio/ultimo.json)
+// e qui si leggono da lì, con la stessa chiave GitHub dell'editor.
 (function() {
   "use strict";
 
@@ -46,7 +46,7 @@
   var MESI = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
   var MESI_LUNGHI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
     "settembre", "ottobre", "novembre", "dicembre"];
-  // Umami scrive le città in inglese
+  // Cloudflare scrive le città in inglese
   var CITTA = {
     "Milan": "Milano", "Rome": "Roma", "Turin": "Torino", "Naples": "Napoli", "Florence": "Firenze",
     "Venice": "Venezia", "Genoa": "Genova", "Padua": "Padova", "Syracuse": "Siracusa", "Mantua": "Mantova",
@@ -91,7 +91,7 @@
   var caricamento = null;
 
   // le visite fatte da un dispositivo dove si usa l'editor non si contano (vale per tutto matteodelia.com)
-  scrivi("umami.disabled", "1");
+  scrivi("statistiche_escludi", "1");
 
   // ---------- MEMORIA DEL DISPOSITIVO ----------
 
@@ -362,7 +362,7 @@
     return t;
   }
 
-  // persone e visite esatte: dalle finestre di Umami (7, 30, 90 giorni) o dai totali dei mesi.
+  // persone e visite esatte: dalle finestre dell'archivio (7, 30, 90 giorni) o dai totali dei mesi.
   // le persone di più mesi sono la somma dei mesi (chi torna in mesi diversi conta più volte)
   function totaliEsatti(intervallo, calcolati) {
     var u = archivio.ultimo;
@@ -658,7 +658,7 @@
       link.target = "_blank";
       link.rel = "noopener";
       fermo.appendChild(link);
-      fermo.appendChild(document.createTextNode(". Umami tiene i dati 6 mesi: c'è tempo per recuperare."));
+      fermo.appendChild(document.createTextNode(". I dati restano nel database su Cloudflare: la prossima copia recupera tutto."));
       pagina.appendChild(fermo);
     }
 
@@ -682,7 +682,7 @@
     pagina.appendChild(contenuti(t));
     pagina.appendChild(clic(t));
     var nota = el("p", "insight-nota secondario");
-    nota.appendChild(document.createTextNode("Dati anonimi raccolti da Umami senza cookie e copiati ogni notte nel tuo archivio privato su GitHub, dove restano per sempre. Le visite fatte da questo dispositivo non vengono contate."));
+    nota.appendChild(document.createTextNode("Dati anonimi raccolti dal sito senza cookie, salvati su Cloudflare e copiati ogni notte nel tuo archivio privato su GitHub. Le visite fatte da questo dispositivo non vengono contate."));
     pagina.appendChild(nota);
   }
 

@@ -907,12 +907,12 @@ function privacy() {
   else setTimeout(caricaTesti, 7000);
 }
 
-// STATISTICHE: Umami, senza cookie e senza dati personali. Si contano in forma anonima
+// STATISTICHE: senza cookie e senza dati personali. Si contano in forma anonima
 // i progetti guardati e per quanto, i film aperti e per quanto vengono guardati, i crediti,
-// i contatti e la privacy. Umami li raccoglie, l'archivio (repository privato "insight")
-// li copia ogni notte e l'editor li mostra nella sezione Insight.
+// i contatti e la privacy. Li riceve la raccolta su Cloudflare (repository privato "insight",
+// cartella raccolta), l'archivio li copia ogni notte e l'editor li mostra nella sezione Insight.
 // Non si conta niente in locale, nell'anteprima dell'editor e dai dispositivi dove si è
-// aperto l'editor (lì c'è "umami.disabled" nella memoria del browser).
+// aperto l'editor (lì c'è "statistiche_escludi" nella memoria del browser).
 //
 // eventi:  progetto { progetto, categoria, secondi, ritorno? }  quando si lascia un progetto
 //          film     { progetto, categoria }                     film aperto a schermo intero
@@ -922,7 +922,7 @@ function privacy() {
 //          privacy
 // "ritorno" = seguito di una visita già contata (chi era uscito dalla pagina ed è tornato):
 // aggiunge tempo ma non un'altra visualizzazione
-var UMAMI_SITO = "6e8fb48d-7359-476f-9d71-2460184e09ae";
+var RACCOLTA = "https://matteodelia-visite.raccolta-statistiche.workers.dev/e";
 
 var statistiche = (function() {
   var MASSIMO_FERMO = 600; // oltre 10 minuti di fila sullo stesso progetto non si conta
@@ -931,38 +931,55 @@ var statistiche = (function() {
   var pause = {
     loader: true
   };
-  var coda = [];
+  // codice casuale di questa visita: vive solo in memoria, finché la pagina resta aperta
+  var visita = "";
+  var cifre = new Uint8Array(12);
+  (window.crypto || window.msCrypto).getRandomValues(cifre);
+  for (var i = 0; i < cifre.length; i++) visita += ("0" + cifre[i].toString(16)).slice(-2);
+
+  function escluso() {
+    try {
+      return !!(localStorage.getItem("statistiche_escludi") || localStorage.getItem("umami.disabled"));
+    } catch (e) {
+      return false;
+    }
+  }
 
   function attive() {
-    return !!UMAMI_SITO && /(^|\.)matteodelia\.com$/.test(location.hostname) &&
-      location.search.indexOf("anteprima") < 0;
+    return /(^|\.)matteodelia\.com$/.test(location.hostname) &&
+      location.search.indexOf("anteprima") < 0 && !escluso();
+  }
+
+  // sendBeacon arriva anche se la pagina si sta chiudendo
+  function spedisci(corpo) {
+    var testo = JSON.stringify(corpo);
+    if (navigator.sendBeacon && navigator.sendBeacon(RACCOLTA, testo)) return;
+    fetch(RACCOLTA, {
+      method: "POST",
+      body: testo,
+      keepalive: true,
+      mode: "no-cors"
+    }).catch(function() {});
   }
 
   function carica() {
     if (!attive()) return;
-    var script = document.createElement("script");
-    script.defer = true;
-    script.src = "https://cloud.umami.is/script.js";
-    script.setAttribute("data-website-id", UMAMI_SITO);
-    script.setAttribute("data-auto-track", "false");
-    script.setAttribute("data-domains", "matteodelia.com,www.matteodelia.com");
-    script.onload = function() {
-      if (!window.umami) return;
-      window.umami.track();
-      coda.forEach(function(invio) {
-        invio(window.umami);
-      });
-      coda = [];
-    };
-    document.head.appendChild(script);
+    spedisci({
+      n: "visita",
+      v: visita,
+      r: document.referrer,
+      s: screen.width + "x" + screen.height,
+      l: navigator.language || ""
+    });
   }
 
   function invia(nome, dati) {
-    var invio = function(umami) {
-      umami.track(nome, dati);
-    };
-    if (window.umami) invio(window.umami);
-    else if (attive()) coda.push(invio);
+    if (!attive()) return;
+    spedisci({
+      n: nome,
+      v: visita,
+      d: dati || {}
+    });
   }
 
   // il progetto si riconosce dal nome del suo video (img/music/cometelospiego.mp4 -> cometelospiego):
