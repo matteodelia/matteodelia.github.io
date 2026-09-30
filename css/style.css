@@ -1448,6 +1448,63 @@ body.privacy_aperta .circle {
   pointer-events: none;
 }
 
+/* FILM SU COMPUTER: si apre dentro la finestra, sopra al sito, con una dissolvenza.
+   la X sta dove sono la mail e la X della privacy */
+.vimeo_link.riquadro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  z-index: 900;
+  opacity: 0;
+  background-color: #000;
+  transition: opacity 500ms ease;
+}
+
+.vimeo_link.riquadro.visibile {
+  opacity: 1;
+}
+
+.chiudi_film {
+  position: fixed;
+  z-index: 901;
+  top: 4.5vh;
+  left: 97.5vw;
+  transform: translate(-100%, -50%);
+  height: calc(2.4vh * 78 / 102);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+.chiudi_film svg {
+  display: block;
+  height: 100%;
+}
+
+body.film_aperto .chiudi_film {
+  opacity: 0.7;
+  pointer-events: auto;
+}
+
+body.film_aperto .chiudi_film:hover {
+  opacity: 1;
+}
+
+/* il cursore del sito non segue il mouse sopra al film */
+body.film_aperto .player,
+body.film_aperto .circle {
+  display: none;
+}
+
 #video_container {
   background-color: #000;
 }

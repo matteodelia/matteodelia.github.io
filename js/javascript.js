@@ -395,13 +395,30 @@ function open_vimeo() {
     }).catch(function() {});
   }
 
-  // il player diventa grande quanto la finestra prima dello schermo intero e torna piccolo
-  // dopo l'uscita, quando Safari ha finito la sua animazione (vedi .vimeo_link.grande nel css).
-  // uscendo, il browser lascia il player davanti al sito ancora per un attimo: lo si fa sparire
-  // in dissolvenza appena arriva il primo segnale (del browser o di vimeo).
-  // su iPhone il film va nel player del telefono: il riquadro nella pagina sparisce subito
+  // IL FILM
+  // su computer si apre dentro la finestra, sopra al sito, con una dissolvenza (e si chiude uguale:
+  // X in alto a destra o Esc). niente schermo intero del sistema, che ha le sue animazioni;
+  // chi lo vuole ha il pulsante nel player di vimeo.
+  // su telefono va nel player del telefono (schermo intero di vimeo): il riquadro nella pagina
+  // diventa grande quanto lo schermo e invisibile, così l'animazione del telefono non parte da
+  // un quadratino (vedi .vimeo_link.grande e .sparito nel css)
   var iframe = document.querySelector(".vimeo_link");
-  var rimpicciolisci = null;
+  // la X la crea il codice (così non dipende da un index.html magari ancora vecchio in memoria)
+  var chiudi = document.querySelector(".chiudi_film");
+  if (!chiudi) {
+    chiudi = document.createElement("button");
+    chiudi.className = "chiudi_film";
+    chiudi.setAttribute("aria-label", "Chiudi il film");
+    chiudi.innerHTML = '<svg viewBox="0 0 102 102"><path d="M4 4 98 98M98 4 4 98" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" /></svg>';
+    iframe.parentNode.insertBefore(chiudi, iframe.nextSibling);
+  }
+  var nelRiquadro = false;
+  var attesa = null;
+
+  // computer = schermo largo e mouse o trackpad (l'iPad, anche largo, usa lo schermo intero)
+  function computer() {
+    return window.innerWidth > 1200 && !!window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
 
   function senzaTransizione(cambia) {
     iframe.style.transition = "none";
@@ -410,10 +427,46 @@ function open_vimeo() {
     iframe.style.transition = "";
   }
 
+  function apriNelRiquadro() {
+    if (nelRiquadro) return;
+    nelRiquadro = true;
+    clearTimeout(attesa);
+    scroll_sezioni.blocca();
+    senzaTransizione(function() {
+      iframe.classList.remove("grande", "sparito", "visibile");
+      iframe.classList.add("riquadro");
+    });
+    iframe.classList.add("visibile");
+    document.body.classList.add("film_aperto");
+    statistiche.filmAperto();
+    player.setCurrentTime(0).catch(function() {});
+    player.play().then(qualitaMassima).catch(function() {});
+    qualitaMassima();
+  }
+
+  function chiudiRiquadro() {
+    if (!nelRiquadro) return;
+    nelRiquadro = false;
+    iframe.classList.remove("visibile");
+    document.body.classList.remove("film_aperto");
+    player.pause().catch(function() {});
+    statistiche.filmChiuso();
+    riprendiSezione();
+    scroll_sezioni.sblocca();
+    attesa = setTimeout(function() {
+      iframe.classList.remove("riquadro");
+    }, 600);
+  }
+
+  chiudi.addEventListener("click", chiudiRiquadro);
+  document.addEventListener("keydown", function(e) {
+    if (nelRiquadro && e.key == "Escape") chiudiRiquadro();
+  });
+
   function uscitoDalFilm() {
     iframe.classList.add("sparito");
-    clearTimeout(rimpicciolisci);
-    rimpicciolisci = setTimeout(function() {
+    clearTimeout(attesa);
+    attesa = setTimeout(function() {
       iframe.classList.remove("grande");
     }, 900);
   }
@@ -423,12 +476,13 @@ function open_vimeo() {
   }
   ["fullscreenchange", "webkitfullscreenchange"].forEach(function(evento) {
     document.addEventListener(evento, function() {
-      if (!schermoInteroDelBrowser() && iframe.classList.contains("grande")) uscitoDalFilm();
+      if (!nelRiquadro && !schermoInteroDelBrowser() && iframe.classList.contains("grande")) uscitoDalFilm();
     });
   });
 
   $("#scrollify_section").on("click", function() {
-    clearTimeout(rimpicciolisci);
+    if (computer()) return apriNelRiquadro();
+    clearTimeout(attesa);
     senzaTransizione(function() {
       iframe.classList.remove("sparito");
       iframe.classList.add("grande");
@@ -443,6 +497,8 @@ function open_vimeo() {
     statistiche.filmTempo(data.seconds, data.duration);
   });
   player.on('fullscreenchange', function(data) {
+    // col film nel riquadro lo schermo intero è quello scelto dal pulsante di vimeo: ci pensa vimeo
+    if (nelRiquadro) return;
     player.getFullscreen().then(function(fullscreen) {
       if (fullscreen) statistiche.filmAperto();
       else statistiche.filmChiuso();
