@@ -374,6 +374,9 @@ function change_mouse() {
   );
 }
 
+// dopo il film: di nuovo sulla sezione di prima, con il suo video in movimento (la prepara select_section)
+var riprendiSezione = function() {};
+
 function open_vimeo() {
   // mette la qualità più alta che ha il video: 4K ("2160p") se c'è,
   // altrimenti la migliore disponibile (alcuni sono solo 2K o 1080p).
@@ -408,8 +411,11 @@ function open_vimeo() {
         // di nuovo dopo il play, nel caso vimeo l'avesse ignorata a video fermo
         player.play().then(qualitaMassima).catch(function() {});
       } else {
-        scroll_sezioni.vai(0, true);
+        // si resta sulla sezione da cui si è aperto il film; mezzo secondo dopo si ricontrolla,
+        // per i telefoni che cambiano misura in ritardo
         player.pause();
+        riprendiSezione();
+        setTimeout(riprendiSezione, 500);
       }
     });
   });
@@ -437,6 +443,12 @@ function select_section(categorie) {
     return somma + cat.progetti.length;
   }, 0);
   var sezione = 0;
+
+  riprendiSezione = function() {
+    scroll_sezioni.riallinea();
+    var n = categorie[sezione].primo + scroll_sezioni.attuale();
+    if (sonoVideo() && video(n) && video(n).paused) video(n).play().catch(function() {});
+  };
 
   function larghezza() {
     return (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
@@ -1326,13 +1338,15 @@ var scroll_sezioni = (function() {
   // RIDIMENSIONAMENTO: sezioni alte quanto la finestra e di nuovo allineate
   var attesaResize = null;
 
+  function riallinea() {
+    sistemaAltezze();
+    if (inMovimento) chiudiMossa();
+    if (sezioni[corrente]) window.scrollTo(0, posizione(corrente));
+  }
+
   function ridimensiona() {
     clearTimeout(attesaResize);
-    attesaResize = setTimeout(function() {
-      sistemaAltezze();
-      if (inMovimento) chiudiMossa();
-      if (sezioni[corrente]) window.scrollTo(0, posizione(corrente));
-    }, 400);
+    attesaResize = setTimeout(riallinea, 400);
   }
 
   return {
@@ -1361,6 +1375,12 @@ var scroll_sezioni = (function() {
       window.addEventListener("orientationchange", ridimensiona);
     },
     vai: vai,
+    // la sezione sullo schermo (0 = la prima della categoria)
+    attuale: function() {
+      return corrente;
+    },
+    // di nuovo esattamente sulla sezione di adesso (dopo il film a schermo intero)
+    riallinea: riallinea,
     blocca: function() {
       bloccato = true;
     },
