@@ -430,8 +430,22 @@ function open_vimeo() {
     iframe.classList.add("visibile");
     document.body.classList.add("film_aperto");
     statistiche.filmAperto();
+    player.setMuted(false).catch(nulla);
     player.setCurrentTime(0).catch(nulla);
-    player.play().then(qualitaMassima).catch(nulla);
+    // l'iPhone fa partire con l'audio solo un video toccato dentro il player: il tocco sul sito
+    // non basta e vimeo lo fa partire muto. in quel caso il film si ferma all'inizio con l'audio
+    // attivo, e un tocco sul play del player lo fa partire con l'audio
+    player.play().then(function() {
+      qualitaMassima();
+      return Promise.all([player.getMuted(), player.getVolume()]);
+    }).then(function(r) {
+      if (aperto && (r[0] || r[1] === 0)) {
+        player.pause().catch(nulla);
+        player.setCurrentTime(0).catch(nulla);
+        player.setMuted(false).catch(nulla);
+        if (r[1] === 0) player.setVolume(1).catch(nulla);
+      }
+    }).catch(nulla);
     qualitaMassima();
   }
 
