@@ -396,13 +396,43 @@ function open_vimeo() {
   }
 
   // il player diventa grande quanto la finestra prima dello schermo intero e torna piccolo
-  // dopo l'uscita, quando Safari ha finito la sua animazione (vedi .vimeo_link.grande nel css)
+  // dopo l'uscita, quando Safari ha finito la sua animazione (vedi .vimeo_link.grande nel css).
+  // uscendo, il browser lascia il player davanti al sito ancora per un attimo: lo si fa sparire
+  // in dissolvenza appena arriva il primo segnale (del browser o di vimeo).
+  // su iPhone il film va nel player del telefono: il riquadro nella pagina sparisce subito
   var iframe = document.querySelector(".vimeo_link");
   var rimpicciolisci = null;
+
+  function senzaTransizione(cambia) {
+    iframe.style.transition = "none";
+    cambia();
+    iframe.offsetWidth;
+    iframe.style.transition = "";
+  }
+
+  function uscitoDalFilm() {
+    iframe.classList.add("sparito");
+    clearTimeout(rimpicciolisci);
+    rimpicciolisci = setTimeout(function() {
+      iframe.classList.remove("grande");
+    }, 900);
+  }
+
+  function schermoInteroDelBrowser() {
+    return document.fullscreenElement || document.webkitFullscreenElement;
+  }
+  ["fullscreenchange", "webkitfullscreenchange"].forEach(function(evento) {
+    document.addEventListener(evento, function() {
+      if (!schermoInteroDelBrowser() && iframe.classList.contains("grande")) uscitoDalFilm();
+    });
+  });
+
   $("#scrollify_section").on("click", function() {
     clearTimeout(rimpicciolisci);
-    iframe.classList.add("grande");
-    iframe.offsetWidth;
+    senzaTransizione(function() {
+      iframe.classList.remove("sparito");
+      iframe.classList.add("grande");
+    });
     player.requestFullscreen().catch(function() {
       iframe.classList.remove("grande");
     });
@@ -417,6 +447,10 @@ function open_vimeo() {
       if (fullscreen) statistiche.filmAperto();
       else statistiche.filmChiuso();
       if (fullscreen) {
+        // su iPhone lo schermo intero è del player del telefono, non della pagina
+        if (!schermoInteroDelBrowser()) senzaTransizione(function() {
+          iframe.classList.add("sparito");
+        });
         // di nuovo dopo il play, nel caso vimeo l'avesse ignorata a video fermo
         player.play().then(qualitaMassima).catch(function() {});
       } else {
@@ -425,9 +459,7 @@ function open_vimeo() {
         player.pause();
         riprendiSezione();
         setTimeout(riprendiSezione, 500);
-        rimpicciolisci = setTimeout(function() {
-          iframe.classList.remove("grande");
-        }, 900);
+        uscitoDalFilm();
       }
     });
   });

@@ -1438,6 +1438,16 @@ body.privacy_aperta .circle {
   transform: none;
 }
 
+/* all'uscita dallo schermo intero il player sfuma e sotto compare il sito */
+.vimeo_link {
+  transition: opacity 450ms ease;
+}
+
+.vimeo_link.sparito {
+  opacity: 0;
+  pointer-events: none;
+}
+
 #video_container {
   background-color: #000;
 }
