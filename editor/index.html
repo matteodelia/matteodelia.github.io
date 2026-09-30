@@ -47,7 +47,11 @@
 	<div id="editor" hidden>
 		<header class="barra">
 			<div class="barra-titolo">
-				<h1>Contenuti</h1>
+				<!-- due sezioni: i contenuti del sito e le statistiche (insight.js) -->
+				<div class="segmenti viste" role="tablist" aria-label="Sezione">
+					<button data-vista="contenuti" class="attivo" role="tab">Contenuti</button>
+					<button data-vista="insight" role="tab">Insight</button>
+				</div>
 				<span id="stato" class="stato"></span>
 			</div>
 			<div class="barra-azioni">
@@ -66,10 +70,13 @@
 			</div>
 		</header>
 
-		<main class="contenuto">
+		<main id="contenuti" class="contenuto">
 			<nav id="indice" class="indice"></nav>
 			<div id="categorie" class="categorie"></div>
 		</main>
+
+		<!-- INSIGHT: le statistiche del sito, lette dall'archivio privato (insight.js) -->
+		<main id="insight" class="insight" hidden></main>
 
 		<!-- PANNELLO DEL PROGETTO -->
 		<aside id="pannello" class="pannello" hidden>
@@ -167,6 +174,7 @@
 	<div id="avviso" class="avviso" hidden></div>
 
 	<script src="editor.js"></script>
+	<script src="insight.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,7 @@
 // con ?anteprima nell'indirizzo il sito mostra invece la bozza aperta nell'editor
 $(document).ready(function() {
   loader_reveal();
+  statistiche.carica();
   var bozza = null;
   if (location.search.indexOf("anteprima") >= 0) {
     try {
@@ -48,6 +49,7 @@ function prepara_categorie(progetti) {
   var numero = 1;
   return CATEGORIE.map(function(c) {
     var cat = {
+      chiave: c.chiave,
       menu: c.menu,
       classe: c.classe,
       contenuto: c.classe ? "." + c.classe : null,
@@ -298,6 +300,7 @@ function fermaLoader() {
 }
 
 function chiudiLoader() {
+  statistiche.pronto();
   // se l'animazione è ancora in corso (connessione lenta) si passa all'ultimo fotogramma
   // prima della salita; se non è mai partita resta com'è, senza cambi durante la salita
   var videoLoader = document.querySelector(".loader video");
@@ -394,8 +397,13 @@ function open_vimeo() {
     qualitaMassima();
     player.setCurrentTime(0).catch(function() {});
   });
+  player.on('timeupdate', function(data) {
+    statistiche.filmTempo(data.seconds, data.duration);
+  });
   player.on('fullscreenchange', function(data) {
     player.getFullscreen().then(function(fullscreen) {
+      if (fullscreen) statistiche.filmAperto();
+      else statistiche.filmChiuso();
       if (fullscreen) {
         // di nuovo dopo il play, nel caso vimeo l'avesse ignorata a video fermo
         player.play().then(qualitaMassima).catch(function() {});
@@ -483,6 +491,7 @@ function select_section(categorie) {
 
   function primaDiScorrere(cat, index) {
     var n = cat.primo + index;
+    statistiche.progetto(cat.chiave, cat.progetti[index]);
     $(".section").removeClass("selected");
     $($(".section").get(index)).addClass("selected");
     document.getElementById("current_page").innerHTML = index + 1;
@@ -520,6 +529,7 @@ function select_section(categorie) {
 
   function mostraCategoria(i) {
     var cat = categorie[i];
+    statistiche.progetto(cat.chiave, cat.progetti[0]);
     $(".cursor").css("display", "initial");
     // i video delle categorie precedenti stanno sopra: vanno nascosti
     if (cat.contenuto) $(cat.contenuto).removeClass("hidden");
@@ -552,6 +562,17 @@ function select_section(categorie) {
       $("body").css("cursor", "pointer");
       muoviLinea(voceMenu(i));
     }));
+  });
+
+  // contatti cliccati (per le statistiche)
+  $(".instagram_hover").on("click", function() {
+    statistiche.contatto("instagram");
+  });
+  $(".vimeo_hover").on("click", function() {
+    statistiche.contatto("vimeo");
+  });
+  $(".contacts_container a[href^='mailto']").on("click", function() {
+    statistiche.contatto("mail");
   });
 
   // hover dei contatti, solo su desktop: passando sulla mail il blocco delle altre icone
@@ -604,6 +625,7 @@ function select_section(categorie) {
 
   // all'apertura del sito si parte da music
   attivaSezioni(categorie[0]);
+  statistiche.progetto(categorie[0].chiave, categorie[0].progetti[0]);
   document.getElementById("total_page").innerHTML = categorie[0].vimeo.length;
   // l'iframe in index.html parte con un film: se il primo progetto è cambiato, carica quello giusto
   if (document.querySelector(".vimeo_link").src.indexOf("/" + categorie[0].vimeo[0]) < 0) {
@@ -615,6 +637,7 @@ function credits() {
   var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
   if (width < 1200) {
     $(".hover_credits").on("click", function() {
+      statistiche.crediti();
       $(".exit_credits").css("display", "initial");
       $(".credits_background").css("display", "initial");
       $(".description").css("opacity", "0");
@@ -633,13 +656,17 @@ function credits() {
       $(".credits_line").css("width", "1.5dvh");
     });
   } else {
+    // per le statistiche conta solo se il mouse resta sui crediti almeno un secondo e mezzo
+    var letturaCrediti = null;
     $(".hover_credits").on("mouseenter", function() {
+      letturaCrediti = setTimeout(statistiche.crediti, 1500);
       $(".description").css("opacity", "0");
       $(".role").css("opacity", "1");
       $(".credits_background").css("opacity", "0.75");
       $("#expand").css("display", "none");
     });
     $(".hover_credits").on("mouseleave", function() {
+      clearTimeout(letturaCrediti);
       $(".description").css("opacity", "1");
       $(".role").css("opacity", "0");
       $(".credits_background").css("opacity", "0");
@@ -816,6 +843,7 @@ function privacy() {
   function apri(subito) {
     if (privacyAperta) return;
     privacyAperta = true;
+    statistiche.privacy(true);
     caricaTesti();
     posizione = window.pageYOffset;
     scroll_sezioni.blocca();
@@ -837,6 +865,7 @@ function privacy() {
   function chiudi() {
     if (!privacyAperta) return;
     privacyAperta = false;
+    statistiche.privacy(false);
     pannello.classList.remove("aperto");
     pannello.blur();
     document.body.classList.remove("privacy_aperta");
@@ -877,6 +906,221 @@ function privacy() {
   // i testi si scaricano quando il sito ha finito di caricare, così il pannello si apre già pieno
   else setTimeout(caricaTesti, 7000);
 }
+
+// STATISTICHE: Umami, senza cookie e senza dati personali. Si contano in forma anonima
+// i progetti guardati e per quanto, i film aperti e per quanto vengono guardati, i crediti,
+// i contatti e la privacy. Umami li raccoglie, l'archivio (repository privato "insight")
+// li copia ogni notte e l'editor li mostra nella sezione Insight.
+// Non si conta niente in locale, nell'anteprima dell'editor e dai dispositivi dove si è
+// aperto l'editor (lì c'è "umami.disabled" nella memoria del browser).
+//
+// eventi:  progetto { progetto, categoria, secondi, ritorno? }  quando si lascia un progetto
+//          film     { progetto, categoria }                     film aperto a schermo intero
+//          visione  { progetto, categoria, secondi, durata, percentuale, ritorno? }
+//          crediti  { progetto, categoria }
+//          contatto { tipo: mail | instagram | vimeo }
+//          privacy
+// "ritorno" = seguito di una visita già contata (chi era uscito dalla pagina ed è tornato):
+// aggiunge tempo ma non un'altra visualizzazione
+var UMAMI_SITO = "6e8fb48d-7359-476f-9d71-2460184e09ae";
+
+var statistiche = (function() {
+  var MASSIMO_FERMO = 600; // oltre 10 minuti di fila sullo stesso progetto non si conta
+  var attuale = null; // progetto sullo schermo: { progetto, categoria, secondi, da, ritorno }
+  var film = null; // film a schermo intero: { progetto, categoria, secondi, ultimo, massimo, durata, ritorno }
+  var pause = {
+    loader: true
+  };
+  var coda = [];
+
+  function attive() {
+    return !!UMAMI_SITO && /(^|\.)matteodelia\.com$/.test(location.hostname) &&
+      location.search.indexOf("anteprima") < 0;
+  }
+
+  function carica() {
+    if (!attive()) return;
+    var script = document.createElement("script");
+    script.defer = true;
+    script.src = "https://cloud.umami.is/script.js";
+    script.setAttribute("data-website-id", UMAMI_SITO);
+    script.setAttribute("data-auto-track", "false");
+    script.setAttribute("data-domains", "matteodelia.com,www.matteodelia.com");
+    script.onload = function() {
+      if (!window.umami) return;
+      window.umami.track();
+      coda.forEach(function(invio) {
+        invio(window.umami);
+      });
+      coda = [];
+    };
+    document.head.appendChild(script);
+  }
+
+  function invia(nome, dati) {
+    var invio = function(umami) {
+      umami.track(nome, dati);
+    };
+    if (window.umami) invio(window.umami);
+    else if (attive()) coda.push(invio);
+  }
+
+  // il progetto si riconosce dal nome del suo video (img/music/cometelospiego.mp4 -> cometelospiego):
+  // resta uguale anche se nell'editor cambiano titolo o posizione
+  function chiave(p) {
+    var nome = (p && p.img && p.img.video || "").split("/").pop().replace(/\.[^.]*$/, "");
+    if (!nome) nome = String(p && p.title || "senza-titolo").toLowerCase().normalize("NFD")
+      .replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return nome;
+  }
+
+  function adesso() {
+    return Date.now() / 1000;
+  }
+
+  function inPausa() {
+    for (var motivo in pause)
+      if (pause[motivo]) return true;
+    return false;
+  }
+
+  // il tempo scorre solo con la pagina in vista, senza loader, film o privacy davanti
+  function ferma() {
+    if (attuale && attuale.da) attuale.secondi += Math.min(adesso() - attuale.da, MASSIMO_FERMO);
+    if (attuale) attuale.da = 0;
+  }
+
+  function riparti() {
+    if (attuale && !attuale.da && !inPausa()) attuale.da = adesso();
+  }
+
+  function pausa(motivo, attiva) {
+    pause[motivo] = attiva;
+    if (inPausa()) ferma();
+    else riparti();
+  }
+
+  // manda il tempo passato sul progetto; da un secondo in su conta come visualizzazione
+  function registraProgetto() {
+    ferma();
+    if (!attuale || attuale.secondi < 1) return;
+    var dati = {
+      progetto: attuale.progetto,
+      categoria: attuale.categoria,
+      secondi: Math.round(attuale.secondi)
+    };
+    if (attuale.ritorno) dati.ritorno = 1;
+    invia("progetto", dati);
+    attuale.secondi = 0;
+    attuale.ritorno = true;
+  }
+
+  function registraVisione() {
+    if (!film || film.secondi < 1) return;
+    var dati = {
+      progetto: film.progetto,
+      categoria: film.categoria,
+      secondi: Math.round(film.secondi),
+      durata: Math.round(film.durata),
+      percentuale: film.durata ? Math.min(100, Math.round(film.massimo / film.durata * 100)) : 0
+    };
+    if (film.ritorno) dati.ritorno = 1;
+    invia("visione", dati);
+    film.secondi = 0;
+    film.ritorno = true;
+  }
+
+  // chi esce dalla pagina (cambia app, chiude la scheda) potrebbe non tornare:
+  // si manda subito quello che c'è, e se torna si continua come "ritorno"
+  document.addEventListener("visibilitychange", function() {
+    var nascosta = document.visibilityState == "hidden";
+    pausa("nascosta", nascosta);
+    if (nascosta) {
+      registraProgetto();
+      registraVisione();
+    }
+  });
+
+  return {
+    carica: carica,
+
+    // chiamata quando il loader si chiude
+    pronto: function() {
+      pausa("loader", false);
+    },
+
+    // il progetto p della categoria è sullo schermo
+    progetto: function(categoria, p) {
+      if (!p) return;
+      var nome = chiave(p);
+      if (attuale && attuale.progetto == nome && attuale.categoria == categoria) return;
+      registraProgetto();
+      attuale = {
+        progetto: nome,
+        categoria: categoria,
+        secondi: 0,
+        da: 0,
+        ritorno: false
+      };
+      riparti();
+    },
+
+    filmAperto: function() {
+      if (!attuale || film) return;
+      pausa("film", true);
+      film = {
+        progetto: attuale.progetto,
+        categoria: attuale.categoria,
+        secondi: 0,
+        ultimo: null,
+        massimo: 0,
+        durata: 0,
+        ritorno: false
+      };
+      invia("film", {
+        progetto: film.progetto,
+        categoria: film.categoria
+      });
+    },
+
+    // conta solo i secondi davvero guardati: i salti in avanti o indietro non si sommano
+    filmTempo: function(secondi, durata) {
+      if (!film) return;
+      if (film.ultimo !== null) {
+        var passo = secondi - film.ultimo;
+        if (passo > 0 && passo < 2) film.secondi += passo;
+      }
+      film.ultimo = secondi;
+      film.massimo = Math.max(film.massimo, secondi);
+      if (durata) film.durata = durata;
+    },
+
+    filmChiuso: function() {
+      if (!film) return;
+      registraVisione();
+      film = null;
+      pausa("film", false);
+    },
+
+    crediti: function() {
+      if (attuale) invia("crediti", {
+        progetto: attuale.progetto,
+        categoria: attuale.categoria
+      });
+    },
+
+    contatto: function(tipo) {
+      invia("contatto", {
+        tipo: tipo
+      });
+    },
+
+    privacy: function(aperta) {
+      if (aperta) invia("privacy");
+      pausa("privacy", aperta);
+    }
+  };
+})();
 
 // SCROLL A SEZIONI (al posto di scrollify)
 // rotella, trackpad, touch e tastiera spostano di una sezione alla volta,
