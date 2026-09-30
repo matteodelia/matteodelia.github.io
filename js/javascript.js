@@ -18,6 +18,7 @@ $(document).ready(function() {
     open_vimeo();
     select_section(categorie);
     credits();
+    privacy();
   });
 });
 
@@ -26,23 +27,19 @@ $(document).ready(function() {
 var CATEGORIE = [{
   chiave: "music",
   menu: ".music",
-  classe: "music_content",
-  linea: "36.5vw"
+  classe: "music_content"
 }, {
   chiave: "documentary",
   menu: ".documentary",
-  classe: "documentary_content",
-  linea: "43.5vw"
+  classe: "documentary_content"
 }, {
   chiave: "brand",
   menu: ".adv",
-  classe: "adv_content",
-  linea: "50.5vw"
+  classe: "adv_content"
 }, {
   chiave: "narrative",
   menu: ".narrative",
-  classe: "",
-  linea: "57.5vw"
+  classe: ""
 }];
 
 // unisce le categorie ai loro progetti e numera i video in ordine:
@@ -54,7 +51,6 @@ function prepara_categorie(progetti) {
       menu: c.menu,
       classe: c.classe,
       contenuto: c.classe ? "." + c.classe : null,
-      linea: c.linea,
       progetti: progetti[c.chiave] || [],
       primo: numero
     };
@@ -320,7 +316,8 @@ function chiudiLoader() {
     }, 800);
   }
   setTimeout(function() {
-    scroll_sezioni.sblocca();
+    // con la privacy aperta (matteodelia.com/#privacy) lo scroll resta al pannello
+    if (!privacyAperta) scroll_sezioni.sblocca();
   }, 500);
 }
 
@@ -475,6 +472,15 @@ function select_section(categorie) {
     };
   }
 
+  // la voce del menu dove va la linea: su computer il riquadro sotto cui corre,
+  // su telefono la scritta (la linea le sta sopra, larga quanto lei)
+  function voceMenu(i) {
+    return document.querySelector(categorie[i].menu + (larghezza() > 1200 ? "" : " p"));
+  }
+  var muoviLinea = lineaMenu(document.querySelector(".selection_line"), function() {
+    return voceMenu(sezione);
+  });
+
   function primaDiScorrere(cat, index) {
     var n = cat.primo + index;
     $(".section").removeClass("selected");
@@ -532,14 +538,8 @@ function select_section(categorie) {
     categorie.forEach(function(c, j) {
       $(c.menu).css("opacity", j == i ? "1" : "0.3");
     });
-    if (larghezza() > 1200) {
-      $(".selection_line").css("left", cat.linea);
-    } else {
-      categorie.forEach(function(c, j) {
-        $(c.menu + " p").css("border-top", j == i ? "1px solid white" : "1px solid rgba(250,250,250,0)");
-      });
-      chiudiCrediti();
-    }
+    muoviLinea(voceMenu(i));
+    if (larghezza() <= 1200) chiudiCrediti();
     sezione = i;
   }
 
@@ -547,43 +547,41 @@ function select_section(categorie) {
   $(".header_title").on("mouseover", soloDesktop(function() {
     $("body").css("cursor", "pointer");
   }));
-  categorie.forEach(function(cat) {
+  categorie.forEach(function(cat, i) {
     $(cat.menu).on("mouseover", soloDesktop(function() {
       $("body").css("cursor", "pointer");
-      $(".selection_line").css("left", cat.linea);
+      muoviLinea(voceMenu(i));
     }));
   });
 
-  // hover dei contatti, solo su desktop
+  // hover dei contatti, solo su desktop: passando sulla mail il blocco delle altre icone
+  // ruota in vista; ogni icona si illumina quando ci passi sopra
+  var icone = ["privacy", "instagram", "vimeo"];
   $(".mail").on("mouseenter", soloDesktop(function() {
     $(".contacts_container_image").css("transform", "rotateY(0deg)translate(0, -50%)");
-    $(".vimeo").css("opacity", "0.5");
-    $(".instagram").css("opacity", "0.5");
-    $(".vimeo_hover").css("display", "initial");
-    $(".instagram_hover").css("display", "initial");
+    icone.forEach(function(icona) {
+      $("." + icona).css("opacity", "0.5");
+      $("." + icona + "_hover").css("display", "initial");
+    });
     $(".mail").css("opacity", "1");
   }));
-  $(".instagram_hover").on("mouseenter", soloDesktop(function() {
-    $(".instagram").css("opacity", "1");
-  }));
-  $(".instagram_hover").on("mouseleave", soloDesktop(function() {
-    $(".instagram").css("opacity", "0.5");
-  }));
-  $(".vimeo_hover").on("mouseenter", soloDesktop(function() {
-    $(".vimeo").css("opacity", "1");
-  }));
-  $(".vimeo_hover").on("mouseleave", soloDesktop(function() {
-    $(".vimeo").css("opacity", "0.5");
-  }));
+  icone.forEach(function(icona) {
+    $("." + icona + "_hover").on("mouseenter", soloDesktop(function() {
+      $("." + icona).css("opacity", "1");
+    }));
+    $("." + icona + "_hover").on("mouseleave", soloDesktop(function() {
+      $("." + icona).css("opacity", "0.5");
+    }));
+  });
   $(".mail").on("mouseleave", soloDesktop(function() {
     $(".mail").css("opacity", "0.5");
   }));
   $(".contacts_container").on("mouseleave", soloDesktop(function() {
     $(".contacts_container_image").css("transform", "rotateY(90deg)translate(0, -50%)");
-    $(".vimeo").css("opacity", "0");
-    $(".instagram").css("opacity", "0");
-    $(".vimeo_hover").css("display", "none");
-    $(".instagram_hover").css("display", "none");
+    icone.forEach(function(icona) {
+      $("." + icona).css("opacity", "0");
+      $("." + icona + "_hover").css("display", "none");
+    });
   }));
 
   // click sul menu: cambia categoria
@@ -598,7 +596,7 @@ function select_section(categorie) {
 
   $(".header_title, .header ul").on("mouseleave", function() {
     $("body").css("cursor", "default");
-    $(".selection_line").css("left", categorie[sezione].linea);
+    muoviLinea(voceMenu(sezione));
   });
   $(".header").on("mouseleave", function() {
     $("body").css("cursor", "none");
@@ -648,6 +646,236 @@ function credits() {
       $("#expand").css("display", "initial");
     });
   }
+}
+
+// LINEA DEL MENU: scorre da una voce all'altra (col mouse su computer, col tocco su telefono).
+// si muove con transform (niente ricalcolo della pagina a ogni fotogramma) su una curva morbida
+// con un arrivo lungo; il bordo davanti parte un attimo prima di quello dietro, così la linea
+// si allunga appena mentre corre e torna della sua misura all'arrivo.
+// la linea nel css è larga 100px: la misura vera la dà scaleX.
+// attuale() = la voce dove deve stare adesso, per rimetterla a posto dopo un resize
+function lineaMenu(linea, attuale) {
+  var BASE = 100;
+  var DURATA = 650;
+  var curva = cubicBezier(0.35, 0, 0.1, 1);
+  var corsa = null;
+  var meta = null;
+  var ferma = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function trasforma(sx, dx) {
+    return "translateX(" + sx + "px) scaleX(" + Math.max(dx - sx, 0) / BASE + ")";
+  }
+
+  // dove sono i bordi adesso, anche a metà corsa
+  function bordi() {
+    var t = getComputedStyle(linea).transform;
+    if (!t || t == "none") return null;
+    var m = new DOMMatrixReadOnly(t);
+    return {
+      sx: m.e,
+      dx: m.e + m.a * BASE
+    };
+  }
+
+  function vai(voce, subito) {
+    if (!voce) return;
+    var b = voce.getBoundingClientRect();
+    var c = linea.offsetParent ? linea.offsetParent.getBoundingClientRect() : {
+      left: 0
+    };
+    var arrivo = {
+      sx: b.left - c.left,
+      dx: b.right - c.left
+    };
+    // già lì o già in viaggio verso lì
+    if (meta && Math.abs(meta.sx - arrivo.sx) < 0.5 && Math.abs(meta.dx - arrivo.dx) < 0.5 && !subito) return;
+    var da = bordi();
+    if (corsa) corsa.cancel();
+    corsa = null;
+    meta = arrivo;
+    if (subito || ferma || !da || !linea.animate) {
+      linea.style.transform = trasforma(arrivo.sx, arrivo.dx);
+      return;
+    }
+    // quanto parte prima il bordo davanti: poco, e ancora meno sulle distanze lunghe
+    var distanza = Math.abs((arrivo.sx + arrivo.dx) - (da.sx + da.dx)) / 2;
+    var anticipo = distanza > 0 ? 0.03 * Math.min(1, 100 / distanza) : 0;
+    var aDestra = arrivo.sx + arrivo.dx > da.sx + da.dx;
+    function davanti(t) {
+      return curva(Math.min(1, t / (1 - anticipo)));
+    }
+    function dietro(t) {
+      return curva(Math.max(0, (t - anticipo) / (1 - anticipo)));
+    }
+    var fotogrammi = [];
+    for (var i = 0; i <= 40; i++) {
+      var t = i / 40;
+      var ps = aDestra ? dietro(t) : davanti(t);
+      var pd = aDestra ? davanti(t) : dietro(t);
+      fotogrammi.push({
+        transform: trasforma(da.sx + (arrivo.sx - da.sx) * ps, da.dx + (arrivo.dx - da.dx) * pd)
+      });
+    }
+    linea.style.transform = trasforma(arrivo.sx, arrivo.dx);
+    corsa = linea.animate(fotogrammi, {
+      duration: DURATA,
+      easing: "linear"
+    });
+    corsa.onfinish = function() {
+      corsa = null;
+    };
+  }
+
+  var attesa = null;
+  function aPosto() {
+    meta = null;
+    vai(attuale(), true);
+  }
+  window.addEventListener("resize", function() {
+    clearTimeout(attesa);
+    attesa = setTimeout(aPosto, 150);
+  });
+  // le scritte cambiano larghezza quando arriva il font
+  if (document.fonts) document.fonts.ready.then(aPosto);
+  aPosto();
+  vai.aPosto = aPosto;
+  return vai;
+}
+
+// la curva cubic-bezier del css, in javascript (x = tempo, risultato = avanzamento)
+function cubicBezier(x1, y1, x2, y2) {
+  function punto(a1, a2, t) {
+    return 3 * a1 * t * (1 - t) * (1 - t) + 3 * a2 * t * t * (1 - t) + t * t * t;
+  }
+  return function(x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var basso = 0,
+      alto = 1,
+      t = x;
+    for (var i = 0; i < 24; i++) {
+      t = (basso + alto) / 2;
+      if (punto(x1, x2, t) < x) basso = t;
+      else alto = t;
+    }
+    return punto(y1, y2, t);
+  };
+}
+
+// PRIVACY: pannello sopra il sito con lo stesso header; i testi stanno in privacy/index.html.
+// si apre dall'icona documento o con matteodelia.com/#privacy (ci porta anche matteodelia.com/privacy).
+// la X, il titolo, Esc o il tasto indietro lo chiudono e il sito è dove l'avevi lasciato
+var privacyAperta = false;
+
+function privacy() {
+  var pannello = document.getElementById("privacy_pannello");
+  var testi = null;
+  var posizione = 0;
+  var nascondi = null;
+
+  function caricaTesti() {
+    if (!testi) testi = fetch("privacy/").then(function(risposta) {
+      return risposta.text();
+    }).then(function(html) {
+      var main = new DOMParser().parseFromString(html, "text/html").querySelector("main");
+      pannello.querySelector(".privacy_corpo").innerHTML = main.innerHTML;
+    }).catch(function() {
+      testi = null;
+    });
+    return testi;
+  }
+
+  // lingua: quella del browser finché non se ne sceglie un'altra.
+  // la linea del menu è la stessa del sito: va sulla lingua scelta (e su computer
+  // su quella sotto il mouse), come riquadro su computer e come scritta su telefono
+  function lingua() {
+    return pannello.getAttribute("data-lingua");
+  }
+
+  function voce(l) {
+    var computer = window.innerWidth > 1200;
+    return pannello.querySelector('.privacy_testa a[data-lingua="' + l + '"]' + (computer ? "" : " p"));
+  }
+  pannello.setAttribute("data-lingua", (navigator.language || "it").slice(0, 2) == "it" ? "it" : "en");
+  var linea = lineaMenu(pannello.querySelector(".privacy_linea"), function() {
+    return voce(lingua());
+  });
+  $(".privacy_testa ul a").on("click", function() {
+    pannello.setAttribute("data-lingua", this.getAttribute("data-lingua"));
+    linea(voce(lingua()));
+  });
+  $(".privacy_testa ul a").on("mouseover", function() {
+    if (window.innerWidth > 1200) linea(voce(this.getAttribute("data-lingua")));
+  });
+  $(".privacy_testa ul").on("mouseleave", function() {
+    linea(voce(lingua()));
+  });
+
+  // compare in dissolvenza sul posto (css). subito = senza dissolvenza, quando si arriva
+  // da matteodelia.com/#privacy (è già sotto il loader)
+  function apri(subito) {
+    if (privacyAperta) return;
+    privacyAperta = true;
+    caricaTesti();
+    posizione = window.pageYOffset;
+    scroll_sezioni.blocca();
+    clearTimeout(nascondi);
+    pannello.hidden = false;
+    pannello.scrollTop = 0;
+    linea.aPosto();
+    if (subito) pannello.style.transition = "none";
+    pannello.offsetHeight;
+    pannello.classList.add("aperto");
+    pannello.offsetHeight;
+    pannello.style.transition = "";
+    document.body.classList.add("privacy_aperta");
+    pannello.focus({
+      preventScroll: true
+    });
+  }
+
+  function chiudi() {
+    if (!privacyAperta) return;
+    privacyAperta = false;
+    pannello.classList.remove("aperto");
+    pannello.blur();
+    document.body.classList.remove("privacy_aperta");
+    nascondi = setTimeout(function() {
+      pannello.hidden = true;
+    }, 500);
+    window.scrollTo(0, posizione);
+    scroll_sezioni.sblocca();
+  }
+
+  // #privacy nell'indirizzo, così il tasto indietro del telefono chiude il pannello
+  $(".privacy_hover").on("click", function(e) {
+    e.preventDefault();
+    apri();
+    history.pushState({
+      privacy: true
+    }, "", "#privacy");
+  });
+
+  function esci() {
+    if (history.state && history.state.privacy) {
+      history.back();
+    } else {
+      chiudi();
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  }
+  $(".privacy_chiudi, .privacy_titolo").on("click", esci);
+  $(document).on("keydown", function(e) {
+    if (privacyAperta && e.key == "Escape") esci();
+  });
+  window.addEventListener("popstate", function() {
+    if (location.hash == "#privacy") apri();
+    else chiudi();
+  });
+
+  if (location.hash == "#privacy") apri(true);
+  // i testi si scaricano quando il sito ha finito di caricare, così il pannello si apre già pieno
+  else setTimeout(caricaTesti, 7000);
 }
 
 // SCROLL A SEZIONI (al posto di scrollify)

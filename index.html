@@ -51,10 +51,12 @@
 		</ul>
 
 		<div class="contacts_container_image">
+			<img src="img/contacts/privacy.svg" alt="Privacy" class="privacy">
 			<img src="img/contacts/instagram.png" alt="Instagram" class="instagram">
 			<img src="img/contacts/vimeo.png" alt="Vimeo" class="vimeo">
 		</div>
 		<div class="contacts_container">
+			<a href="privacy/" class="privacy_hover" aria-label="Privacy"></a>
 			<a href="https://www.instagram.com/98matteodelia/" target="_blank" class="instagram_hover"></a>
 			<a href="https://vimeo.com/matteodelia" target="_blank" class="vimeo_hover"></a>
 			<a href="mailto:matteodelia1998@gmail.com" target="_blank">
@@ -62,6 +64,27 @@
 			</a>
 		</div>
 
+	</div>
+
+	<!-- PRIVACY: pannello sopra il sito con lo stesso header; i testi arrivano da privacy/index.html -->
+	<div id="privacy_pannello" class="privacy_pannello" role="dialog" aria-modal="true" aria-label="Privacy" tabindex="-1" hidden>
+		<div class="privacy_testa">
+			<a class="privacy_titolo"> MATTEO DELIA </a>
+			<div class="privacy_linea_base"></div>
+			<div class="privacy_linea"></div>
+			<ul>
+				<li> <a data-lingua="it">
+						<p> ITALIANO </p>
+					</a> </li>
+				<li> <a data-lingua="en">
+						<p> ENGLISH </p>
+					</a> </li>
+			</ul>
+			<a class="privacy_chiudi" aria-label="Chiudi">
+				<svg viewBox="0 0 102 102"><path d="M4 4 98 98M98 4 4 98" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" /></svg>
+			</a>
+		</div>
+		<div class="privacy_corpo"></div>
 	</div>
 
 	<iframe src="https://player.vimeo.com/video/1065696659" width="50" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="vimeo_link"></iframe>
