@@ -1730,3 +1730,47 @@ body.vista-insight .pannello {
     padding-top: max(16px, env(safe-area-inset-top));
   }
 }
+
+/* INSIGHT: esempio, primi giorni, aggiornamento */
+.insight-esempio,
+.insight-pochi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.insight-esempio {
+  background: rgba(255, 159, 10, 0.16);
+  font-weight: 500;
+}
+
+.insight-pochi {
+  background: var(--superficie);
+  box-shadow: var(--ombra);
+  color: var(--secondario);
+}
+
+.insight-messaggio > .bottone + .bottone,
+.insight-messaggio .bottone {
+  margin-right: 8px;
+}
+
+.grafico-pieno.in-corso {
+  opacity: 0.4;
+}
+
+.bottone.gira svg {
+  animation: gira 0.8s linear infinite;
+}
+
+@keyframes gira {
+  to {
+    transform: rotate(360deg);
+  }
+}

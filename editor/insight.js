@@ -1,12 +1,17 @@
 // INSIGHT: le statistiche di matteodelia.com dentro l'editor.
 // il sito manda le visite (senza cookie) alla raccolta su Cloudflare, ogni notte GitHub ne copia
-// i numeri nel repository privato matteodelia/insight (archivio/AAAA-MM.json e archivio/ultimo.json)
-// e qui si leggono da lì, con la stessa chiave GitHub dell'editor.
+// i numeri nel repository privato matteodelia/insight (archivio/AAAA-MM.json e archivio/ultimo.json).
+// Qui i giorni passati si leggono dall'archivio, oggi (e i giorni non ancora archiviati) direttamente
+// dalla raccolta: entrambi con la stessa chiave GitHub dell'editor. Il pulsante aggiorna al momento.
+// "Vedi un esempio" mostra com'è Insight con sei mesi di visite inventate.
 (function() {
   "use strict";
 
   var PROPRIETARIO = "matteodelia";
   var ARCHIVIO = "insight";
+  // per le prove si può puntare a una raccolta locale
+  var RACCOLTA = leggi("insight_raccolta") || "https://matteodelia-visite.raccolta-statistiche.workers.dev";
+  var INIZIO = "2026-09-30"; // il primo giorno contato sul sito
   var API = leggi("editor_api") || "https://api.github.com";
   var CATEGORIE = [{
     chiave: "music",
@@ -53,7 +58,7 @@
     "London": "Londra", "Paris": "Parigi", "Munich": "Monaco di Baviera", "Lisbon": "Lisbona",
     "Geneva": "Ginevra", "Zurich": "Zurigo", "Vienna": "Vienna", "Brussels": "Bruxelles",
     "Copenhagen": "Copenaghen", "Athens": "Atene", "Warsaw": "Varsavia", "Prague": "Praga",
-    "Seville": "Siviglia", "Cologne": "Colonia", "Moscow": "Mosca", "Beijing": "Pechino"
+    "Seville": "Siviglia", "Cologne": "Colonia", "Moscow": "Mosca", "Beijing": "Pechino", "Barcelona": "Barcellona"
   };
   // da quale sito arrivano: i domini si raggruppano per nome
   var FONTI = [
@@ -86,9 +91,15 @@
     ultimo: null,
     elenco: null, // nome file -> sha
     mesi: {}, // "2026-10" -> { sha, dati }
-    progetti: null // progetti.json del sito
+    progetti: null, // progetti.json del sito
+    vivi: {}, // giorno -> numeri presi adesso dalla raccolta (oggi e i giorni non ancora archiviati)
+    esatti: {}, // "dal|al" -> persone e visite esatte del periodo, dalla raccolta
+    vivo: false, // la raccolta ha risposto
+    letto: null, // quando
+    esempio: false // sei mesi di visite inventate
   };
   var caricamento = null;
+  var reale = null; // i dati veri messi da parte mentre si guarda l'esempio
 
   // le visite fatte da un dispositivo dove si usa l'editor non si contano (vale per tutto matteodelia.com)
   scrivi("statistiche_escludi", "1");
@@ -129,6 +140,66 @@
     });
   }
 
+  function raccolta(percorso) {
+    return fetch(RACCOLTA + percorso, {
+      cache: "no-store",
+      headers: {
+        "Authorization": "Bearer " + leggi("editor_chiave")
+      }
+    }).then(function(r) {
+      if (!r.ok) throw new Error("La raccolta ha risposto con un errore (" + r.status + ").");
+      return r.json();
+    });
+  }
+
+  function oggiRoma() {
+    var parti = {};
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Rome",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(new Date()).forEach(function(p) {
+      parti[p.type] = p.value;
+    });
+    return parti.year + "-" + parti.month + "-" + parti.day;
+  }
+
+  // oggi e i giorni dopo l'ultimo archiviato (di solito solo oggi) si chiedono alla raccolta
+  function caricaVivo() {
+    if (archivio.esempio) return Promise.resolve();
+    var oggi = oggiRoma();
+    var u = archivio.ultimo;
+    var da = u && u.ultimo_giorno ? spostaGiorni(u.ultimo_giorno, 1) : INIZIO;
+    if (da < spostaGiorni(oggi, -9)) da = spostaGiorni(oggi, -9);
+    if (da < INIZIO) da = INIZIO;
+    var giorni = [];
+    for (var g = da; g <= oggi; g = spostaGiorni(g, 1)) giorni.push(g);
+    return Promise.all(giorni.map(function(g) {
+      return raccolta("/giorno?data=" + g).then(function(d) {
+        archivio.vivi[g] = d;
+      });
+    })).then(function() {
+      archivio.vivo = true;
+      archivio.letto = new Date();
+      archivio.esatti = {};
+      return caricaEsatti();
+    }).catch(function() {
+      archivio.vivo = false;
+    });
+  }
+
+  // persone e visite esatte del periodo scelto (e di quello prima), dalla raccolta
+  function caricaEsatti() {
+    var intervallo = intervalli();
+    if (!intervallo || !archivio.vivo || archivio.esempio) return Promise.resolve();
+    var chiave = intervallo.dal + "|" + intervallo.al;
+    if (archivio.esatti[chiave]) return Promise.resolve();
+    return raccolta("/persone?dal=" + intervallo.dal + "&al=" + intervallo.al).then(function(t) {
+      archivio.esatti[chiave] = t;
+    }).catch(function() {});
+  }
+
   // scarica ultimo.json, l'elenco dei mesi e i mesi che servono al periodo scelto
   function carica(forza) {
     if (caricamento && !forza) return caricamento;
@@ -162,8 +233,11 @@
       throw errore;
     }).then(function(ultimo) {
       archivio.ultimo = ultimo;
-      return caricaMesi();
+      return caricaVivo();
     }).then(function() {
+      return Promise.all([caricaMesi(), caricaEsatti()]);
+    }).then(function() {
+      caricamento = null;
       disegna();
     }).catch(function(errore) {
       caricamento = null;
@@ -175,7 +249,7 @@
 
   function caricaMesi() {
     var intervallo = intervalli();
-    if (!intervallo) return Promise.resolve();
+    if (!intervallo || archivio.esempio) return Promise.resolve();
     var servono = mesiTra(intervallo.prima.dal < intervallo.dal ? intervallo.prima.dal : intervallo.dal, intervallo.al);
     return Promise.all(servono.map(function(mese) {
       var sha = archivio.elenco[mese + ".json"];
@@ -239,11 +313,12 @@
     return MESI[+p[1] - 1] + (conAnno ? " " + p[0] : "");
   }
 
-  // il periodo scelto e quello subito prima (per il confronto), sempre fino all'ultimo giorno copiato
+  // il periodo scelto e quello subito prima (per il confronto): fino a oggi se la raccolta risponde,
+  // se no fino all'ultimo giorno archiviato
   function intervalli() {
     var u = archivio.ultimo;
-    if (!u || !u.ultimo_giorno) return null;
-    var al = u.ultimo_giorno;
+    var al = archivio.vivo || archivio.esempio ? oggiRoma() : u && u.ultimo_giorno;
+    if (!al) return null;
     var primo = primoGiorno();
     var p = PERIODI.filter(function(x) {
       return x.id == periodo;
@@ -281,13 +356,20 @@
     var mesi = Object.keys(archivio.elenco || {}).filter(function(n) {
       return /^\d{4}-\d{2}\.json$/.test(n);
     }).sort();
-    var primo = mesi.length ? mesi[0].slice(0, 7) + "-01" : archivio.ultimo.ultimo_giorno;
+    var primo = mesi.length ? mesi[0].slice(0, 7) + "-01" : Object.keys(archivio.vivi).sort()[0] || INIZIO;
     var m = archivio.mesi[primo.slice(0, 7)];
     if (m) {
       var giorni = Object.keys(m.dati.giorni || {}).sort();
       if (giorni.length) primo = giorni[0];
     }
-    return primo;
+    return primo < INIZIO && !archivio.esempio ? INIZIO : primo;
+  }
+
+  // i numeri di un giorno: dalla raccolta se sono stati chiesti adesso, se no dall'archivio
+  function datiGiorno(g) {
+    if (archivio.vivi[g]) return archivio.vivi[g];
+    var m = archivio.mesi[g.slice(0, 7)];
+    return m && m.dati.giorni ? m.dati.giorni[g] : null;
   }
 
   // ---------- CALCOLI ----------
@@ -324,12 +406,12 @@
       t.oreSettimana.push([]);
       for (var h = 0; h < 24; h++) t.oreSettimana[g].push(0);
     }
-    mesiTra(dal, al).forEach(function(mese) {
-      var m = archivio.mesi[mese];
-      if (!m) return;
-      Object.keys(m.dati.giorni || {}).sort().forEach(function(giorno) {
-        if (giorno < dal || giorno > al) return;
-        var d = m.dati.giorni[giorno];
+    for (var giorno = dal; giorno <= al; giorno = spostaGiorni(giorno, 1)) {
+      aggiungi(giorno, datiGiorno(giorno));
+    }
+
+    function aggiungi(giorno, d) {
+        if (!d) return;
         t.giorni.push({
           giorno: giorno,
           persone: d.persone || 0,
@@ -357,17 +439,36 @@
           t.film += d.progetti[k].film || 0;
           t.crediti += d.progetti[k].crediti || 0;
         });
-      });
-    });
+    }
     return t;
   }
 
   // persone e visite esatte: dalle finestre dell'archivio (7, 30, 90 giorni) o dai totali dei mesi.
   // le persone di più mesi sono la somma dei mesi (chi torna in mesi diversi conta più volte)
   function totaliEsatti(intervallo, calcolati) {
-    var u = archivio.ultimo;
+    var u = archivio.ultimo || {};
     var p = intervallo.periodo;
-    if (p.giorni && u.finestre && u.finestre[p.id]) {
+    var vivi = archivio.esatti[intervallo.dal + "|" + intervallo.al];
+    if (vivi) {
+      return {
+        persone: vivi.persone,
+        visite: vivi.visite,
+        primaPersone: vivi.prima && intervallo.prima.dal >= primoGiorno() ? vivi.prima.persone : null,
+        primaVisite: vivi.prima && intervallo.prima.dal >= primoGiorno() ? vivi.prima.visite : null,
+        esatto: true
+      };
+    }
+    if (archivio.esempio) {
+      var prima = intervallo.prima.al >= intervallo.prima.dal ? calcola(intervallo.prima.dal, intervallo.prima.al) : null;
+      return {
+        persone: Math.round(calcolati.visite * 0.84),
+        visite: calcolati.visite,
+        primaPersone: prima && prima.visite ? Math.round(prima.visite * 0.84) : null,
+        primaVisite: prima && prima.visite ? prima.visite : null,
+        esatto: true
+      };
+    }
+    if (p.giorni && !archivio.vivo && u.finestre && u.finestre[p.id]) {
       var f = u.finestre[p.id];
       return {
         persone: f.persone,
@@ -554,22 +655,27 @@
     barra.appendChild(segmenti(PERIODI, periodo, function(id) {
       periodo = id;
       scrivi("insight_periodo", id);
-      caricaMesi().then(disegna);
+      Promise.all([caricaMesi(), caricaEsatti()]).then(disegna);
     }));
     var destra = el("div", "insight-stato");
     var u = archivio.ultimo;
-    if (u && u.oggi) {
+    var oggiDati = archivio.vivi[oggiRoma()] || (u && u.oggi && u.oggi.giorno == oggiRoma() ? u.oggi : null);
+    if (oggiDati) {
       var oggi = el("span", "insight-oggi");
       oggi.appendChild(el("span", "punto"));
-      oggi.appendChild(document.createTextNode("Oggi finora " + numero(u.oggi.persone) + (u.oggi.persone == 1 ? " persona" : " persone")));
+      oggi.appendChild(document.createTextNode("Oggi finora " + numero(oggiDati.persone) + (oggiDati.persone == 1 ? " persona" : " persone")));
       destra.appendChild(oggi);
     }
-    if (u && u.aggiornato) destra.appendChild(el("span", "secondario", "Aggiornato " + quando(u.aggiornato)));
+    var ultimaLettura = archivio.esempio ? null : archivio.letto ? archivio.letto.toISOString() : u && u.aggiornato;
+    if (ultimaLettura) destra.appendChild(el("span", "secondario", "Aggiornato " + quando(ultimaLettura)));
     var aggiorna = el("button", "bottone icona");
-    aggiorna.setAttribute("aria-label", "Aggiorna");
-    aggiorna.title = "Aggiorna";
+    aggiorna.setAttribute("aria-label", "Aggiorna adesso");
+    aggiorna.title = "Aggiorna adesso";
     aggiorna.innerHTML = '<svg viewBox="0 0 20 20" width="16" height="16"><path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    aggiorna.disabled = archivio.esempio;
     aggiorna.addEventListener("click", function() {
+      aggiorna.classList.add("gira");
+      aggiorna.disabled = true;
       carica(true);
     });
     destra.appendChild(aggiorna);
@@ -578,7 +684,7 @@
   }
 
   function disegnaAttesa() {
-    if (pagina.querySelector(".scheda")) return;
+    if (pagina.querySelector(".scheda") || pagina.querySelector(".numeri")) return;
     pagina.textContent = "";
     var s = scheda();
     s.classList.add("insight-messaggio");
@@ -635,20 +741,37 @@
   function disegna() {
     pagina.textContent = "";
     pagina.appendChild(barraInsight());
+
+    if (archivio.esempio) {
+      var esempio = el("div", "insight-esempio");
+      esempio.appendChild(el("span", "", "Esempio con sei mesi di visite inventate sui tuoi progetti"));
+      var torna = el("button", "bottone", "Torna ai tuoi dati");
+      torna.addEventListener("click", esciDallEsempio);
+      esempio.appendChild(torna);
+      pagina.appendChild(esempio);
+    }
     var intervallo = intervalli();
     if (!intervallo) {
       var vuota = scheda("Ancora nessun dato", "Il conteggio sul sito è partito: ogni notte alle 3:30 le visite del giorno prima vengono copiate nell'archivio e compaiono qui. Il primo giorno arriva stanotte.");
       vuota.classList.add("insight-messaggio");
+      vuota.appendChild(bottoneEsempio());
       pagina.appendChild(vuota);
       return;
     }
     var primo = primoGiorno();
+    // nelle prime settimane i numeri sono pochi: si può guardare com'è Insight con dati inventati
+    if (!archivio.esempio && primo > spostaGiorni(oggiRoma(), -21)) {
+      var pochi = el("div", "insight-pochi");
+      pochi.appendChild(el("span", "", "Il conteggio è partito il " + dataBreve(primo) + ": per ora i numeri sono pochi."));
+      pochi.appendChild(bottoneEsempio());
+      pagina.appendChild(pochi);
+    }
     var t = calcola(intervallo.dal, intervallo.al);
     var tp = intervallo.prima.dal >= primo ? calcola(intervallo.prima.dal, intervallo.prima.al) : null;
     var tot = totaliEsatti(intervallo, t);
 
     // l'archivio si aggiorna più volte al giorno: se è fermo qualcosa non va
-    var aggiornato = archivio.ultimo.aggiornato ? new Date(archivio.ultimo.aggiornato) : null;
+    var aggiornato = archivio.ultimo && archivio.ultimo.aggiornato && !archivio.esempio ? new Date(archivio.ultimo.aggiornato) : null;
     if (aggiornato && Date.now() - aggiornato > 2 * 864e5) {
       var giorniFermo = Math.floor((Date.now() - aggiornato) / 864e5);
       var fermo = el("div", "insight-avviso");
@@ -759,11 +882,13 @@
       t.giorni.forEach(function(g) {
         perGiorno[g.giorno] = g.persone;
       });
+      var oggi = oggiRoma();
       for (var g = intervallo.dal; g <= intervallo.al; g = spostaGiorni(g, 1)) {
         colonne.push({
           valore: perGiorno[g] || 0,
-          etichetta: GIORNI[giornoSettimana(g)] + " " + dataBreve(g),
-          breve: dataBreve(g)
+          etichetta: g == oggi ? "oggi finora" : GIORNI[giornoSettimana(g)] + " " + dataBreve(g),
+          breve: g == oggi ? "oggi" : dataBreve(g),
+          inCorso: g == oggi
         });
       }
     }
@@ -779,6 +904,7 @@
       var pieno = el("div", "grafico-pieno");
       pieno.style.height = Math.max(c.valore ? 3 : 1, c.valore / massimo * 100) + "%";
       if (!c.valore) pieno.classList.add("zero");
+      if (c.inCorso) pieno.classList.add("in-corso");
       b.appendChild(pieno);
       var mostra = function() {
         suggerimento.textContent = c.etichetta + " · " + numero(c.valore) + (c.valore == 1 ? " persona" : " persone");
@@ -1202,6 +1328,217 @@
     });
     s.appendChild(griglia);
     return s;
+  }
+
+  // ---------- ESEMPIO ----------
+  // sei mesi di visite inventate ma verosimili sui progetti veri del sito, per vedere com'è Insight
+  // quando i numeri ci sono. Si esce con "Torna ai tuoi dati": i dati veri non vengono toccati.
+
+  function bottoneEsempio() {
+    var b = el("button", "bottone", "Vedi un esempio");
+    b.addEventListener("click", entraNellEsempio);
+    return b;
+  }
+
+  function entraNellEsempio() {
+    reale = {};
+    ["ultimo", "elenco", "mesi", "vivi", "esatti", "vivo", "letto"].forEach(function(k) {
+      reale[k] = archivio[k];
+    });
+    (archivio.progetti ? Promise.resolve(archivio.progetti) : fetch("../progetti.json").then(function(r) {
+      return r.json();
+    })).then(function(progetti) {
+      archivio.progetti = progetti;
+      var finto = generaEsempio(progetti);
+      archivio.esempio = true;
+      archivio.ultimo = finto.ultimo;
+      archivio.elenco = finto.elenco;
+      archivio.mesi = finto.mesi;
+      archivio.vivi = finto.vivi;
+      archivio.esatti = {};
+      archivio.vivo = false;
+      window.scrollTo(0, 0);
+      disegna();
+    });
+  }
+
+  function esciDallEsempio() {
+    archivio.esempio = false;
+    if (reale) Object.keys(reale).forEach(function(k) {
+      archivio[k] = reale[k];
+    });
+    reale = null;
+    window.scrollTo(0, 0);
+    carica(true);
+  }
+
+  // numeri casuali sempre uguali (così l'esempio non cambia ogni volta)
+  function casuale(seme) {
+    return function() {
+      seme = seme + 0x6D2B79F5 | 0;
+      var t = Math.imul(seme ^ seme >>> 15, 1 | seme);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function generaEsempio(progettiSito) {
+    var caso = casuale(20260930);
+    var progetti = [];
+    CATEGORIE.forEach(function(c) {
+      (progettiSito[c.chiave] || []).forEach(function(p, i) {
+        progetti.push({
+          chiave: c.chiave + "/" + (p.img && p.img.video || "").split("/").pop().replace(/\.[^.]*$/, ""),
+          fascino: (0.35 + caso() * 1.4) * (i < 2 ? 1.5 : 1) * (c.chiave == "music" ? 1.3 : 1),
+          durata: [95, 150, 200, 240, 600][Math.floor(caso() * 5)]
+        });
+      });
+    });
+    var citta = [["Milan", "IT", 34], ["Rome", "IT", 12], ["Turin", "IT", 8], ["Bologna", "IT", 6], ["Naples", "IT", 4],
+      ["Florence", "IT", 4], ["Bergamo", "IT", 3], ["London", "GB", 5], ["Paris", "FR", 4], ["Berlin", "DE", 3],
+      ["Barcelona", "ES", 2], ["Lugano", "CH", 2], ["New York", "US", 2], ["Los Angeles", "US", 1]];
+    var fonti = [["", 30], ["l.instagram.com", 38], ["instagram.com", 6], ["google.com", 9], ["vimeo.com", 7],
+      ["linkedin.com", 3], ["behance.net", 2], ["facebook.com", 2], ["chatgpt.com", 1]];
+    var dispositivi = [["mobile", 64], ["desktop", 32], ["tablet", 4]];
+    var browser = [["instagram", 30], ["safari", 30], ["chrome", 32], ["firefox", 4], ["edge", 4]];
+    var sistemi = [["iOS", 52], ["Mac OS", 22], ["Android", 14], ["Windows", 12]];
+    var contatti = [["instagram", 5], ["mail", 3], ["vimeo", 2]];
+    var orePeso = [2, 1, 0.8, 0.4, 0.3, 0.3, 0.6, 1.5, 2.5, 3, 3, 3.2, 4, 4.5, 3.5, 3, 3, 3.2, 3.8, 5, 6.5, 7, 6, 4];
+
+    function scegli(voci) {
+      var totale = 0;
+      voci.forEach(function(v) {
+        totale += v[v.length - 1];
+      });
+      var x = caso() * totale;
+      for (var i = 0; i < voci.length; i++) {
+        x -= voci[i][voci[i].length - 1];
+        if (x <= 0) return voci[i];
+      }
+      return voci[voci.length - 1];
+    }
+
+    function piu(dove, chiave) {
+      dove[chiave] = (dove[chiave] || 0) + 1;
+    }
+    var pesiProgetti = progetti.map(function(p) {
+      return [p, p.fascino];
+    });
+    var pesiOre = orePeso.map(function(p, i) {
+      return [i, p];
+    });
+    var oggi = oggiRoma();
+    var ieri = spostaGiorni(oggi, -1);
+    var oraAdesso = new Date().getHours();
+    var mesi = {},
+      vivi = {};
+    var n = 0;
+    for (var g = spostaGiorni(oggi, -182); g <= oggi; g = spostaGiorni(g, 1), n++) {
+      var gs = giornoSettimana(g);
+      var base = 14 + n * 0.16 + (gs >= 5 ? 7 : 0) + (gs == 3 ? 3 : 0);
+      // due lavori nuovi: qualche giorno di picco
+      if (n >= 60 && n < 64) base *= 2.6 - (n - 60) * 0.35;
+      if (n >= 130 && n < 133) base *= 2.2 - (n - 130) * 0.3;
+      var quante = Math.max(0, Math.round(base * (0.75 + caso() * 0.5)));
+      var d = {
+        persone: 0, visite: 0, visualizzazioni: 0, rimbalzi: 0, tempo_totale: 0, ore: [], paesi: {}, citta: {},
+        fonti: {}, canali: {}, dispositivi: {}, browser: {}, sistemi: {}, eventi: {}, progetti: {}, contatti: {}, privacy: 0
+      };
+      for (var h = 0; h < 24; h++) d.ore.push(0);
+      for (var v = 0; v < quante; v++) {
+        var ora = scegli(pesiOre)[0];
+        if (g == oggi && ora > oraAdesso) continue;
+        d.visite++;
+        d.visualizzazioni++;
+        d.ore[ora]++;
+        var c = scegli(citta);
+        piu(d.citta, c[0] + "|" + c[1]);
+        piu(d.paesi, c[1]);
+        var f = scegli(fonti)[0];
+        if (f) piu(d.fonti, f);
+        else piu(d.canali, "direct");
+        piu(d.dispositivi, scegli(dispositivi)[0]);
+        piu(d.browser, scegli(browser)[0]);
+        piu(d.sistemi, scegli(sistemi)[0]);
+        var visti = caso() < 0.16 ? 0 : 1 + Math.floor(caso() * caso() * 7);
+        if (!visti) d.rimbalzi++;
+        for (var k = 0; k < visti; k++) {
+          var p = scegli(pesiProgetti)[0];
+          var x = d.progetti[p.chiave] || (d.progetti[p.chiave] = {
+            viste: 0, persone: 0, secondi: 0, film: 0, visioni: 0, visione_secondi: 0, visione_durata: 0,
+            visione_persone: 0, visione_percentuale: 0, completati: 0, crediti: 0
+          });
+          x.viste++;
+          x.persone++;
+          var secondi = Math.max(1, Math.round(-Math.log(1 - caso()) * (3 + p.fascino * 7)));
+          x.secondi += secondi;
+          d.tempo_totale += secondi;
+          piu(d.eventi, "progetto");
+          if (caso() < 0.05 + p.fascino * 0.08) {
+            var arrivo = Math.min(1, -Math.log(1 - caso()) * (0.18 + p.fascino * 0.2));
+            var guardati = Math.max(3, Math.round(arrivo * p.durata));
+            x.film++;
+            x.visioni++;
+            x.visione_secondi += guardati;
+            x.visione_durata += p.durata;
+            x.visione_persone++;
+            x.visione_percentuale += Math.round(arrivo * 100);
+            if (arrivo >= 0.9) x.completati++;
+            d.tempo_totale += guardati;
+            piu(d.eventi, "film");
+            piu(d.eventi, "visione");
+          }
+          if (caso() < 0.05) {
+            x.crediti++;
+            piu(d.eventi, "crediti");
+          }
+        }
+        if (caso() < 0.035) {
+          piu(d.contatti, scegli(contatti)[0]);
+          piu(d.eventi, "contatto");
+        }
+        if (caso() < 0.01) {
+          d.privacy++;
+          piu(d.eventi, "privacy");
+        }
+      }
+      d.persone = Math.round(d.visite * 0.92);
+      if (g == oggi) {
+        vivi[g] = d;
+        continue;
+      }
+      var mese = g.slice(0, 7);
+      var m = mesi[mese] || (mesi[mese] = {
+        sha: "esempio",
+        dati: {
+          mese: mese,
+          giorni: {},
+          totali: {
+            persone: 0,
+            visite: 0
+          }
+        }
+      });
+      m.dati.giorni[g] = d;
+      m.dati.totali.visite += d.visite;
+      m.dati.totali.persone = Math.round(m.dati.totali.visite * 0.8);
+    }
+    var elenco = {
+      "ultimo.json": "esempio"
+    };
+    Object.keys(mesi).forEach(function(mese) {
+      elenco[mese + ".json"] = "esempio";
+    });
+    return {
+      ultimo: {
+        ultimo_giorno: ieri,
+        aggiornato: new Date().toISOString(),
+        finestre: {}
+      },
+      elenco: elenco,
+      mesi: mesi,
+      vivi: vivi
+    };
   }
 
   // ---------- CONTENUTI / INSIGHT ----------
