@@ -324,52 +324,93 @@ function chiudiLoader() {
   }, 500);
 }
 
+// CURSORE (solo computer con mouse o trackpad): al posto della freccia un triangolo che segue il
+// mouse e un cerchio che lo raggiunge con un piccolo ritardo, a onda.
+// si muove con transform (lo fa la scheda grafica, senza ricalcolare la pagina) una volta per
+// fotogramma dello schermo, ed è agganciato alla finestra: resta sotto il mouse anche mentre la
+// pagina scorre. quando il cerchio ha raggiunto il mouse si ferma, e a mouse fermo non costa niente.
+// il ritardo sono due inseguimenti in fila, 12 e 58 ms, tarati per muoversi come il cursore di prima
+// (a metà strada in 60 ms, dietro di 75 px a un mouse che corre), uguale a 60 e a 120 Hz
 function cursor() {
-  jQuery(document).ready(function() {
+  if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  var SCOSTAMENTO = 20; // il cursore sta un po' in basso a destra della punta del mouse
+  var RITARDO_1 = 12;
+  var RITARDO_2 = 58;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) RITARDO_1 = RITARDO_2 = 0.01;
+  var contenitore = document.querySelector(".cursor");
+  var triangolo = document.querySelector(".player");
+  var cerchio = document.querySelector(".circle");
+  var mouse = null;
+  var meta = null; // a metà dei due inseguimenti
+  var pos = null; // dove sta il cerchio
+  var ultimo = 0;
+  var giro = null;
 
-    var mouseX = 0,
-      mouseY = 0;
-    var xp = 0,
-      yp = 0;
-    var xp1 = 0,
-      yp1 = 0;
+  function metti(elemento, x, y) {
+    elemento.style.transform = "translate3d(" + x + "px, " + y + "px, 0) translate(-50%, -50%)";
+  }
 
-    $(document).mousemove(function(e) {
-      mouseX = e.pageX + 20;
-      mouseY = e.pageY + 20;
-    });
+  function insegui(da, verso, dt, ritardo) {
+    var k = 1 - Math.exp(-dt / ritardo);
+    da.x += (verso.x - da.x) * k;
+    da.y += (verso.y - da.y) * k;
+  }
 
-    setInterval(function() {
-      xp += (mouseX - xp);
-      yp += (mouseY - yp);
-      xp1 += ((mouseX - xp1) / 1.5);
-      yp1 += ((mouseY - yp1) / 1.5);
-      $(".player").css({
-        left: xp + 'px',
-        top: yp + 'px'
-      });
-      $(".circle").css({
-        left: xp1 + 'px',
-        top: yp1 + 'px'
-      });
-    }, 20);
+  function passo(ora) {
+    // il tempo passato dall'ultimo fotogramma, a passetti di 4 ms: così il movimento è lo stesso
+    // su qualsiasi schermo
+    var tempo = Math.min(ora - ultimo, 100);
+    ultimo = ora;
+    while (tempo > 0) {
+      var dt = Math.min(4, tempo);
+      tempo -= dt;
+      insegui(meta, mouse, dt, RITARDO_1);
+      insegui(pos, meta, dt, RITARDO_2);
+    }
+    metti(triangolo, mouse.x, mouse.y);
+    metti(cerchio, pos.x, pos.y);
+    if (Math.abs(mouse.x - pos.x) < 0.1 && Math.abs(mouse.y - pos.y) < 0.1) {
+      metti(cerchio, mouse.x, mouse.y);
+      giro = null;
+      return;
+    }
+    giro = requestAnimationFrame(passo);
+  }
 
+  document.addEventListener("mousemove", function(e) {
+    mouse = {
+      x: e.clientX + SCOSTAMENTO,
+      y: e.clientY + SCOSTAMENTO
+    };
+    // la prima volta compare già sotto il mouse, senza arrivare dall'angolo
+    if (!pos) {
+      meta = { x: mouse.x, y: mouse.y };
+      pos = { x: mouse.x, y: mouse.y };
+    }
+    contenitore.classList.add("attivo");
+    if (!giro) {
+      ultimo = performance.now();
+      giro = requestAnimationFrame(passo);
+    }
+  }, {
+    passive: true
+  });
+  // fuori dalla finestra il cursore sparisce
+  document.addEventListener("mouseout", function(e) {
+    if (!e.relatedTarget) contenitore.classList.remove("attivo");
   });
 }
 
+// sopra all'header torna la freccia normale e il cursore del sito si nasconde
 function change_mouse() {
   $(".header").hover(
     function() {
       $("body").css("cursor", "auto");
-      $(".cursor").animate({
-        "opacity": "0"
-      }, 10, 'swing');
+      $(".cursor").addClass("sopra-header");
     },
     function() {
       $("body").css("cursor", "none");
-      $(".cursor").animate({
-        "opacity": "1"
-      }, 10, 'swing');
+      $(".cursor").removeClass("sopra-header");
     }
   );
 }

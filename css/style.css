@@ -44,25 +44,49 @@
     background-color: black;
   }
 
+  /* CURSORE: triangolo e cerchio agganciati alla finestra; la posizione gliela dà cursor() in
+     js/javascript.js con transform. nascosto finché il mouse non si muove, fuori dalla finestra
+     e sopra all'header (dove torna la freccia) */
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+
+  .cursor.attivo {
+    opacity: 1;
+  }
+
+  .cursor.attivo.sopra-header {
+    opacity: 0;
+  }
+
   .player {
-    position: absolute;
-    transform: translate(-50%, -50%);
+    position: fixed;
+    top: 0;
+    left: 0;
     border-top: 4px solid transparent;
     border-left: 8px solid #fff;
     border-bottom: 4px solid transparent;
-    z-index: 1000;
+    pointer-events: none;
+    will-change: transform;
   }
 
   .circle {
-    position: absolute;
-    transform: translate(-50%, -50%);
+    position: fixed;
+    top: 0;
+    left: 0;
     border: solid 1px #fff;
     width: 45px;
     height: 45px;
     border-radius: 50%;
     opacity: 0.5;
-    transition: all 100ms ease-out;
-    z-index: 1000;
+    pointer-events: none;
+    will-change: transform;
   }
 
   /* BUFFER */
