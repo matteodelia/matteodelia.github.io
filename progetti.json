@@ -336,6 +336,7 @@
       "subtitle": "Puma",
       "description": "Commercial",
       "role": [
+        "Client: Puma",
         "Director: @davide_vicari",
         "Production House: @nssfactory",
         "Creative Direction: @vincenzo__schioppa",
@@ -352,14 +353,15 @@
       "subtitle": "Mango",
       "description": "Lookbook",
       "role": [
-        "regia @98matteodelia",
-        "dop @jacopo_ambroggio",
-        "set design @danidevito_studio",
-        "styling @mmariammorato",
-        "color grading @lucamoro_",
-        "production @teruteru_prod",
-        "location @anticamera_location",
-        "direzione artistica @studiomare.co"
+        "Client: Mango Home",
+        "Director: @98matteodelia",
+        "DOP: @jacopo_ambroggio",
+        "Production House: @teruteru_prod",
+        "Creative Direction: @studiomare.co",
+        "Set Design: @danidevito_studio",
+        "Stylist: @mmariammorato",
+        "Color Grading: @lucamoro_",
+        "Location Manager: @anticamera_location"
       ],
       "img": {
         "video": "img/brand/mango_home.mp4",
