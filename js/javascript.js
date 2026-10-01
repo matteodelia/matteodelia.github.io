@@ -458,7 +458,8 @@ function open_vimeo() {
   function nulla() {}
 
   function apri() {
-    if (aperto) return;
+    // con i crediti aperti un clic sul progetto non apre il film (vedi credits)
+    if (aperto || crediti.aperti) return;
     aperto = true;
     clearTimeout(attesa);
     scroll_sezioni.blocca();
@@ -529,7 +530,7 @@ function select_section(categorie) {
         '\n    <p class="title">' + testo(p.title) + '</p>' +
         '\n    <p class="subtitle">' + testo(p.subtitle) + '</p>' +
         '\n    <p class="description">' + testo(p.description) + '</p>' +
-        '\n    <p class="role">\n      ' + p.role.map(testo).join('<br>\n      ') + '\n    </p>' +
+        '\n    <div class="crediti">' + elencoCrediti(p.role) + '</div>' +
         '\n  </div>' +
         '\n</div>';
     }).join("") + "\n";
@@ -571,16 +572,6 @@ function select_section(categorie) {
     return cat.primo + cat.vimeo.length - 1;
   }
 
-  function chiudiCrediti() {
-    $(".exit_credits").css("display", "none");
-    $(".credits_background").css("display", "none");
-    $(".description").css("opacity", "1");
-    $(".role").css("opacity", "0");
-    $(".credits_background").css("opacity", "0");
-    $("#expand").css("display", "initial");
-    $(".credits_line").css("width", "1.5dvh");
-  }
-
   function soloDesktop(fn) {
     return function() {
       if (larghezza() > 1200) fn();
@@ -598,6 +589,7 @@ function select_section(categorie) {
 
   function primaDiScorrere(cat, index) {
     var n = cat.primo + index;
+    crediti.chiudi();
     statistiche.progetto(cat.chiave, cat.progetti[index]);
     $(".section").removeClass("selected");
     $($(".section").get(index)).addClass("selected");
@@ -606,7 +598,6 @@ function select_section(categorie) {
     video(n).style.opacity = "1";
     if (sonoVideo()) video(n).play();
     caricaVimeo(cat.vimeo[index]);
-    if (larghezza() < 1200) chiudiCrediti();
   }
 
   function dopoAverScorso(cat, index) {
@@ -636,6 +627,7 @@ function select_section(categorie) {
 
   function mostraCategoria(i) {
     var cat = categorie[i];
+    crediti.chiudi();
     statistiche.progetto(cat.chiave, cat.progetti[0]);
     $(".cursor").css("display", "initial");
     // i video delle categorie precedenti stanno sopra: vanno nascosti
@@ -656,7 +648,6 @@ function select_section(categorie) {
       $(c.menu).css("opacity", j == i ? "1" : "0.3");
     });
     muoviLinea(voceMenu(i));
-    if (larghezza() <= 1200) chiudiCrediti();
     sezione = i;
   }
 
@@ -740,46 +731,197 @@ function select_section(categorie) {
   }
 }
 
+// CREDITI DI UN PROGETTO: ogni riga di "role" in progetti.json è "ruolo @nome" (o "Ruolo: nome")
+// e diventa una riga a due colonne, il ruolo a sinistra e i nomi a destra. una riga senza ruolo
+// che segue una finita con "+" (una lista di nomi andata a capo) si attacca a quella.
+// i nomi con la @ sono link al loro profilo instagram
+function elencoCrediti(righe) {
+  var elenco = [];
+  (righe || []).forEach(function(r) {
+    r = String(r).trim();
+    if (!r) return;
+    var duepunti = r.indexOf(":");
+    var chiocciola = r.indexOf("@");
+    var riga = ["", r];
+    if (duepunti > 0 && (chiocciola < 0 || duepunti < chiocciola)) {
+      riga = [r.slice(0, duepunti).trim(), r.slice(duepunti + 1).trim()];
+    } else if (chiocciola > 0) {
+      riga = [r.slice(0, chiocciola).trim(), r.slice(chiocciola).trim()];
+    }
+    var prima = elenco[elenco.length - 1];
+    if (!riga[0] && prima && /\+$/.test(prima[1])) prima[1] += " " + riga[1];
+    else elenco.push(riga);
+  });
+  return '<div class="crediti_elenco">' + elenco.map(function(riga) {
+    return '<div class="crediti_riga' + (riga[0] ? '' : ' senza_ruolo') + '"><div class="crediti_dentro">' +
+      (riga[0] ? '<span class="crediti_ruolo">' + testo(riga[0]) + '</span>' : '') +
+      '<span class="crediti_nomi">' + nomiCrediti(riga[1]) + '</span></div></div>';
+  }).join("") + '</div>';
+}
+
+function nomiCrediti(s) {
+  return testo(s).replace(/(^|[\s+(,\/|])@([A-Za-z0-9._]+)/g, function(tutto, prima, nome) {
+    // un nome instagram non finisce col punto: quello è punteggiatura
+    var profilo = nome.replace(/\.+$/, "");
+    return prima + '<a href="https://www.instagram.com/' + profilo + '/" target="_blank" rel="noopener">@' +
+      profilo + '</a>' + nome.slice(profilo.length);
+  }).replace(/ \+ /g, '&nbsp;<span class="crediti_piu">+</span> '); // il + resta col nome prima
+}
+
+// CREDITI: si aprono con un clic su "CREDITS", su computer e su telefono. titolo e sottotitolo
+// salgono sotto l'header, il video dietro si scurisce e le righe dei crediti salgono dal basso una
+// dopo l'altra (le animazioni sono nel css). i nomi con la @ aprono instagram.
+// si chiudono con la X (al posto della mail, come per la privacy e il film), con Esc, con un clic
+// fuori dalla lista o di nuovo su "CREDITS"; passando a un altro progetto si chiudono da soli.
+// se la lista è più lunga dello spazio, rotella e dito prima la fanno scorrere
+var crediti = {
+  aperti: false,
+  chiudi: function() {}
+};
+
 function credits() {
-  var width = (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
-  if (width < 1200) {
-    $(".hover_credits").on("click", function() {
-      statistiche.crediti();
-      $(".exit_credits").css("display", "initial");
-      $(".credits_background").css("display", "initial");
-      $(".description").css("opacity", "0");
-      $(".role").css("opacity", "1");
-      $(".credits_background").css("opacity", "0.75");
-      $("#expand").css("display", "none");
-      $(".credits_line").css("width", "80dvw");
+  var etichetta = document.querySelector(".credits");
+  // la X la crea il codice, come quella del film: sta nell'header al posto della mail
+  var x = document.querySelector(".chiudi_crediti");
+  if (!x) {
+    x = document.createElement("button");
+    x.className = "chiudi_crediti";
+    x.setAttribute("aria-label", "Chiudi i crediti");
+    x.innerHTML = '<svg viewBox="0 0 102 102"><path d="M4 4 98 98M98 4 4 98" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" /></svg>';
+    document.querySelector(".header").appendChild(x);
+  }
+  var sopraLista = false;
+  var attesa = null;
+
+  function computer() {
+    return window.innerWidth > 1200;
+  }
+
+  // l'altezza su cui il css misura le posizioni: vh su computer, dvh sul telefono. non sempre
+  // è window.innerHeight (in alcuni browser dentro le app non lo è): la si chiede al browser
+  function altezzaCss(pc) {
+    var prova = document.createElement("div");
+    prova.style.cssText = "position: fixed; top: 0; width: 0; visibility: hidden; height: 100" + (pc ? "vh" : "dvh");
+    document.body.appendChild(prova);
+    var h = prova.offsetHeight;
+    document.body.removeChild(prova);
+    return h || window.innerHeight;
+  }
+
+  // le misure per la sezione sullo schermo: di quanto salgono titolo e sottotitolo (--salita),
+  // dove comincia e fin dove arriva la lista, quanto è larga la colonna dei ruoli (--ruolo),
+  // su computer una o due colonne, e quando parte ogni riga (--entra, dall'alto in basso)
+  // e quando scende chiudendo (--esce, dal basso in alto)
+  function disponi() {
+    var sezione = document.querySelector("#scrollify_section .section.selected");
+    var lista = sezione && sezione.querySelector(".crediti");
+    if (!lista) return;
+    var sotto = sezione.querySelector(".subtitle");
+    var elenco = lista.querySelector(".crediti_elenco");
+    var righe = Array.prototype.slice.call(lista.querySelectorAll(".crediti_riga"));
+    var pc = computer();
+    var h = altezzaCss(pc);
+    var salita = -Math.round((pc ? 0.22 : 0.18) * h);
+    sezione.style.setProperty("--salita", salita + "px");
+    var base = sotto.offsetParent.getBoundingClientRect().top;
+    var inizio = Math.round(base + sotto.offsetTop + salita + sotto.offsetHeight + (pc ? 0.02 : 0.025) * h);
+    var fine = Math.round((pc ? 0.875 : 0.865) * h);
+    lista.style.top = inizio + "px";
+    lista.style.maxHeight = Math.max(fine - inizio, 0.15 * h) + "px";
+    // colonna dei ruoli larga quanto il ruolo più lungo, al massimo il 40% (36% sul telefono)
+    lista.classList.remove("due", "scorre");
+    lista.style.setProperty("--ruolo", "max-content");
+    var ruolo = 0;
+    lista.querySelectorAll(".crediti_ruolo").forEach(function(r) {
+      ruolo = Math.max(ruolo, r.getBoundingClientRect().width);
     });
-    $(".exit_credits").on("click", function() {
-      $(".exit_credits").css("display", "none");
-      $(".credits_background").css("display", "none");
-      $(".description").css("opacity", "1");
-      $(".role").css("opacity", "0");
-      $(".credits_background").css("opacity", "0");
-      $("#expand").css("display", "initial");
-      $(".credits_line").css("width", "1.5dvh");
+    lista.style.setProperty("--ruolo", Math.ceil(Math.min(ruolo, elenco.clientWidth * (pc ? 0.4 : 0.36))) + "px");
+    if (pc && elenco.offsetHeight > lista.clientHeight + 1) lista.classList.add("due");
+    if (elenco.offsetHeight > lista.clientHeight + 1) lista.classList.add("scorre");
+    // l'onda: la prima riga parte quando il sottotitolo che sale le è passato sopra,
+    // le altre una dopo l'altra, tutte in poco più di mezzo secondo
+    var cima = elenco.getBoundingClientRect().top;
+    var linea = parseFloat(getComputedStyle(elenco).lineHeight) || 20;
+    var altezze = righe.map(function(r) {
+      return (r.getBoundingClientRect().top - cima) / linea;
     });
-  } else {
-    // per le statistiche conta solo se il mouse resta sui crediti almeno un secondo e mezzo
-    var letturaCrediti = null;
-    $(".hover_credits").on("mouseenter", function() {
-      letturaCrediti = setTimeout(statistiche.crediti, 1500);
-      $(".description").css("opacity", "0");
-      $(".role").css("opacity", "1");
-      $(".credits_background").css("opacity", "0.75");
-      $("#expand").css("display", "none");
-    });
-    $(".hover_credits").on("mouseleave", function() {
-      clearTimeout(letturaCrediti);
-      $(".description").css("opacity", "1");
-      $(".role").css("opacity", "0");
-      $(".credits_background").css("opacity", "0");
-      $("#expand").css("display", "initial");
+    var ultima = Math.max.apply(null, altezze.concat([1]));
+    var passo = Math.min(40, 600 / ultima);
+    var passoUscita = Math.min(10, 120 / ultima);
+    righe.forEach(function(r, i) {
+      r.style.setProperty("--entra", Math.round(520 + altezze[i] * passo) + "ms");
+      r.style.setProperty("--esce", Math.round((ultima - altezze[i]) * passoUscita) + "ms");
     });
   }
+
+  function apri() {
+    if (crediti.aperti || privacyAperta) return;
+    crediti.aperti = true;
+    clearTimeout(attesa);
+    disponi();
+    document.body.classList.add("crediti_aperti");
+    statistiche.crediti();
+  }
+
+  function chiudi() {
+    if (!crediti.aperti) return;
+    crediti.aperti = false;
+    document.body.classList.remove("crediti_aperti");
+    if (sopraLista) cursoreSito(true);
+  }
+  crediti.chiudi = chiudi;
+
+  // su computer sopra la lista torna la freccia del sistema, come sull'header: il cursore del sito
+  // disegna il triangolo 20px più in basso a destra del punto che clicca, e fra nomi così vicini
+  // si cliccherebbe quello sopra
+  function cursoreSito(si) {
+    sopraLista = !si;
+    $("body").css("cursor", si ? "none" : "auto");
+    $(".cursor").toggleClass("sopra-header", !si);
+  }
+  $(document).on("mouseenter", ".crediti", function() {
+    if (crediti.aperti && computer()) cursoreSito(false);
+  });
+  $(document).on("mouseleave", ".crediti", function() {
+    if (sopraLista) cursoreSito(true);
+  });
+
+  $(".hover_credits").on("click", function() {
+    if (crediti.aperti) chiudi();
+    else apri();
+  });
+  $(".hover_credits").on("mouseenter", function() {
+    etichetta.classList.add("sopra");
+  });
+  $(".hover_credits").on("mouseleave", function() {
+    etichetta.classList.remove("sopra");
+  });
+  x.addEventListener("click", chiudi);
+  // con i crediti aperti un clic sul progetto fuori dalla lista li chiude e basta: si ferma
+  // prima che arrivi a open_vimeo. dentro la lista il film non parte perché i crediti sono aperti
+  document.addEventListener("click", function(e) {
+    if (!crediti.aperti || !e.target.closest) return;
+    if (e.target.closest("#scrollify_section") && !e.target.closest(".crediti")) {
+      e.stopPropagation();
+      chiudi();
+    }
+  }, true);
+  document.addEventListener("keydown", function(e) {
+    if (crediti.aperti && !privacyAperta && e.key == "Escape") chiudi();
+  });
+  // girando il telefono o cambiando la finestra: misure di nuovo, dopo che le sezioni si sono riallineate
+  window.addEventListener("resize", function() {
+    if (!crediti.aperti) return;
+    clearTimeout(attesa);
+    attesa = setTimeout(disponi, 450);
+  });
+  // la lista lunga scorre lei finché può, poi il gesto torna a cambiare progetto
+  scroll_sezioni.lasciaScorrere(function(elemento, verso) {
+    var lista = crediti.aperti && elemento && elemento.closest ? elemento.closest(".crediti") : null;
+    if (!lista) return false;
+    if (verso > 0) return lista.scrollTop > 0;
+    return lista.scrollTop + lista.clientHeight < lista.scrollHeight - 1;
+  });
 }
 
 // LINEA DEL MENU: scorre da una voce all'altra (col mouse su computer, col tocco su telefono).
@@ -1262,6 +1404,11 @@ var scroll_sezioni = (function() {
   var prima = function() {};
   var dopo = function() {};
   var ascoltatoriAttivi = false;
+  // una lista che scorre dentro la pagina (i crediti) può tenersi rotella e dito:
+  // interno(elemento sotto il puntatore, verso) è vero se scorre lei. verso > 0 = in su
+  var interno = function() {
+    return false;
+  };
 
   function curva(t) {
     return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -1341,6 +1488,7 @@ var scroll_sezioni = (function() {
   // quella degli ultimi 70, cioè se il gesto sta accelerando e non sfumando
   var storia = [];
   var ultimaRotella = 0;
+  var gestoInterno = false; // questo gesto ha fatto scorrere la lista dei crediti
 
   function media(n) {
     var ultimi = storia.slice(Math.max(storia.length - n, 1));
@@ -1351,15 +1499,24 @@ var scroll_sezioni = (function() {
 
   function rotella(e) {
     if (bloccato) return;
-    e.preventDefault();
     var ora = Date.now();
     var delta = e.wheelDelta || -e.deltaY || -e.detail;
     if (storia.length > 149) storia.shift();
     storia.push(Math.abs(delta));
     // più di 200ms di pausa: è un gesto nuovo
-    if (ora - ultimaRotella > 200) storia = [];
+    if (ora - ultimaRotella > 200) {
+      storia = [];
+      gestoInterno = false;
+    }
     ultimaRotella = ora;
-    if (inMovimento || media(70) > media(10)) return;
+    // scorre la lista. un gesto che l'ha fatta scorrere non cambia progetto nemmeno quando
+    // arriva in fondo (l'inerzia del trackpad): per andare avanti ci vuole un gesto nuovo
+    if (interno(e.target, delta)) {
+      gestoInterno = true;
+      return;
+    }
+    e.preventDefault();
+    if (gestoInterno || inMovimento || media(70) > media(10)) return;
     if (delta < 0) succ();
     if (delta > 0) prec();
   }
@@ -1387,7 +1544,9 @@ var scroll_sezioni = (function() {
     x: -1,
     tempo: 0,
     fatto: false,
-    verticale: false
+    verticale: false,
+    bersaglio: null,
+    dentro: null
   };
 
   function swipe() {
@@ -1404,6 +1563,8 @@ var scroll_sezioni = (function() {
       tocco.inizioX = e.touches[0].pageX;
       tocco.tempo = Date.now();
       tocco.fatto = false;
+      tocco.bersaglio = e.target;
+      tocco.dentro = null;
     }
     if (e.type == "touchstart" || e.type == "touchmove") {
       tocco.y = e.touches[0].pageY;
@@ -1411,6 +1572,9 @@ var scroll_sezioni = (function() {
       var dy = tocco.y - tocco.inizioY;
       var dx = tocco.x - tocco.inizioX;
       if (dy !== 0 && Math.abs(dy) > Math.abs(dx)) {
+        // il primo movimento decide: se la lista può scorrere in quel verso il gesto è suo
+        if (tocco.dentro === null) tocco.dentro = interno(tocco.bersaglio, dy);
+        if (tocco.dentro) return;
         e.preventDefault();
         tocco.verticale = true;
         if (!tocco.fatto && tocco.tempo + 800 < Date.now()) {
@@ -1476,6 +1640,9 @@ var scroll_sezioni = (function() {
     },
     // di nuovo esattamente sulla sezione di adesso (dopo il film a schermo intero)
     riallinea: riallinea,
+    lasciaScorrere: function(fn) {
+      interno = fn;
+    },
     blocca: function() {
       bloccato = true;
     },

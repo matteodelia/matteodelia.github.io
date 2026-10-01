@@ -467,15 +467,17 @@
     overflow: hidden;
     background-color: #000;
     opacity: 0;
-    transition: all 250ms ease-out;
+    pointer-events: none;
+    transition: opacity 700ms ease;
   }
 
+  /* l'area del clic su "CREDITS" */
   .hover_credits {
     position: fixed;
-    bottom: 5vh;
+    bottom: 4vh;
     left: 2vw;
     width: 6vw;
-    height: 8vh;
+    height: 3.5vh;
     margin: 0;
     padding: 0;
   }
@@ -537,20 +539,6 @@
     color: #fff;
     margin: 0;
     padding: 0;
-    transition: all 250ms ease-out;
-  }
-
-  .role {
-    position: fixed;
-    bottom: 7vh;
-    left: 2.5vw;
-    font-family: "CoFoPeshka 380 Regular";
-    font-size: 1.5vh;
-    letter-spacing: 1.5px;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
     transition: all 250ms ease-out;
   }
 
@@ -1033,19 +1021,8 @@
     overflow: hidden;
     background-color: #000;
     opacity: 0;
-    transition: all 250ms ease-out;
-    display: none;
-  }
-
-  .exit_credits {
-    position: fixed;
-    transform: translate(-50%, -50%);
-    top: 50dvh;
-    left: 50dvw;
-    width: 110dvw;
-    height: 110dvh;
-    overflow: hidden;
-    display: none;
+    pointer-events: none;
+    transition: opacity 700ms ease;
   }
 
   .hover_credits {
@@ -1117,21 +1094,6 @@
     color: #fff;
     margin: 0;
     padding: 0;
-    transition: all 250ms ease-out;
-  }
-
-  .role {
-    position: fixed;
-    bottom: 8.5dvh;
-    left: 5dvw;
-    font-family: "CoFoPeshka 380 Regular";
-    font-size: 1.5dvh;
-    letter-spacing: 1.5px;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    width: 80dvw;
     transition: all 250ms ease-out;
   }
 
@@ -1532,4 +1494,232 @@ body.film_aperto .circle {
 /* lo sfondo nero dei video fa sì che il player nascosto dietro non traspaia mai */
 #video_container {
   background-color: #000;
+}
+
+/* CREDITI: si aprono con un clic su "CREDITS" (credits() in js/javascript.js).
+   titolo e sottotitolo salgono sotto l'header di --salita (la calcola il codice), il video dietro
+   si scurisce e le righe salgono dal basso una dopo l'altra, ognuna da dietro una sua maschera
+   (--entra = quando parte: dopo che il sottotitolo è passato). chiudendo prima scendono le righe,
+   poi titolo e sottotitolo tornano giù.
+   posizione e altezza della lista e larghezza dei ruoli (--ruolo) le mette il codice */
+.title,
+.subtitle {
+  transition: transform 850ms cubic-bezier(0.65, 0, 0.25, 1) 200ms;
+}
+
+body.crediti_aperti .selected .title {
+  transform: translate(0, calc(-100% + var(--salita, 0px)));
+  transition-delay: 0ms;
+}
+
+body.crediti_aperti .selected .subtitle {
+  transform: translate(0, var(--salita, 0px));
+  transition-delay: 60ms;
+}
+
+body.crediti_aperti .selected .credits_background {
+  opacity: 0.8;
+}
+
+.crediti {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  font-family: "CoFoPeshka 380 Regular";
+  letter-spacing: 1.5px;
+  line-height: 1.6;
+  color: #fff;
+  visibility: hidden;
+  transition: visibility 0s linear 800ms;
+}
+
+.crediti::-webkit-scrollbar {
+  display: none;
+}
+
+body.crediti_aperti .selected .crediti {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* più lunga dello spazio: scorre e in fondo sfuma */
+.crediti.scorre {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 4em), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 4em), transparent);
+}
+
+.crediti.scorre .crediti_elenco {
+  padding-bottom: 4em;
+}
+
+/* la maschera: la riga taglia quello che le sta sotto, il contenuto sale da lì */
+.crediti_riga {
+  overflow: hidden;
+  margin-bottom: 0.25em;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+.crediti_dentro {
+  display: grid;
+  grid-template-columns: var(--ruolo, 30%) minmax(0, 1fr);
+  column-gap: 1.5em;
+  transform: translate(0, 105%);
+  opacity: 0;
+  transition: transform 380ms cubic-bezier(0.55, 0, 1, 0.45) var(--esce, 0ms), opacity 300ms ease var(--esce, 0ms);
+}
+
+body.crediti_aperti .selected .crediti_dentro {
+  transform: none;
+  opacity: 1;
+  transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1) var(--entra, 0ms), opacity 800ms ease var(--entra, 0ms);
+}
+
+.crediti_ruolo,
+.crediti_piu {
+  opacity: 0.5;
+}
+
+.crediti_nomi {
+  overflow-wrap: anywhere;
+}
+
+/* riga senza ruolo (es. "@artista | titolo"): i nomi prendono tutta la riga */
+.senza_ruolo .crediti_nomi {
+  grid-column: 1 / -1;
+}
+
+.crediti_nomi a {
+  color: inherit;
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.crediti_nomi a:hover {
+  text-decoration-line: underline;
+}
+
+/* la X sta nell'header dove c'è la mail; i contatti intanto spariscono: come nella privacy
+   resta solo la X */
+.chiudi_crediti {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.chiudi_crediti svg {
+  display: block;
+  height: 100%;
+}
+
+.chiudi_crediti::after {
+  content: "";
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  bottom: -16px;
+  left: -16px;
+}
+
+body.crediti_aperti .chiudi_crediti {
+  opacity: 0.5;
+  pointer-events: auto;
+}
+
+body.crediti_aperti .chiudi_crediti:hover {
+  opacity: 1;
+}
+
+.contacts_container {
+  transition: opacity 400ms ease;
+}
+
+body.crediti_aperti .contacts_container,
+body.crediti_aperti .contacts_container_image {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* "CREDITS" si accende col mouse sopra e mentre i crediti sono aperti */
+.credits.sopra,
+body.crediti_aperti .credits {
+  opacity: 1;
+}
+
+body.crediti_aperti #expand {
+  visibility: hidden;
+}
+
+@media only screen and (min-width: 1200px) {
+  .crediti {
+    left: 2.5vw;
+    width: 42vw;
+    font-size: 1.5vh;
+  }
+
+  /* non sta in una colonna: due, una accanto all'altra */
+  .crediti.due {
+    width: 88vw;
+  }
+
+  .crediti.due .crediti_elenco {
+    column-count: 2;
+    column-gap: 4vw;
+  }
+
+  .chiudi_crediti {
+    top: 4.5vh;
+    right: 2.5vw;
+    transform: translate(0, -50%);
+    height: calc(2.4vh * 78 / 102);
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .crediti {
+    left: 5dvw;
+    width: 90dvw;
+    font-size: 1.5dvh;
+  }
+
+  .chiudi_crediti {
+    top: 5.5dvh;
+    right: 0;
+    transform: translate(0, -50%);
+    height: calc(2.4dvh * 78 / 102);
+  }
+
+  .contacts_container_image {
+    transition: opacity 400ms ease;
+  }
+
+  body.crediti_aperti .chiudi_crediti {
+    opacity: 1;
+  }
+
+  body.crediti_aperti .credits_line {
+    width: 80dvw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crediti_dentro,
+  body.crediti_aperti .selected .crediti_dentro {
+    transform: none;
+  }
 }
