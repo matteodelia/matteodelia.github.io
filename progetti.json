@@ -445,12 +445,12 @@
       "subtitle": "Nuria",
       "description": "Short Film",
       "role": [
-        "regia @98matteodelia",
-        "dop @gabriele_broggini",
-        "production assistant @_letiziagallo",
-        "starring @nuriwey + @gabriele_broggini + @elettralastra",
-        "music composer @woody_arden",
-        "sound designer @brogginisimone"
+        "Director: @98matteodelia",
+        "DOP: @gabriele_broggini",
+        "Starring: @nuriwey @gabriele_broggini @elettralastra",
+        "PA: @_letiziagallo",
+        "Music Composer: @woody_arden",
+        "Sound Design: @brogginisimone"
       ],
       "img": {
         "video": "img/narrative/einfall.mp4",
@@ -463,9 +463,9 @@
       "subtitle": "Enea",
       "description": "Spec Commercial",
       "role": [
-        "regia @98matteodelia",
-        "starring @ene_rampa",
-        "voiceover @federicacasieri"
+        "Director: @98matteodelia",
+        "Starring: @ene_rampa",
+        "VO: @federicacasieri"
       ],
       "img": {
         "video": "img/narrative/tobeornottobe.mp4",
