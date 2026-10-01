@@ -404,11 +404,11 @@
       "subtitle": "Asia",
       "description": "Short Film",
       "role": [
-        "regia @98matteodelia",
-        "dop @ale_luis",
-        "fonico @nicola_bussei",
-        "starring @asiajayel",
-        "color @leonardo_mareso_colorist"
+        "Director: @98matteodelia",
+        "DOP: @ale_luisi",
+        "Starring: @asiajayel",
+        "Sound Recordist: @nicola_bussei",
+        "Color Grading: @leonardo_mareso_colorist"
       ],
       "img": {
         "video": "img/narrative/confessioni.mp4",
