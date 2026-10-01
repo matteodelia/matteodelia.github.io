@@ -236,9 +236,9 @@
       "description": "DC",
       "role": [
         "Client: Gallotti&Radice",
-        "Production House: @k448_studio",
         "Director: @98matteodelia",
         "DOP: @davide__castagno",
+        "Production House: @k448_studio",
         "Executive Producer: @alessandromanzi.xyz",
         "Line Producer: Elisa Anastasino",
         "Assistant Producer: @michelle_bennati",
@@ -263,6 +263,7 @@
       "subtitle": "Stòffa",
       "description": "Lookbook",
       "role": [
+        "Client: stòffa",
         "Director: @98matteodelia",
         "DOP: @davide__castagno",
         "Creative Direction: @studiomare.co",
