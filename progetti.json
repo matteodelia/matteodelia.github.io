@@ -19,10 +19,10 @@
         "MUA: @mariannamuaa",
         "Addestratore: @movie.dog",
         "Editor: @98matteodelia",
-        "Post production + VFX: @marco_pericoo",
+        "Post production and VFX: @marco_pericoo",
         "Color Grading: @mattia.saggiomo",
         "Sound Design: @agit.utlu",
-        "Starring: @loganmonterobaez + @matildeconsoli + @martin_francisco_montero + @tommaso.vecce + @berlinerinmilan + @justemaa_ + @mattiacanepazzo + @gabbro_2002 + @federicocavallari_ + @alee.flv + @giacomofeher + @avoltebrillo + @liam_devecchi"
+        "Starring: @loganmonterobaez @matildeconsoli @martin_francisco_montero @tommaso.vecce @berlinerinmilan @justemaa_ @mattiacanepazzo @gabbro_2002 @federicocavallari_ @alee.flv @giacomofeher @avoltebrillo @liam_devecchi"
       ],
       "img": {
         "video": "img/music/balaclava.mp4",
@@ -38,7 +38,7 @@
         "Director: @98matteodelia",
         "DOP: @jacopo_ambroggio",
         "1AC: @zambo.mov",
-        "Drone: @teodibiase_photography",
+        "Drone Operator: @teodibiase_photography",
         "Color Grading: @mattia.saggiomo",
         "Graphic Design: @omtode"
       ],
@@ -72,17 +72,18 @@
       "subtitle": "Johnny Marsiglia",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia",
-        "dop @mirkosalcia",
-        "executive producer @endrikalthi",
-        "producer @francescareadiamond",
-        "1ac @reliativo.mp4 + @giulio__rossi",
-        "elettrico @davide__castagno",
-        "camera car gaffer @jacopolamperti",
-        "montaggio @98matteodelia",
-        "color @sorbinilorenzo",
-        "vfx @omtode",
-        "starring @yu.humm + @de_la_cruz_kevin_prince_ + Norah De Leo"
+        "Director: @98matteodelia",
+        "DOP: @mirkosalcia",
+        "Executive Producer: @endrikalthi",
+        "Line Producer: @francescareadiamond",
+        "1AC: @reliativo.mp4",
+        "2AC: @giulio__rossi",
+        "Gaffer: @davide__castagno",
+        "Grip: @jacopolamperti",
+        "Editor: @98matteodelia",
+        "Color Grading: @sorbinilorenzo",
+        "VFX: @omtode",
+        "Starring: @yu.humm @de_la_cruz_kevin_prince_ and Norah De Leo"
       ],
       "img": {
         "video": "img/music/gara7.mp4",
@@ -96,12 +97,12 @@
       "subtitle": "Lorenzza",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia @davide_vicari",
-        "dop @jacopo_ambroggio",
-        "porto seguro fixer @esdrasagnes",
-        "1ac @zambo.mov",
-        "color grading @davide.pini.color",
-        "graphic design @bianco.svg"
+        "Director: @98matteodelia @davide_vicari",
+        "DOP: @jacopo_ambroggio",
+        "Local Fixer: @esdrasagnes",
+        "1AC: @zambo.mov",
+        "Color Grading: @davide.pini.color",
+        "Graphic Design: @bianco.svg"
       ],
       "img": {
         "video": "img/music/crescere.mp4",
@@ -115,15 +116,15 @@
       "subtitle": "Q40",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia",
-        "dop @ale_luisi",
-        "executive producer @endrikalthi",
-        "producer @francescareadiamond",
-        "1ac @zambo.mov",
-        "elettrico @chri.manzio",
-        "vfx @marco_pericoo",
-        "fotografo @mattia_saba_",
-        "grafiche @lorenzo_crippa_"
+        "Director: @98matteodelia",
+        "DOP: @ale_luisi",
+        "Executive Producer: @endrikalthi",
+        "Line Producer: @francescareadiamond",
+        "1AC: @zambo.mov",
+        "Gaffer: @chri.manzio",
+        "VFX: @marco_pericoo",
+        "Photographer: @mattia_saba_",
+        "Graphic Design: @lorenzo_crippa_"
       ],
       "img": {
         "video": "img/music/chilometri.mp4",
@@ -137,10 +138,11 @@
       "subtitle": "Silent Bob",
       "description": "Album Teaser",
       "role": [
-        "regia @98matteodelia",
-        "dop + color @sorbinilorenzo",
-        "fotografo @ynzloz",
-        "direzione artistica @98matteodelia + @marco_pericoo"
+        "Director: @98matteodelia",
+        "DOP: @sorbinilorenzo",
+        "Photographer: @ynzloz",
+        "Color Grading: @sorbinilorenzo",
+        "Art Direction: @98matteodelia @marco_pericoo"
       ],
       "img": {
         "video": "img/music/habitatcielo.mp4",
@@ -153,15 +155,15 @@
       "subtitle": "Q40",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia",
-        "dop @ale_luisi",
-        "executive producer @endrikalthi",
-        "producer @francescareadiamond",
-        "1ac @doziomatt + @zambo.mov",
-        "operatore mini dv @_dis.astrid",
-        "montaggio @fede.summo",
-        "fotografo @andre_tafel",
-        "grafiche @lorenzo_crippa_"
+        "Director: @98matteodelia",
+        "DOP: @ale_luisi",
+        "Executive Producer: @endrikalthi",
+        "Line Producer: @francescareadiamond",
+        "1AC: @doziomatt @zambo.mov",
+        "Mini DV Operator: @_dis.astrid",
+        "Editor: @fede.summo",
+        "Photographer: @andre_tafel",
+        "Graphic Design: @lorenzo_crippa_"
       ],
       "img": {
         "video": "img/music/giornoenotte.mp4",
