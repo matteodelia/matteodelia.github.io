@@ -289,7 +289,7 @@
         "Client: Timberland",
         "Director: @davide_vicari",
         "DOP: @jon.charles",
-        "Production House: NSS",
+        "Production House: @nssfactory",
         "Creative Direction: @vincenzo__schioppa",
         "Executive Producer: @_giadatinelli_",
         "Line Producer: @benedetta.urbini",
@@ -314,15 +314,16 @@
       "subtitle": "Mango",
       "description": "Lookbook",
       "role": [
-        "regia @98matteodelia",
-        "dop @_ncl_dgn_",
-        "producer @olgaborr",
-        "styling @carmenmeridag",
-        "grooming @danielamagginetti",
-        "starring @leo.cremer",
-        "sound design @paolotocci",
-        "color grading @ikohchung",
-        "direzione artistica @studiomare.co"
+        "Client: Mango",
+        "Director: @98matteodelia",
+        "DOP: @_ncl_dgn_",
+        "Creative Direction: @studiomare.co",
+        "Line Producer: @olgaborr",
+        "Styling: @carmenmeridag",
+        "Grooming: @danielamagginetti",
+        "Sound Design: @paolotocci",
+        "Color Grading: @ikohchung",
+        "Starring: @leo.cremer"
       ],
       "img": {
         "video": "img/brand/mango_man.mp4",
@@ -335,9 +336,10 @@
       "subtitle": "Puma",
       "description": "Commercial",
       "role": [
-        "regia @davide_vicari",
-        "montaggio @98matteodelia",
-        "direzione artistica @vincenzo__schioppa"
+        "Director: @davide_vicari",
+        "Production House: @nssfactory",
+        "Creative Direction: @vincenzo__schioppa",
+        "Editor: @98matteodelia"
       ],
       "img": {
         "video": "img/brand/puma.mp4",
