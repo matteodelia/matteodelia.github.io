@@ -263,7 +263,7 @@
       "subtitle": "Stòffa",
       "description": "Lookbook",
       "role": [
-        "Client: stòffa",
+        "Client: Stòffa",
         "Director: @98matteodelia",
         "DOP: @davide__castagno",
         "Creative Direction: @studiomare.co",
@@ -374,9 +374,10 @@
       "subtitle": "Stòffa",
       "description": "Web Stories",
       "role": [
-        "regia @98matteodelia",
-        "sound design @simone_giud",
-        "direzione artistica @studiomare.co"
+        "Client: Stòffa",
+        "Director: @98matteodelia",
+        "Creative Direction: @studiomare.co",
+        "Sound Design: @simone_giud"
       ],
       "img": {
         "video": "img/brand/francia.mp4",
