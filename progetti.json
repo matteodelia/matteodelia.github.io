@@ -422,16 +422,17 @@
       "subtitle": "Abby 6ix",
       "description": "Album Trailer",
       "role": [
-        "@abby6ix | The Wire VOL. II",
-        "regia @98matteodelia",
-        "dop @jacopo_ambroggio",
-        "producer @francescareadiamond",
-        "1ac @zambo.mov",
-        "gaffer @mirkomi_",
-        "fonico @stljth",
-        "stylist @chiaradvp",
-        "editor @98matteodelia",
-        "color grading @mattia.saggiomo"
+        "Director: @98matteodelia",
+        "DOP: @jacopo_ambroggio",
+        "Production House: Cantera",
+        "Executive Producer: @endrikalthi",
+        "Line Producer: @francescareadiamond",
+        "1AC: @zambo.mov",
+        "Gaffer: @mirkomi_",
+        "Sound Engineer: @stljth",
+        "Stylist: @chiaradvp",
+        "Editor: @98matteodelia",
+        "Color Grading: @mattia.saggiomo"
       ],
       "img": {
         "video": "img/narrative/thewire.mp4",
