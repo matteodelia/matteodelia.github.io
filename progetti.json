@@ -35,12 +35,12 @@
       "subtitle": "Gotti",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia",
-        "dop @jacopo_ambroggio",
-        "1ac @zambo.mov",
-        "dronista @teodibiase_photography",
-        "color grading @mattia.saggiomo",
-        "graphic design @omtode"
+        "Director: @98matteodelia",
+        "DOP: @jacopo_ambroggio",
+        "1AC: @zambo.mov",
+        "Drone: @teodibiase_photography",
+        "Color Grading: @mattia.saggiomo",
+        "Graphic Design: @omtode"
       ],
       "img": {
         "video": "img/music/cometelospiego.mp4",
@@ -54,12 +54,12 @@
       "subtitle": "Lorenzza",
       "description": "Music Video",
       "role": [
-        "regia @98matteodelia @davide_vicari",
-        "dop @jacopo_ambroggio",
-        "porto seguro fixer @esdrasagnes",
-        "1ac @zambo.mov",
-        "color grading @davide.pini.color",
-        "graphic design @bianco.svg"
+        "Director: @98matteodelia @davide_vicari",
+        "DOP: @jacopo_ambroggio",
+        "Local Fixer: @esdrasagnes",
+        "1AC: @zambo.mov",
+        "Color Grading: @davide.pini.color",
+        "Graphic Design: @bianco.svg"
       ],
       "img": {
         "video": "img/music/todalanoche.mp4",
