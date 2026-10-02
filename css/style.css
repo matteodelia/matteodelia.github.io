@@ -505,7 +505,7 @@
   }
 
   .title {
-    position: absolute;
+    position: fixed;
     transform: translate(0%, -100%);
     top: 40%;
     left: 2.5vw;
@@ -517,7 +517,7 @@
   }
 
   .subtitle {
-    position: absolute;
+    position: fixed;
     top: 42%;
     left: 2vw;
     font-family: "CoFoPeshka 0 Thin";
@@ -1054,7 +1054,7 @@
   }
 
   .title {
-    position: absolute;
+    position: fixed;
     transform: translate(0%, -100%);
     top: 40dvh;
     left: 5dvw;
@@ -1067,7 +1067,7 @@
 
   .subtitle {
     width: 85dvw;
-    position: absolute;
+    position: fixed;
     top: 42dvh;
     left: 4.8dvw;
     font-family: "CoFoPeshka 0 Thin";
@@ -1491,6 +1491,18 @@ body.film_aperto .circle {
   background-color: #000;
 }
 
+/* TITOLO, SOTTOTITOLO E DESCRIZIONE: un blocco solo, fermo sopra ai video (cambiaTesti() in
+   js/javascript.js). cambiando progetto le scritte vecchie sfumano e le nuove compaiono al loro
+   posto. sfuma la parte dentro, così la scritta fuori può salire coi crediti. non prende i
+   clic: vanno al progetto sotto, che apre il film */
+.progetto_testi {
+  pointer-events: none;
+}
+
+.progetto_testi .scritta {
+  display: block;
+}
+
 /* CREDITI: si aprono con un clic su "CREDITS" (credits() in js/javascript.js).
    titolo e sottotitolo salgono sotto l'header di --salita (la calcola il codice), il video dietro
    si scurisce e le righe salgono dal basso una dopo l'altra, ognuna da dietro una sua maschera
@@ -1502,12 +1514,12 @@ body.film_aperto .circle {
   transition: transform 850ms cubic-bezier(0.65, 0, 0.25, 1) 200ms;
 }
 
-body.crediti_aperti .selected .title {
+body.crediti_aperti .progetto_testi .title {
   transform: translate(0, calc(-100% + var(--salita, 0px)));
   transition-delay: 0ms;
 }
 
-body.crediti_aperti .selected .subtitle {
+body.crediti_aperti .progetto_testi .subtitle {
   transform: translate(0, var(--salita, 0px));
   transition-delay: 60ms;
 }

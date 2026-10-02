@@ -518,7 +518,8 @@ function open_vimeo() {
 }
 
 function select_section(categorie) {
-  // per ogni categoria: gli id vimeo in ordine e l'html delle sue sezioni dei crediti
+  // per ogni categoria: gli id vimeo in ordine e l'html delle sue sezioni (lo sfondo scuro e la
+  // lista dei crediti; titolo, sottotitolo e descrizione stanno fuori, vedi cambiaTesti)
   categorie.forEach(function(cat) {
     cat.vimeo = cat.progetti.map(function(p) {
       return p.vimeo;
@@ -527,9 +528,6 @@ function select_section(categorie) {
       return '\n<div class="section' + (i == 0 ? ' selected' : '') + '" data-section-name="section' + (i + 1) + '">' +
         '\n  <div class="credits_background"></div>' +
         '\n  <div class="text">' +
-        '\n    <p class="title">' + testo(p.title) + '</p>' +
-        '\n    <p class="subtitle">' + testo(p.subtitle) + '</p>' +
-        '\n    <p class="description">' + testo(p.description) + '</p>' +
         '\n    <div class="crediti">' + elencoCrediti(p.role) + '</div>' +
         '\n  </div>' +
         '\n</div>';
@@ -548,6 +546,88 @@ function select_section(categorie) {
 
   function larghezza() {
     return (window.innerWidth > 0) ? window.innerWidth : document.documentElement.clientWidth;
+  }
+
+  // TITOLO, SOTTOTITOLO E DESCRIZIONE: un blocco solo, fermo sopra ai video, per tutti i progetti.
+  // cambiando progetto le scritte vecchie sfumano in fretta alzandosi appena (abbassandosi
+  // tornando indietro) e appena sono sparite le nuove compaiono al loro posto solo in
+  // dissolvenza, una dopo l'altra. non si muovono e non si sovrappongono mai.
+  // se il testo è lo stesso (es. "Music Video") resta fermo.
+  // il blocco lo crea il codice (così non dipende da un index.html magari ancora vecchio in
+  // memoria) e non prende i clic, che vanno al progetto sotto
+  var testi = document.querySelector(".progetto_testi");
+  if (!testi) {
+    testi = document.createElement("div");
+    testi.className = "progetto_testi";
+    testi.innerHTML = ["title", "subtitle", "description"].map(function(classe) {
+      return '<p class="' + classe + '"><span class="scritta"></span></p>';
+    }).join("");
+    var sezioni = document.getElementById("scrollify_section");
+    sezioni.parentNode.insertBefore(testi, sezioni.nextSibling);
+  }
+  var scritte = Array.prototype.slice.call(testi.querySelectorAll(".scritta"));
+  var attese = [];
+  var mostrato = null;
+  var fermo = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var ESCE = 150; // la vecchia sparisce
+  var ENTRA = 150; // la prima nuova comincia a comparire: subito, appena la vecchia non c'è più
+  var DOPO = 40; // fra una scritta nuova e la successiva
+  var COMPARE = 220; // quanto ci mette a comparire
+
+  function testiDi(p) {
+    return [p.title, p.subtitle, p.description].map(function(t) {
+      return String(t || "");
+    });
+  }
+
+  function cambiaTesti(cat, index, verso) {
+    var p = cat.progetti[index];
+    var chiave = cat.chiave + "/" + index;
+    if (!p || chiave === mostrato) return;
+    var primaVolta = mostrato === null;
+    mostrato = chiave;
+    var nuovi = testiDi(p);
+    // pochi pixel, uguali per tutte: mentre sfuma la scritta si sposta appena
+    var spostamento = verso < 0 ? "translateY(6px)" : "translateY(-6px)";
+    scritte.forEach(function(el, i) {
+      clearTimeout(attese[i]);
+      // un cambio mentre corre quello di prima: si riparte da com'è adesso
+      var opacita = getComputedStyle(el).opacity;
+      if (el.getAnimations) el.getAnimations().forEach(function(a) {
+        a.cancel();
+      });
+      if (primaVolta || fermo || !el.animate || (el.textContent === nuovi[i] && opacita == "1")) {
+        el.textContent = nuovi[i];
+        return;
+      }
+      var via = el.animate([{
+        transform: "translateY(0)",
+        opacity: opacita
+      }, {
+        transform: spostamento,
+        opacity: 0
+      }], {
+        duration: ESCE,
+        easing: "cubic-bezier(0.4, 0, 1, 1)",
+        fill: "both"
+      });
+      // con un timer e non con la fine dell'animazione, che il browser segnala solo quando
+      // disegna la pagina
+      attese[i] = setTimeout(function() {
+        el.textContent = nuovi[i];
+        via.cancel();
+        el.animate([{
+          opacity: 0
+        }, {
+          opacity: 1
+        }], {
+          duration: COMPARE,
+          delay: ENTRA - ESCE + i * DOPO,
+          easing: "ease-out",
+          fill: "backwards"
+        });
+      }, ESCE);
+    });
   }
 
   function video(n) {
@@ -590,6 +670,8 @@ function select_section(categorie) {
   function primaDiScorrere(cat, index) {
     var n = cat.primo + index;
     crediti.chiudi();
+    // l'indice di adesso è ancora quello di prima: da lì il verso (avanti o indietro)
+    cambiaTesti(cat, index, index - scroll_sezioni.attuale());
     statistiche.progetto(cat.chiave, cat.progetti[index]);
     $(".section").removeClass("selected");
     $($(".section").get(index)).addClass("selected");
@@ -628,6 +710,9 @@ function select_section(categorie) {
   function mostraCategoria(i) {
     var cat = categorie[i];
     crediti.chiudi();
+    // le scritte cambiano allo stesso modo anche cambiando categoria: verso l'alto andando verso
+    // destra nel menu
+    cambiaTesti(cat, 0, i >= sezione ? 1 : -1);
     statistiche.progetto(cat.chiave, cat.progetti[0]);
     $(".cursor").css("display", "initial");
     // i video delle categorie precedenti stanno sopra: vanno nascosti
@@ -725,6 +810,7 @@ function select_section(categorie) {
 
   // all'apertura del sito si parte da music
   attivaSezioni(categorie[0]);
+  cambiaTesti(categorie[0], 0, 1);
   statistiche.progetto(categorie[0].chiave, categorie[0].progetti[0]);
   document.getElementById("total_page").innerHTML = categorie[0].vimeo.length;
   // l'iframe in index.html parte con un film: se il primo progetto è cambiato, carica quello giusto
@@ -823,15 +909,16 @@ function credits() {
     var sezione = document.querySelector("#scrollify_section .section.selected");
     var lista = sezione && sezione.querySelector(".crediti");
     if (!lista) return;
-    var sotto = sezione.querySelector(".subtitle");
+    var testi = document.querySelector(".progetto_testi");
+    var sotto = testi.querySelector(".subtitle");
     var elenco = lista.querySelector(".crediti_elenco");
     var righe = Array.prototype.slice.call(lista.querySelectorAll(".crediti_riga"));
     var pc = computer();
     var h = altezzaCss(pc);
     var salita = -Math.round((pc ? 0.22 : 0.18) * h);
-    sezione.style.setProperty("--salita", salita + "px");
-    var base = sotto.offsetParent.getBoundingClientRect().top;
-    var inizio = Math.round(base + sotto.offsetTop + salita + sotto.offsetHeight + (pc ? 0.02 : 0.025) * h);
+    testi.style.setProperty("--salita", salita + "px");
+    // il sottotitolo è fermo sullo schermo: la sua posizione senza trasformazioni è il suo top
+    var inizio = Math.round(parseFloat(getComputedStyle(sotto).top) + salita + sotto.offsetHeight + (pc ? 0.02 : 0.025) * h);
     var fine = Math.round((pc ? 0.875 : 0.865) * h);
     lista.style.top = inizio + "px";
     lista.style.maxHeight = Math.max(fine - inizio, 0.15 * h) + "px";
