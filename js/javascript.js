@@ -736,12 +736,16 @@ function select_section(categorie) {
 // CREDITI DI UN PROGETTO: ogni riga di "role" in progetti.json è "ruolo @nome" (o "Ruolo: nome")
 // e diventa una riga a due colonne, il ruolo a sinistra e i nomi a destra. una riga senza ruolo
 // che segue una finita con "+" (una lista di nomi andata a capo) si attacca a quella.
-// i nomi con la @ sono link al loro profilo instagram
+// una riga vuota diventa uno spazio alto quanto una riga (null qui sotto); quelle all'inizio
+// e alla fine no. i nomi con la @ sono link al loro profilo instagram
 function elencoCrediti(righe) {
   var elenco = [];
   (righe || []).forEach(function(r) {
     r = String(r).trim();
-    if (!r) return;
+    if (!r) {
+      if (elenco.length) elenco.push(null);
+      return;
+    }
     var duepunti = r.indexOf(":");
     var chiocciola = r.indexOf("@");
     var riga = ["", r];
@@ -754,7 +758,9 @@ function elencoCrediti(righe) {
     if (!riga[0] && prima && /\+$/.test(prima[1])) prima[1] += " " + riga[1];
     else elenco.push(riga);
   });
+  while (elenco.length && !elenco[elenco.length - 1]) elenco.pop();
   return '<div class="crediti_elenco">' + elenco.map(function(riga) {
+    if (!riga) return '<div class="crediti_riga crediti_spazio"></div>';
     return '<div class="crediti_riga' + (riga[0] ? '' : ' senza_ruolo') + '"><div class="crediti_dentro">' +
       (riga[0] ? '<span class="crediti_ruolo">' + testo(riga[0]) + '</span>' : '') +
       '<span class="crediti_nomi">' + nomiCrediti(riga[1]) + '</span></div></div>';

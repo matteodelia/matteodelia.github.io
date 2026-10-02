@@ -1584,6 +1584,11 @@ body.crediti_aperti .selected .crediti_dentro {
   overflow-wrap: anywhere;
 }
 
+/* riga vuota nei crediti: uno spazio alto quanto una riga */
+.crediti_spazio {
+  height: 1.6em;
+}
+
 /* riga senza ruolo (es. "@artista | titolo"): i nomi prendono tutta la riga */
 .senza_ruolo .crediti_nomi {
   grid-column: 1 / -1;

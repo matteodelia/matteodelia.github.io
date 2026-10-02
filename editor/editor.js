@@ -711,9 +711,14 @@
   $("campo-role").addEventListener("input", function() {
     var p = progettoAperto();
     if (!p) return;
-    p.role = this.value.split("\n").map(function(r) {
+    // le righe vuote restano: sul sito diventano uno spazio fra i crediti. quelle all'inizio e
+    // alla fine no
+    var righe = this.value.split("\n").map(function(r) {
       return r.trim();
-    }).filter(Boolean);
+    });
+    while (righe.length && !righe[0]) righe.shift();
+    while (righe.length && !righe[righe.length - 1]) righe.pop();
+    p.role = righe;
     salvaBozza();
   });
 
