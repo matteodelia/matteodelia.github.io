@@ -44,8 +44,8 @@
     background-color: black;
   }
 
-  /* CURSORE: triangolo e cerchio agganciati alla finestra; la posizione gliela dà cursor() in
-     js/javascript.js con transform. nascosto finché il mouse non si muove, fuori dalla finestra
+  /* CURSORE: triangolo e cerchio agganciati alla finestra, col centro sulla punta del mouse; la
+     posizione gliela dà cursor() in js/javascript.js con transform. nascosto finché il mouse non si muove, fuori dalla finestra
      e sopra all'header (dove torna la freccia) */
   .cursor {
     position: fixed;
@@ -613,17 +613,12 @@
   }
 
   /* la X prende il posto della mail: stesso centro, alta quanto la busta disegnata
-     (78 px su 102 dell'icona) e con il bordo destro sul suo */
+     (78 px su 102 dell'icona) e con il bordo destro sul suo. come arriva: in fondo al file */
   .privacy_chiudi {
     top: 4.5vh;
     left: 97.5vw;
     transform: translate(-100%, -50%);
     height: calc(2.4vh * 78 / 102);
-    opacity: 0.5;
-  }
-
-  .privacy_chiudi:hover {
-    opacity: 1;
   }
 
   /* testi: etichette allineate al titolo, testo allineato alla prima lingua del menu */
@@ -1594,12 +1589,13 @@ body.crediti_aperti .selected .crediti_dentro {
   grid-column: 1 / -1;
 }
 
+/* su computer anche sui nomi si vede solo il cursore del sito */
 .crediti_nomi a {
   color: inherit;
   text-decoration: none;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.35em;
-  cursor: pointer;
+  cursor: inherit;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -1607,8 +1603,13 @@ body.crediti_aperti .selected .crediti_dentro {
   text-decoration-line: underline;
 }
 
-/* la X sta nell'header dove c'è la mail; i contatti intanto spariscono: come nella privacy
-   resta solo la X */
+/* LA X AL POSTO DEI CONTATTI: un giro su se stessi (attorno all'asse verticale, come il blocco
+   dei contatti su computer). aprendo gira verso sinistra: prima se ne va quello che c'era
+   (300ms, accelerando), poi dallo stesso giro arriva la X (300ms, frenando: le due curve
+   si attaccano alla stessa velocità, così sembra un giro solo). chiudendo il
+   contrario, verso destra. su computer gira la mail; sul telefono tutto il blocco dei contatti
+   come un pezzo unico, e la X è sul suo retro (gira attorno al centro del blocco).
+   lo stesso giro lo fa la privacy, su computer e telefono. le misure sono nei blocchi qui sotto */
 .chiudi_crediti {
   position: absolute;
   margin: 0;
@@ -1619,12 +1620,19 @@ body.crediti_aperti .selected .crediti_dentro {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 400ms ease;
+  transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+}
+
+body.crediti_aperti .chiudi_crediti {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
 }
 
 .chiudi_crediti svg {
   display: block;
   height: 100%;
+  transition: opacity 250ms ease-out;
 }
 
 .chiudi_crediti::after {
@@ -1636,23 +1644,17 @@ body.crediti_aperti .selected .crediti_dentro {
   left: -16px;
 }
 
-body.crediti_aperti .chiudi_crediti {
-  opacity: 0.5;
-  pointer-events: auto;
-}
-
-body.crediti_aperti .chiudi_crediti:hover {
-  opacity: 1;
-}
-
-.contacts_container {
-  transition: opacity 400ms ease;
-}
-
-body.crediti_aperti .contacts_container,
-body.crediti_aperti .contacts_container_image {
-  opacity: 0;
+body.crediti_aperti .header .contacts_container {
   pointer-events: none;
+}
+
+/* la copia nera del blocco dei contatti nel pannello della privacy */
+.privacy_contatti {
+  display: none;
+}
+
+.privacy_contatti img {
+  filter: invert(1);
 }
 
 /* "CREDITS" si accende col mouse sopra e mentre i crediti sono aperti */
@@ -1682,11 +1684,103 @@ body.crediti_aperti #expand {
     column-gap: 4vw;
   }
 
+  /* la X gira attorno al centro della mail, che è larga 2.4vh */
   .chiudi_crediti {
     top: 4.5vh;
     right: 2.5vw;
-    transform: translate(0, -50%);
     height: calc(2.4vh * 78 / 102);
+    transform-origin: calc(2.4vh * 78 / 102 - 1.2vh) 50%;
+    transform: translate(0, -50%) perspective(12vh) rotateY(90deg);
+  }
+
+  body.crediti_aperti .chiudi_crediti {
+    transform: translate(0, -50%) perspective(12vh) rotateY(0deg);
+  }
+
+  .chiudi_crediti svg {
+    opacity: 0.5;
+  }
+
+  .chiudi_crediti:hover svg {
+    opacity: 1;
+  }
+
+  .header .contacts_container a[href^="mailto"] {
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  body.crediti_aperti .header .contacts_container a[href^="mailto"] {
+    opacity: 0;
+    transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  .header .mail {
+    transform: perspective(12vh) rotateY(0deg);
+    transition: opacity 250ms ease-out, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  body.crediti_aperti .header .mail {
+    transform: perspective(12vh) rotateY(-90deg);
+    transition: opacity 250ms ease-out, transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  /* PRIVACY: per cliccarla ci si è passati sopra, quindi il blocco dei contatti è aperto: gira
+     tutto attorno al suo centro (è largo 6vw + il --passo, 3vw - 1.39vh) e la X arriva dal suo
+     retro. chiudendo torna solo la mail, che sta sul davanti del blocco. il blocco delle icone
+     ha la posizione scritta dal codice del passaggio del mouse: qui serve !important */
+  .header .contacts_container,
+  .privacy_contatti .contacts_container {
+    transform: translate(0, -50%) perspective(55vh) rotateY(0deg);
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  .privacy_contatti .contacts_container_image {
+    transform-origin: 50% 50%;
+    transform: translate(0, -50%) perspective(55vh) rotateY(0deg);
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  body.privacy_aperta .header .contacts_container,
+  body.privacy_aperta .header .contacts_container_image,
+  .privacy_pannello.aperto .privacy_contatti .contacts_container,
+  .privacy_pannello.aperto .privacy_contatti .contacts_container_image {
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 50% 50%;
+    transform: translate(0, -50%) perspective(55vh) rotateY(-90deg) !important;
+    transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  .privacy_contatti {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 9vh;
+    pointer-events: none;
+  }
+
+  .privacy_pannello .privacy_chiudi {
+    opacity: 0;
+    transform-origin: calc(2.4vh * 78 / 102 - (9vw - 1.39vh) / 2) 50%;
+    transform: translate(-100%, -50%) perspective(55vh) rotateY(90deg);
+    transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  .privacy_pannello.aperto .privacy_chiudi {
+    opacity: 1;
+    transform: translate(-100%, -50%) perspective(55vh) rotateY(0deg);
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  .privacy_chiudi svg {
+    opacity: 0.5;
+    transition: opacity 250ms ease-out;
+  }
+
+  .privacy_chiudi:hover svg {
+    opacity: 1;
   }
 }
 
@@ -1697,19 +1791,68 @@ body.crediti_aperti #expand {
     font-size: 1.5dvh;
   }
 
+  /* il blocco dei contatti (largo 14dvh + 5.61dvh, il --passo) gira attorno al suo centro.
+     sono due strati, le icone e i link con la mail: girano insieme come un pezzo solo */
+  .header .contacts_container,
+  .header .contacts_container_image,
+  .privacy_contatti .contacts_container,
+  .privacy_contatti .contacts_container_image {
+    transform: translate(0, -50%) perspective(80dvh) rotateY(0deg);
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
+  }
+
+  body.crediti_aperti .header .contacts_container,
+  body.crediti_aperti .header .contacts_container_image,
+  body.privacy_aperta .header .contacts_container,
+  body.privacy_aperta .header .contacts_container_image,
+  .privacy_pannello.aperto .privacy_contatti .contacts_container,
+  .privacy_pannello.aperto .privacy_contatti .contacts_container_image {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(0, -50%) perspective(80dvh) rotateY(-90deg);
+    transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  /* la X è sul retro del blocco: gira attorno al centro del blocco, non al suo */
+  .chiudi_crediti,
+  .privacy_pannello .privacy_chiudi {
+    transform-origin: calc(2.4dvh * 78 / 102 - (14dvh + 5.61dvh) / 2) 50%;
+  }
+
   .chiudi_crediti {
     top: 5.5dvh;
     right: 0;
-    transform: translate(0, -50%);
     height: calc(2.4dvh * 78 / 102);
-  }
-
-  .contacts_container_image {
-    transition: opacity 400ms ease;
+    transform: translate(0, -50%) perspective(80dvh) rotateY(90deg);
   }
 
   body.crediti_aperti .chiudi_crediti {
+    transform: translate(0, -50%) perspective(80dvh) rotateY(0deg);
+  }
+
+  /* PRIVACY: il pannello compare in dissolvenza sopra al sito. nella sua testata c'è una copia
+     nera del blocco dei contatti che gira insieme a quello del sito: durante la dissolvenza si
+     vede un blocco solo che gira e cambia colore, poi arriva la X del pannello */
+  .privacy_contatti {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 5dvw;
+    width: 90dvw;
+    height: 14dvh;
+    pointer-events: none;
+  }
+
+  .privacy_pannello .privacy_chiudi {
+    opacity: 0;
+    transform: translate(-100%, -50%) perspective(80dvh) rotateY(90deg);
+    transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
+  }
+
+  .privacy_pannello.aperto .privacy_chiudi {
     opacity: 1;
+    transform: translate(-100%, -50%) perspective(80dvh) rotateY(0deg);
+    transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
   }
 
   body.crediti_aperti .credits_line {

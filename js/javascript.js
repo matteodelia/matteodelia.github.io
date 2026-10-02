@@ -333,7 +333,6 @@ function chiudiLoader() {
 // (a metà strada in 60 ms, dietro di 75 px a un mouse che corre), uguale a 60 e a 120 Hz
 function cursor() {
   if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  var SCOSTAMENTO = 20; // il cursore sta un po' in basso a destra della punta del mouse
   var RITARDO_1 = 12;
   var RITARDO_2 = 58;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) RITARDO_1 = RITARDO_2 = 0.01;
@@ -377,10 +376,11 @@ function cursor() {
     giro = requestAnimationFrame(passo);
   }
 
+  // triangolo e cerchio hanno il centro sulla punta del mouse: si clicca nel centro del cerchio
   document.addEventListener("mousemove", function(e) {
     mouse = {
-      x: e.clientX + SCOSTAMENTO,
-      y: e.clientY + SCOSTAMENTO
+      x: e.clientX,
+      y: e.clientY
     };
     // la prima volta compare già sotto il mouse, senza arrivare dall'angolo
     if (!pos) {
@@ -677,7 +677,7 @@ function select_section(categorie) {
   // ruota in vista; ogni icona si illumina quando ci passi sopra
   var icone = ["privacy", "instagram", "vimeo"];
   $(".mail").on("mouseenter", soloDesktop(function() {
-    $(".contacts_container_image").css("transform", "rotateY(0deg)translate(0, -50%)");
+    $(".header .contacts_container_image").css("transform", "rotateY(0deg)translate(0, -50%)");
     icone.forEach(function(icona) {
       $("." + icona).css("opacity", "0.5");
       $("." + icona + "_hover").css("display", "initial");
@@ -695,8 +695,10 @@ function select_section(categorie) {
   $(".mail").on("mouseleave", soloDesktop(function() {
     $(".mail").css("opacity", "0.5");
   }));
+  // (con la privacy aperta il blocco resta com'è: gira lui, e lo rimette a posto la privacy)
   $(".contacts_container").on("mouseleave", soloDesktop(function() {
-    $(".contacts_container_image").css("transform", "rotateY(90deg)translate(0, -50%)");
+    if (privacyAperta) return;
+    $(".header .contacts_container_image").css("transform", "rotateY(90deg)translate(0, -50%)");
     icone.forEach(function(icona) {
       $("." + icona).css("opacity", "0");
       $("." + icona + "_hover").css("display", "none");
@@ -790,7 +792,6 @@ function credits() {
     x.innerHTML = '<svg viewBox="0 0 102 102"><path d="M4 4 98 98M98 4 4 98" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" /></svg>';
     document.querySelector(".header").appendChild(x);
   }
-  var sopraLista = false;
   var attesa = null;
 
   function computer() {
@@ -867,24 +868,8 @@ function credits() {
     if (!crediti.aperti) return;
     crediti.aperti = false;
     document.body.classList.remove("crediti_aperti");
-    if (sopraLista) cursoreSito(true);
   }
   crediti.chiudi = chiudi;
-
-  // su computer sopra la lista torna la freccia del sistema, come sull'header: il cursore del sito
-  // disegna il triangolo 20px più in basso a destra del punto che clicca, e fra nomi così vicini
-  // si cliccherebbe quello sopra
-  function cursoreSito(si) {
-    sopraLista = !si;
-    $("body").css("cursor", si ? "none" : "auto");
-    $(".cursor").toggleClass("sopra-header", !si);
-  }
-  $(document).on("mouseenter", ".crediti", function() {
-    if (crediti.aperti && computer()) cursoreSito(false);
-  });
-  $(document).on("mouseleave", ".crediti", function() {
-    if (sopraLista) cursoreSito(true);
-  });
 
   $(".hover_credits").on("click", function() {
     if (crediti.aperti) chiudi();
@@ -1072,6 +1057,22 @@ function privacy() {
     var computer = window.innerWidth > 1200;
     return pannello.querySelector('.privacy_testa a[data-lingua="' + l + '"]' + (computer ? "" : " p"));
   }
+  // il blocco dei contatti del sito gira via e al suo posto arriva la X (css).
+  // nella testata del pannello ce n'è una copia nera che gira insieme, così durante la
+  // dissolvenza si vede un blocco solo che gira e cambia colore. su computer le icone della
+  // copia hanno l'opacità di quelle del sito (gliela dà lo stesso codice del passaggio del mouse)
+  var blocco = document.querySelector(".header .contacts_container_image");
+  var testa = pannello.querySelector(".privacy_testa");
+  if (!testa.querySelector(".privacy_contatti")) {
+    var copia = document.createElement("div");
+    copia.className = "privacy_contatti";
+    copia.setAttribute("aria-hidden", "true");
+    copia.innerHTML = '<div class="contacts_container_image">' +
+      blocco.innerHTML + '</div>' +
+      '<div class="contacts_container"><img src="img/contacts/mail.png" alt="" class="mail"></div>';
+    testa.insertBefore(copia, testa.querySelector(".privacy_chiudi"));
+  }
+
   pannello.setAttribute("data-lingua", (navigator.language || "it").slice(0, 2) == "it" ? "it" : "en");
   var linea = lineaMenu(pannello.querySelector(".privacy_linea"), function() {
     return voce(lingua());
@@ -1100,6 +1101,14 @@ function privacy() {
     pannello.hidden = false;
     pannello.scrollTop = 0;
     linea.aPosto();
+    // su computer il blocco è aperto (ci si è passati sopra per cliccare la privacy): gli si dà
+    // la stessa forma della copia (identico a vederlo), così girano uguali
+    if (window.innerWidth > 1200 && blocco.style.transform.indexOf("rotateY(0deg)") === 0) {
+      blocco.style.transition = "none";
+      blocco.style.transform = "translate(0, -50%) perspective(55vh) rotateY(0deg)";
+      blocco.offsetWidth;
+      blocco.style.transition = "";
+    }
     if (subito) pannello.style.transition = "none";
     pannello.offsetHeight;
     pannello.classList.add("aperto");
@@ -1117,7 +1126,25 @@ function privacy() {
     statistiche.privacy(false);
     pannello.classList.remove("aperto");
     pannello.blur();
+    // su computer torna solo la mail, come a riposo: il blocco si richiude di colpo sotto il
+    // pannello, senza vedersi (passandoci sopra si riapre come sempre)
+    var riposo = window.innerWidth > 1200;
+    var icone = $(blocco).find("img");
+    if (riposo) {
+      blocco.style.transition = "none";
+      icone.css("transition", "none");
+      blocco.style.transform = "rotateY(90deg)translate(0, -50%)";
+      ["privacy", "instagram", "vimeo"].forEach(function(icona) {
+        $("." + icona).css("opacity", "0");
+        $("." + icona + "_hover").css("display", "none");
+      });
+    }
     document.body.classList.remove("privacy_aperta");
+    if (riposo) {
+      blocco.offsetWidth;
+      blocco.style.transition = "";
+      icone.css("transition", "");
+    }
     nascondi = setTimeout(function() {
       pannello.hidden = true;
     }, 500);
