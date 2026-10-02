@@ -1057,10 +1057,10 @@ function privacy() {
     var computer = window.innerWidth > 1200;
     return pannello.querySelector('.privacy_testa a[data-lingua="' + l + '"]' + (computer ? "" : " p"));
   }
-  // il blocco dei contatti del sito gira via e al suo posto arriva la X (css).
-  // nella testata del pannello ce n'è una copia nera che gira insieme, così durante la
-  // dissolvenza si vede un blocco solo che gira e cambia colore. su computer le icone della
-  // copia hanno l'opacità di quelle del sito (gliela dà lo stesso codice del passaggio del mouse)
+  // le icone dei contatti si richiudono nella mail, la mail gira e al suo posto arriva la X (css).
+  // nella testata del pannello ce n'è una copia nera che fa gli stessi movimenti, così durante
+  // la dissolvenza si vede un blocco solo che cambia colore. su computer le icone della copia
+  // hanno l'opacità di quelle del sito (gliela dà lo stesso codice del passaggio del mouse)
   var blocco = document.querySelector(".header .contacts_container_image");
   var testa = pannello.querySelector(".privacy_testa");
   if (!testa.querySelector(".privacy_contatti")) {
@@ -1101,14 +1101,6 @@ function privacy() {
     pannello.hidden = false;
     pannello.scrollTop = 0;
     linea.aPosto();
-    // su computer il blocco è aperto (ci si è passati sopra per cliccare la privacy): gli si dà
-    // la stessa forma della copia (identico a vederlo), così girano uguali
-    if (window.innerWidth > 1200 && blocco.style.transform.indexOf("rotateY(0deg)") === 0) {
-      blocco.style.transition = "none";
-      blocco.style.transform = "translate(0, -50%) perspective(55vh) rotateY(0deg)";
-      blocco.offsetWidth;
-      blocco.style.transition = "";
-    }
     if (subito) pannello.style.transition = "none";
     pannello.offsetHeight;
     pannello.classList.add("aperto");
@@ -1127,9 +1119,10 @@ function privacy() {
     pannello.classList.remove("aperto");
     pannello.blur();
     // su computer torna solo la mail, come a riposo: il blocco si richiude di colpo sotto il
-    // pannello, senza vedersi (passandoci sopra si riapre come sempre)
+    // pannello, senza vedersi (passandoci sopra si riapre come sempre). anche le icone della
+    // copia nel pannello spariscono subito, così mentre sfuma si vede tornare solo la mail
     var riposo = window.innerWidth > 1200;
-    var icone = $(blocco).find("img");
+    var icone = $(".header .contacts_container_image img, .privacy_contatti .contacts_container_image img");
     if (riposo) {
       blocco.style.transition = "none";
       icone.css("transition", "none");
