@@ -1608,9 +1608,8 @@ body.crediti_aperti .selected .crediti_dentro {
    accelerando), poi dallo stesso giro arriva la X (300ms, frenando: le due curve si attaccano
    alla stessa velocità, così sembra un giro solo). chiudendo il contrario, verso destra.
    se si vedono anche le altre icone (sul telefono sempre, su computer col mouse sopra), prima
-   si richiudono nella mail. crediti su computer: la mail gira su se stessa. privacy, e crediti
-   sul telefono: gira attorno al centro del blocco, e la X è sul suo retro.
-   le misure sono nei blocchi qui sotto */
+   si richiudono nella mail. la mail gira sempre su se stessa, e la X gira attorno allo stesso
+   punto (il centro della mail). le misure sono nei blocchi qui sotto */
 .chiudi_crediti {
   position: absolute;
   margin: 0;
@@ -1727,13 +1726,13 @@ body.crediti_aperti #expand {
 
   /* PRIVACY: per cliccarla ci si è passati sopra, quindi il blocco dei contatti è aperto.
      aprendo, prima le icone si richiudono nella mail (come quando il mouse esce dal blocco, ma
-     veloci), poi la mail gira verso sinistra attorno al centro del blocco (largo 6vw + il --passo,
-     3vw - 1.39vh) e dal retro arriva la X. chiudendo la X gira via e torna la mail: il blocco
-     resta chiuso, come a riposo. le icone hanno la posizione scritta dal codice del passaggio
+     veloci), poi la mail gira su se stessa verso sinistra e dallo stesso giro arriva la X.
+     chiudendo la X gira via e torna la mail: il blocco resta chiuso, come a riposo. le icone hanno la posizione scritta dal codice del passaggio
      del mouse: per richiuderle serve !important */
   .header .contacts_container,
   .privacy_contatti .contacts_container {
-    transform: translate(0, -50%) perspective(55vh) rotateY(0deg);
+    transform-origin: calc(100% - 1.2vh) 50%;
+    transform: translate(0, -50%) perspective(12vh) rotateY(0deg);
     transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
   }
 
@@ -1753,7 +1752,7 @@ body.crediti_aperti #expand {
   .privacy_pannello.aperto .privacy_contatti .contacts_container {
     opacity: 0;
     pointer-events: none;
-    transform: translate(0, -50%) perspective(55vh) rotateY(-90deg);
+    transform: translate(0, -50%) perspective(12vh) rotateY(-90deg);
     transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45) 160ms, transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45) 160ms;
   }
 
@@ -1769,14 +1768,14 @@ body.crediti_aperti #expand {
 
   .privacy_pannello .privacy_chiudi {
     opacity: 0;
-    transform-origin: calc(2.4vh * 78 / 102 - (9vw - 1.39vh) / 2) 50%;
-    transform: translate(-100%, -50%) perspective(55vh) rotateY(90deg);
+    transform-origin: calc(2.4vh * 78 / 102 - 1.2vh) 50%;
+    transform: translate(-100%, -50%) perspective(12vh) rotateY(90deg);
     transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
   }
 
   .privacy_pannello.aperto .privacy_chiudi {
     opacity: 1;
-    transform: translate(-100%, -50%) perspective(55vh) rotateY(0deg);
+    transform: translate(-100%, -50%) perspective(12vh) rotateY(0deg);
     transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms;
   }
 
@@ -1799,7 +1798,7 @@ body.crediti_aperti #expand {
 
   /* il blocco dei contatti (largo 14dvh + 5.61dvh, il --passo). aprendo crediti o privacy,
      prima le icone si richiudono nella mail (piegandosi verso destra, come su computer), poi la
-     mail gira verso sinistra attorno al centro del blocco e dal retro arriva la X. chiudendo il
+     mail gira su se stessa verso sinistra e dallo stesso giro arriva la X. chiudendo il
      contrario: la X gira via, torna la mail e le icone si riaprono */
   .header .contacts_container_image,
   .privacy_contatti .contacts_container_image {
@@ -1819,7 +1818,8 @@ body.crediti_aperti #expand {
 
   .header .contacts_container,
   .privacy_contatti .contacts_container {
-    transform: translate(0, -50%) perspective(80dvh) rotateY(0deg);
+    transform-origin: calc(100% - 1.2dvh) 50%;
+    transform: translate(0, -50%) perspective(12dvh) rotateY(0deg);
     transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 300ms;
   }
 
@@ -1828,25 +1828,25 @@ body.crediti_aperti #expand {
   .privacy_pannello.aperto .privacy_contatti .contacts_container {
     opacity: 0;
     pointer-events: none;
-    transform: translate(0, -50%) perspective(80dvh) rotateY(-90deg);
+    transform: translate(0, -50%) perspective(12dvh) rotateY(-90deg);
     transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45) 160ms, transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45) 160ms;
   }
 
-  /* la X è sul retro del blocco: gira attorno al centro del blocco, non al suo */
+  /* la X gira attorno al centro della mail (larga 2.4dvh), non al suo */
   .chiudi_crediti,
   .privacy_pannello .privacy_chiudi {
-    transform-origin: calc(2.4dvh * 78 / 102 - (14dvh + 5.61dvh) / 2) 50%;
+    transform-origin: calc(2.4dvh * 78 / 102 - 1.2dvh) 50%;
   }
 
   .chiudi_crediti {
     top: 5.5dvh;
     right: 0;
     height: calc(2.4dvh * 78 / 102);
-    transform: translate(0, -50%) perspective(80dvh) rotateY(90deg);
+    transform: translate(0, -50%) perspective(12dvh) rotateY(90deg);
   }
 
   body.crediti_aperti .chiudi_crediti {
-    transform: translate(0, -50%) perspective(80dvh) rotateY(0deg);
+    transform: translate(0, -50%) perspective(12dvh) rotateY(0deg);
     transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms;
   }
 
@@ -1865,13 +1865,13 @@ body.crediti_aperti #expand {
 
   .privacy_pannello .privacy_chiudi {
     opacity: 0;
-    transform: translate(-100%, -50%) perspective(80dvh) rotateY(90deg);
+    transform: translate(-100%, -50%) perspective(12dvh) rotateY(90deg);
     transition: opacity 300ms cubic-bezier(0.45, 0, 0.75, 0.45), transform 300ms cubic-bezier(0.45, 0, 0.75, 0.45);
   }
 
   .privacy_pannello.aperto .privacy_chiudi {
     opacity: 1;
-    transform: translate(-100%, -50%) perspective(80dvh) rotateY(0deg);
+    transform: translate(-100%, -50%) perspective(12dvh) rotateY(0deg);
     transition: opacity 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms, transform 300ms cubic-bezier(0.25, 0.55, 0.55, 1) 460ms;
   }
 
