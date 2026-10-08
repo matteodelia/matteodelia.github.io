@@ -1337,8 +1337,8 @@ function escludimi() {
     return r.json();
   }).then(function(esito) {
     var n = esito.visite || 0;
-    mostra("Questo browser non viene più contato · " + (n ? (n == 1 ? "tolta 1 visita" : "tolte " + n + " visite") +
-      " già contate da questa rete" : "nessuna visita da togliere da questa rete"), 8000);
+    mostra("Questo browser non viene più contato · " + (n == 1 ? "tolta 1 visita già contata" :
+      n ? "tolte " + n + " visite già contate" : "nessuna visita da togliere"), 8000);
   }).catch(function() {
     mostra("Questo browser non viene più contato · le visite passate non si sono potute togliere: riapri il link più tardi", 9000);
   });
