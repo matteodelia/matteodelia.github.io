@@ -1271,7 +1271,8 @@ function privacy() {
   else setTimeout(caricaTesti, 7000);
 }
 
-// STATISTICHE: senza cookie e senza dati personali. Si contano in forma anonima
+// STATISTICHE: senza cookie e senza dati personali (nel browser resta solo un codice anonimo a
+// caso, per contare ogni persona una volta). Si contano in forma anonima
 // i progetti guardati e per quanto, i film aperti e per quanto vengono guardati, i crediti,
 // i contatti e la privacy. Li riceve la raccolta su Cloudflare (repository privato "insight",
 // cartella raccolta), l'archivio li copia ogni notte e l'editor li mostra nella sezione Insight.
@@ -1291,12 +1292,16 @@ var RACCOLTA = "https://matteodelia-visite.raccolta-statistiche.workers.dev/e";
 // ESCLUDIMI: matteodelia.com/?escludimi, da aprire una volta in ogni browser di Matteo (anche quello
 // di Instagram). il browser se lo ricorda e da lì non manda più statistiche, su qualsiasi rete
 // (lo fa anche aprire l'editor). in più chiede alla raccolta di cancellare le visite che aveva già
-// fatto contare da questa connessione. un avviso dice com'è andata; l'indirizzo torna pulito
+// fatto contare: quelle col suo codice anonimo e quelle da questa connessione. un avviso dice com'è andata; l'indirizzo torna pulito
 function escludimi() {
   var salvato = true;
+  var persona = "";
   try {
     localStorage.setItem("statistiche_escludi", "1");
     salvato = localStorage.getItem("statistiche_escludi") == "1";
+    // il codice anonimo del browser: serve per trovare le sue visite, poi non serve più
+    persona = localStorage.getItem("statistiche_persona") || "";
+    localStorage.removeItem("statistiche_persona");
   } catch (e) {
     salvato = false;
   }
@@ -1323,7 +1328,10 @@ function escludimi() {
   }
   mostra("Questo browser non viene più contato…");
   fetch(RACCOLTA.replace(/\/e$/, "/escludimi"), {
-    method: "POST"
+    method: "POST",
+    body: JSON.stringify({
+      p: persona
+    })
   }).then(function(r) {
     if (!r.ok) throw new Error(r.status);
     return r.json();
@@ -1344,10 +1352,34 @@ var statistiche = (function() {
     loader: true
   };
   // codice casuale di questa visita: vive solo in memoria, finché la pagina resta aperta
-  var visita = "";
-  var cifre = new Uint8Array(12);
-  (window.crypto || window.msCrypto).getRandomValues(cifre);
-  for (var i = 0; i < cifre.length; i++) visita += ("0" + cifre[i].toString(16)).slice(-2);
+  var visita = aCaso(12);
+  // codice anonimo di questo browser, a caso, conservato nella sua memoria: così una persona conta
+  // una volta sola anche se cambia rete o torna dopo mesi. vuoto se il browser non lo conserva
+  // (navigazione privata): allora la raccolta lo calcola dalla rete e dal browser
+  var persona = null;
+
+  function aCaso(byte) {
+    var cifre = new Uint8Array(byte);
+    (window.crypto || window.msCrypto).getRandomValues(cifre);
+    var testo = "";
+    for (var i = 0; i < cifre.length; i++) testo += ("0" + cifre[i].toString(16)).slice(-2);
+    return testo;
+  }
+
+  function codicePersona() {
+    if (persona !== null) return persona;
+    try {
+      persona = localStorage.getItem("statistiche_persona") || "";
+      if (!/^[a-f0-9]{20}$/.test(persona)) {
+        persona = aCaso(10);
+        localStorage.setItem("statistiche_persona", persona);
+        if (localStorage.getItem("statistiche_persona") != persona) persona = "";
+      }
+    } catch (e) {
+      persona = "";
+    }
+    return persona;
+  }
 
   function escluso() {
     try {
@@ -1364,6 +1396,7 @@ var statistiche = (function() {
 
   // sendBeacon arriva anche se la pagina si sta chiudendo
   function spedisci(corpo) {
+    if (codicePersona()) corpo.p = persona;
     var testo = JSON.stringify(corpo);
     if (navigator.sendBeacon && navigator.sendBeacon(RACCOLTA, testo)) return;
     fetch(RACCOLTA, {
