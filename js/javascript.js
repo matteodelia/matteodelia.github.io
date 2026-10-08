@@ -2,6 +2,8 @@
 // con ?anteprima nell'indirizzo il sito mostra invece la bozza aperta nell'editor
 $(document).ready(function() {
   loader_reveal();
+  // matteodelia.com/?escludimi: prima di tutto, così questa visita già non si conta
+  if (/[?&]escludimi(&|=|$)/.test(location.search)) escludimi();
   statistiche.carica();
   var bozza = null;
   if (location.search.indexOf("anteprima") >= 0) {
@@ -1285,6 +1287,54 @@ function privacy() {
 // "ritorno" = seguito di una visita già contata (chi era uscito dalla pagina ed è tornato):
 // aggiunge tempo ma non un'altra visualizzazione
 var RACCOLTA = "https://matteodelia-visite.raccolta-statistiche.workers.dev/e";
+
+// ESCLUDIMI: matteodelia.com/?escludimi, da aprire una volta in ogni browser di Matteo (anche quello
+// di Instagram). il browser se lo ricorda e da lì non manda più statistiche, su qualsiasi rete
+// (lo fa anche aprire l'editor). in più chiede alla raccolta di cancellare le visite che aveva già
+// fatto contare da questa connessione. un avviso dice com'è andata; l'indirizzo torna pulito
+function escludimi() {
+  var salvato = true;
+  try {
+    localStorage.setItem("statistiche_escludi", "1");
+    salvato = localStorage.getItem("statistiche_escludi") == "1";
+  } catch (e) {
+    salvato = false;
+  }
+  history.replaceState(history.state, "", location.pathname + location.hash);
+  var avviso = document.createElement("div");
+  avviso.className = "avviso_escludi";
+  avviso.setAttribute("role", "status");
+  document.body.appendChild(avviso);
+
+  function mostra(testo, chiudiDopo) {
+    avviso.textContent = testo;
+    avviso.offsetWidth;
+    avviso.classList.add("visibile");
+    if (chiudiDopo) setTimeout(function() {
+      avviso.classList.remove("visibile");
+      setTimeout(function() {
+        if (avviso.parentNode) avviso.parentNode.removeChild(avviso);
+      }, 600);
+    }, chiudiDopo);
+  }
+  if (!salvato) {
+    mostra("Questo browser non riesce a ricordarlo (navigazione privata?): aprilo in una finestra normale", 9000);
+    return;
+  }
+  mostra("Questo browser non viene più contato…");
+  fetch(RACCOLTA.replace(/\/e$/, "/escludimi"), {
+    method: "POST"
+  }).then(function(r) {
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(function(esito) {
+    var n = esito.visite || 0;
+    mostra("Questo browser non viene più contato · " + (n ? (n == 1 ? "tolta 1 visita" : "tolte " + n + " visite") +
+      " già contate da questa rete" : "nessuna visita da togliere da questa rete"), 8000);
+  }).catch(function() {
+    mostra("Questo browser non viene più contato · le visite passate non si sono potute togliere: riapri il link più tardi", 9000);
+  });
+}
 
 var statistiche = (function() {
   var MASSIMO_FERMO = 600; // oltre 10 minuti di fila sullo stesso progetto non si conta

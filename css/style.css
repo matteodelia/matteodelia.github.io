@@ -1903,3 +1903,30 @@ body.crediti_aperti #expand {
     transform: none;
   }
 }
+
+/* l'avviso di matteodelia.com/?escludimi (escludimi() in js/javascript.js): sopra a tutto, anche
+   al loader, in alto al centro */
+.avviso_escludi {
+  position: fixed;
+  top: 16vh;
+  left: 50%;
+  z-index: 1200;
+  max-width: 86vw;
+  padding: 1.4vh 2.2vh;
+  font-family: "CoFoPeshka 380 Regular";
+  font-size: max(11px, 1.5vh);
+  letter-spacing: 1.5px;
+  line-height: 1.5;
+  text-align: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -6px);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+.avviso_escludi.visibile {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
